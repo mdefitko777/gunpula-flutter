@@ -59,6 +59,12 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+  # 이미지 자산 (패키지 추가가 아님) — 키트 박스아트 · 도감 기체 아이콘.
+  # db.json의 image · icon 값이 이 경로를 가리킨다. 출처: BANDAI SPIRITS 상품 사진 · SD건담 G제너레이션 유닛 아이콘.
+  assets:
+    - assets/kits/
+    - assets/units/
+
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

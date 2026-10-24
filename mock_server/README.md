@@ -5,7 +5,7 @@
 
 ```
 mock_server/
-├── db.json        # [필수] 예시 데이터: items 4개, notes 3개 — 내 앱에 맞게 바꾼다 (개인정보 금지)
+├── db.json        # [필수] series 2 · units 24 · kits 24 · prices 80 · collection 15 (개인정보 없음)
 ├── package.json   # json-server 0.17.4 고정 · "npm start" (= "npm run mock")
 ├── api/server.js  # (가산 +5) Vercel 서버리스 함수 — 읽기 전용 GET
 └── vercel.json    # (가산 +5) /api/* → api/server.js
@@ -24,10 +24,14 @@ npm start        # = json-server --watch db.json --port 3000 --host 0.0.0.0  (np
 다른 터미널에서:
 
 ```bash
-curl http://localhost:3000/items            # 항목 4개 (JSON 배열) — 화면 A 목록
-curl http://localhost:3000/items/1          # id가 1인 항목 하나
-curl "http://localhost:3000/notes?itemId=1" # 항목 1의 메모 — 화면 B '메모' 탭
+curl "http://localhost:3000/kits?_embed=collection&_expand=unit"   # 키트 24개 + 내 소장 상태 + 기체 — 화면 A · F
+curl "http://localhost:3000/kits?unitId=1&_embed=collection"       # 기체 1의 대응 키트 — 화면 E
+curl "http://localhost:3000/prices?kitId=1&_sort=date&_order=desc" # 키트 1의 시세 기록(예시) — 화면 B '시세 기록' 탭
+curl "http://localhost:3000/series?_embed=units"                   # 작품 2개 + 기체 — 화면 D 도감
 ```
+
+`_embed` · `_expand` · `_sort`는 json-server의 GET 쿼리입니다(서버가 묶어서 내려 줄 뿐, 쓰기가 아님).
+`units.status` · `series.owned/wanted/total`(점등 상태 · 수집률)은 미리 적어 둔 값이고 앱은 계산하지 않습니다.
 
 - `--watch`: `db.json`을 고치고 저장하면 서버를 다시 켜지 않아도 반영됩니다.
 - `--host 0.0.0.0`: 같은 Wi-Fi의 실기기에서도 접속할 수 있게 엽니다(macOS 방화벽 창이 뜨면 "허용").
@@ -40,8 +44,9 @@ curl "http://localhost:3000/notes?itemId=1" # 항목 1의 메모 — 화면 B '�
 
 ## 2. `db.json` 바꾸기
 
-- 최상위 키 하나 = 주소 하나 (`"items": [...]` → `/items`). 키 이름을 바꾸면 `lib/api.dart`의 `'items'`·`'notes'`도 같이 바꿉니다.
-- 항목마다 `id`가 있어야 `/items/1` 같은 단건 조회가 됩니다.
+- 최상위 키 하나 = 주소 하나 (`"kits": [...]` → `/kits`). 키 이름을 바꾸면 `lib/api.dart`의 경로도 같이 바꿉니다.
+- 항목마다 `id`가 있어야 `/kits/1` 같은 단건 조회가 됩니다. `kitId` · `unitId` · `seriesId`가 `_embed` · `_expand`의 연결 고리입니다.
+- 이미지 경로(`image` · `icon`)는 앱 안의 `assets/`를 가리킵니다(`pubspec.yaml`의 `assets:`).
 - 필드를 바꾸면 `lib/models.dart`의 `fromJson` 패턴도 같이 바꿉니다(모양이 다르면 그 항목은 목록에서 빠집니다).
 - **실제 개인정보(이름·전화·학번·주소 등)는 넣지 않습니다**(감점 항목). 이미지는 `https://picsum.photos/seed/<아무 글자>/400/300` 같은 예시 이미지를 씁니다.
 
@@ -71,7 +76,7 @@ json-server 0.17.4는 **기본으로 CORS를 허용**합니다(`--no-cors`를 �
 
 1. 내 GitHub 저장소를 [vercel.com](https://vercel.com)에서 **Add New… → Project**로 Import.
 2. **Root Directory**를 `mock_server`로, Framework Preset은 **Other** → **Deploy**.
-3. 확인: `https://<프로젝트>.vercel.app/api/items`
+3. 확인: `https://<프로젝트>.vercel.app/api/kits`
 4. 앱 웹 빌드도 같은 프로젝트로(발표 URL 하나):
 
 ```bash

@@ -1,60 +1,1158 @@
 {
-  "items": [
+  "series": [
     {
       "id": 1,
-      "title": "예시 항목 1",
-      "subtitle": "TODO: 내 앱의 실제 화면에 맞는 예시 문구로 바꾼다",
-      "image": "https://picsum.photos/seed/item1/400/300",
-      "tags": [
-        "예시",
-        "태그A"
-      ]
+      "name": "기동전사 건담 수성의 마녀",
+      "nameEn": "The Witch from Mercury",
+      "owned": 5,
+      "wanted": 2,
+      "total": 12
     },
     {
       "id": 2,
-      "title": "예시 항목 2",
-      "subtitle": "목록 → 상세 → 결과 흐름을 확인하기 위한 샘플 데이터",
-      "image": "https://picsum.photos/seed/item2/400/300",
-      "tags": [
-        "태그B"
-      ]
+      "name": "기동전사 건담 SEED 시리즈",
+      "nameEn": "Gundam SEED / SEED DESTINY",
+      "owned": 4,
+      "wanted": 3,
+      "total": 12
+    }
+  ],
+  "units": [
+    {
+      "id": 1,
+      "seriesId": 1,
+      "name": "건담 에어리얼",
+      "nameEn": "Gundam Aerial",
+      "icon": "assets/units/g5010u00100.webp",
+      "status": "owned"
+    },
+    {
+      "id": 2,
+      "seriesId": 1,
+      "name": "건담 에어리얼(개수형)",
+      "nameEn": "Gundam Aerial Rebuild",
+      "icon": "assets/units/g5010u01600.webp",
+      "status": "none"
     },
     {
       "id": 3,
-      "title": "예시 항목 3",
-      "subtitle": "태그가 없는 항목 (빈 값도 화면이 깨지지 않는지 확인)",
-      "image": "https://picsum.photos/seed/item3/400/300",
-      "tags": []
+      "seriesId": 1,
+      "name": "건담 캘리번",
+      "nameEn": "Gundam Calibarn",
+      "icon": "assets/units/g5010u02000.webp",
+      "status": "owned"
     },
     {
       "id": 4,
-      "title": "예시 항목 4",
-      "subtitle": "넓은 화면(600dp 이상)에서는 격자로 보인다",
-      "image": "https://picsum.photos/seed/item4/400/300",
-      "tags": [
-        "태그A",
-        "태그B"
-      ]
+      "seriesId": 1,
+      "name": "건담 루브리스",
+      "nameEn": "Gundam Lfrith",
+      "icon": "assets/units/g5000u00100.webp",
+      "status": "owned"
+    },
+    {
+      "id": 5,
+      "seriesId": 1,
+      "name": "건담 루브리스 울",
+      "nameEn": "Gundam Lfrith Ur",
+      "icon": "assets/units/g5010u01400.webp",
+      "status": "none"
+    },
+    {
+      "id": 6,
+      "seriesId": 1,
+      "name": "건담 루브리스 소른",
+      "nameEn": "Gundam Lfrith Thorn",
+      "icon": "assets/units/g5010u01500.webp",
+      "status": "none"
+    },
+    {
+      "id": 7,
+      "seriesId": 1,
+      "name": "건담 파락트",
+      "nameEn": "Gundam Pharact",
+      "icon": "assets/units/g5010u00400.webp",
+      "status": "wanted"
+    },
+    {
+      "id": 8,
+      "seriesId": 1,
+      "name": "건담 슈바르제테",
+      "nameEn": "Gundam Schwarzette",
+      "icon": "assets/units/g5010u01900.webp",
+      "status": "wanted"
+    },
+    {
+      "id": 9,
+      "seriesId": 1,
+      "name": "다릴발데",
+      "nameEn": "Darilbalde",
+      "icon": "assets/units/g5010u01200.webp",
+      "status": "owned"
+    },
+    {
+      "id": 10,
+      "seriesId": 1,
+      "name": "딜란자(굴 전용기)",
+      "nameEn": "Guel's Dilanza",
+      "icon": "assets/units/g5010u00300.webp",
+      "status": "owned"
+    },
+    {
+      "id": 11,
+      "seriesId": 1,
+      "name": "미카엘리스",
+      "nameEn": "Michaelis",
+      "icon": "assets/units/g5010u00500.webp",
+      "status": "none"
+    },
+    {
+      "id": 12,
+      "seriesId": 1,
+      "name": "데미 트레이너",
+      "nameEn": "Demi Trainer",
+      "icon": "assets/units/g5010u01000.webp",
+      "status": "none"
+    },
+    {
+      "id": 13,
+      "seriesId": 2,
+      "name": "스트라이크 건담",
+      "nameEn": "Strike Gundam",
+      "icon": "assets/units/g3000u00100.webp",
+      "status": "owned"
+    },
+    {
+      "id": 14,
+      "seriesId": 2,
+      "name": "이지스 건담",
+      "nameEn": "Aegis Gundam",
+      "icon": "assets/units/g3000u00600.webp",
+      "status": "none"
+    },
+    {
+      "id": 15,
+      "seriesId": 2,
+      "name": "스트라이크 루주",
+      "nameEn": "Strike Rouge",
+      "icon": "assets/units/g3000u01800.webp",
+      "status": "none"
+    },
+    {
+      "id": 16,
+      "seriesId": 2,
+      "name": "카라미티 건담",
+      "nameEn": "Calamity Gundam",
+      "icon": "assets/units/g3000u01200.webp",
+      "status": "wanted"
+    },
+    {
+      "id": 17,
+      "seriesId": 2,
+      "name": "포비든 건담",
+      "nameEn": "Forbidden Gundam",
+      "icon": "assets/units/g3000u01300.webp",
+      "status": "none"
+    },
+    {
+      "id": 18,
+      "seriesId": 2,
+      "name": "레이더 건담",
+      "nameEn": "Raider Gundam",
+      "icon": "assets/units/g3000u01400.webp",
+      "status": "none"
+    },
+    {
+      "id": 19,
+      "seriesId": 2,
+      "name": "진",
+      "nameEn": "GINN",
+      "icon": "assets/units/g3000u02200.webp",
+      "status": "owned"
+    },
+    {
+      "id": 20,
+      "seriesId": 2,
+      "name": "스트라이크 프리덤 건담",
+      "nameEn": "Strike Freedom Gundam",
+      "icon": "assets/units/g3300u00100.webp",
+      "status": "owned"
+    },
+    {
+      "id": 21,
+      "seriesId": 2,
+      "name": "데스티니 건담",
+      "nameEn": "Destiny Gundam",
+      "icon": "assets/units/g3300u00700.webp",
+      "status": "owned"
+    },
+    {
+      "id": 22,
+      "seriesId": 2,
+      "name": "레전드 건담",
+      "nameEn": "Legend Gundam",
+      "icon": "assets/units/g3300u05200.webp",
+      "status": "wanted"
+    },
+    {
+      "id": 23,
+      "seriesId": 2,
+      "name": "구프 이그나이티드(하이네 전용기)",
+      "nameEn": "GOUF Ignited (Heine Westenfluss)",
+      "icon": "assets/units/g3300u05300.webp",
+      "status": "wanted"
+    },
+    {
+      "id": 24,
+      "seriesId": 2,
+      "name": "라이징 프리덤 건담",
+      "nameEn": "Rising Freedom Gundam",
+      "icon": "assets/units/g3500u00100.webp",
+      "status": "none"
     }
   ],
-  "notes": [
+  "kits": [
     {
       "id": 1,
-      "itemId": 1,
-      "text": "예시 메모 1 — 상세 화면 '메모' 탭에 보인다",
-      "date": "2026-10-15"
+      "unitId": 1,
+      "name": "HG 1/144 건담 에어리얼",
+      "nameJa": "HG 1 / 144 ガンダムエアリアル",
+      "grade": "HG",
+      "scale": "1/144",
+      "priceJpy": 1760,
+      "releaseDate": "2022-10-01",
+      "image": "assets/kits/k1.jpg",
+      "barcode": "4573102630308"
     },
     {
       "id": 2,
-      "itemId": 1,
-      "text": "예시 메모 2",
-      "date": "2026-10-16"
+      "unitId": 1,
+      "name": "FM 1/100 건담 에어리얼",
+      "nameJa": "FULL MECHANICS 1 / 100 ガンダムエアリアル",
+      "grade": "FM",
+      "scale": "1/100",
+      "priceJpy": 4180,
+      "releaseDate": "2023-04-22",
+      "image": "assets/kits/k2.jpg",
+      "barcode": "4573102650900"
     },
     {
       "id": 3,
-      "itemId": 2,
-      "text": "예시 메모 3",
-      "date": "2026-10-17"
+      "unitId": 2,
+      "name": "HG 1/144 건담 에어리얼(개수형)",
+      "nameJa": "HG 1 / 144 ガンダムエアリアル(改修型)",
+      "grade": "HG",
+      "scale": "1/144",
+      "priceJpy": 1870,
+      "releaseDate": "2023-03-18",
+      "image": "assets/kits/k3.jpg",
+      "barcode": "4573102650962"
+    },
+    {
+      "id": 4,
+      "unitId": 3,
+      "name": "HG 1/144 건담 캘리번",
+      "nameJa": "HG 1 / 144 ガンダムキャリバーン",
+      "grade": "HG",
+      "scale": "1/144",
+      "priceJpy": 2200,
+      "releaseDate": "2023-07-15",
+      "image": "assets/kits/k4.jpg",
+      "barcode": "4573102653222"
+    },
+    {
+      "id": 5,
+      "unitId": 4,
+      "name": "HG 1/144 건담 루브리스",
+      "nameJa": "HG 1 / 144 ガンダムルブリス",
+      "grade": "HG",
+      "scale": "1/144",
+      "priceJpy": 1760,
+      "releaseDate": "2022-08-06",
+      "image": "assets/kits/k5.jpg",
+      "barcode": "4573102629449"
+    },
+    {
+      "id": 6,
+      "unitId": 5,
+      "name": "HG 1/144 건담 루브리스 울",
+      "nameJa": "HG 1 / 144 ガンダムルブリスウル",
+      "grade": "HG",
+      "scale": "1/144",
+      "priceJpy": 2090,
+      "releaseDate": "2023-03-04",
+      "image": "assets/kits/k6.jpg",
+      "barcode": "4573102650887"
+    },
+    {
+      "id": 7,
+      "unitId": 6,
+      "name": "HG 1/144 건담 루브리스 소른",
+      "nameJa": "HG 1 / 144 ガンダムルブリスソーン",
+      "grade": "HG",
+      "scale": "1/144",
+      "priceJpy": 1760,
+      "releaseDate": "2023-03-18",
+      "image": "assets/kits/k7.jpg",
+      "barcode": "4573102650979"
+    },
+    {
+      "id": 8,
+      "unitId": 7,
+      "name": "HG 1/144 건담 파락트",
+      "nameJa": "HG 1 / 144 ガンダムファラクト",
+      "grade": "HG",
+      "scale": "1/144",
+      "priceJpy": 2090,
+      "releaseDate": "2022-12-17",
+      "image": "assets/kits/k8.jpg",
+      "barcode": "4573102633545"
+    },
+    {
+      "id": 9,
+      "unitId": 8,
+      "name": "HG 1/144 건담 슈바르제테",
+      "nameJa": "HG 1 / 144 ガンダムシュバルゼッテ",
+      "grade": "HG",
+      "scale": "1/144",
+      "priceJpy": 2090,
+      "releaseDate": "2023-07-08",
+      "image": "assets/kits/k9.jpg",
+      "barcode": "4573102650245"
+    },
+    {
+      "id": 10,
+      "unitId": 9,
+      "name": "HG 1/144 다릴발데",
+      "nameJa": "HG 1 / 144 ダリルバルデ",
+      "grade": "HG",
+      "scale": "1/144",
+      "priceJpy": 2090,
+      "releaseDate": "2022-12-03",
+      "image": "assets/kits/k10.jpg",
+      "barcode": "4573102633552"
+    },
+    {
+      "id": 11,
+      "unitId": 10,
+      "name": "HG 1/144 딜란자(굴 전용기)",
+      "nameJa": "HG 1 / 144 ディランザ (グエル専用機)",
+      "grade": "HG",
+      "scale": "1/144",
+      "priceJpy": 1760,
+      "releaseDate": "2022-10-08",
+      "image": "assets/kits/k11.jpg",
+      "barcode": "4573102633415"
+    },
+    {
+      "id": 12,
+      "unitId": 11,
+      "name": "HG 1/144 미카엘리스",
+      "nameJa": "HG 1 / 144 ミカエリス",
+      "grade": "HG",
+      "scale": "1/144",
+      "priceJpy": 1760,
+      "releaseDate": "2023-01-14",
+      "image": "assets/kits/k12.jpg",
+      "barcode": "4573102642523"
+    },
+    {
+      "id": 13,
+      "unitId": 12,
+      "name": "HG 1/144 데미 트레이너",
+      "nameJa": "HG 1 / 144 デミトレーナー",
+      "grade": "HG",
+      "scale": "1/144",
+      "priceJpy": 1320,
+      "releaseDate": "2022-12-10",
+      "image": "assets/kits/k13.jpg",
+      "barcode": "4573102633569"
+    },
+    {
+      "id": 14,
+      "unitId": 13,
+      "name": "EG 1/144 스트라이크 건담",
+      "nameJa": "ENTRY GRADE 1 / 144 ストライクガンダム",
+      "grade": "EG",
+      "scale": "1/144",
+      "priceJpy": 770,
+      "releaseDate": "2022-01-15",
+      "image": "assets/kits/k14.jpg",
+      "barcode": "4573102621689"
+    },
+    {
+      "id": 15,
+      "unitId": 15,
+      "name": "EG 1/144 스트라이크 루주",
+      "nameJa": "ENTRY GRADE 1 / 144 ストライクルージュ",
+      "grade": "EG",
+      "scale": "1/144",
+      "priceJpy": 880,
+      "releaseDate": "2025-01-17",
+      "image": "assets/kits/k15.jpg",
+      "barcode": "4573102683212"
+    },
+    {
+      "id": 16,
+      "unitId": 16,
+      "name": "FM 1/100 카라미티 건담",
+      "nameJa": "FULL MECHANICS 1 / 100 カラミティガンダム",
+      "grade": "FM",
+      "scale": "1/100",
+      "priceJpy": 5500,
+      "releaseDate": "2021-06-26",
+      "image": "assets/kits/k16.jpg",
+      "barcode": "4573102616623"
+    },
+    {
+      "id": 17,
+      "unitId": 17,
+      "name": "FM 1/100 포비든 건담",
+      "nameJa": "FULL MECHANICS 1 / 100 フォビドゥンガンダム",
+      "grade": "FM",
+      "scale": "1/100",
+      "priceJpy": 6380,
+      "releaseDate": "2023-08-11",
+      "image": "assets/kits/k17.jpg",
+      "barcode": "4573102654298"
+    },
+    {
+      "id": 18,
+      "unitId": 18,
+      "name": "FM 1/100 레이더 건담",
+      "nameJa": "FULL MECHANICS 1 / 100 レイダーガンダム",
+      "grade": "FM",
+      "scale": "1/100",
+      "priceJpy": 5500,
+      "releaseDate": "2022-05-21",
+      "image": "assets/kits/k18.jpg",
+      "barcode": "4573102633491"
+    },
+    {
+      "id": 19,
+      "unitId": 19,
+      "name": "MG 1/100 모빌 진",
+      "nameJa": "MG 1 / 100 モビルジン",
+      "grade": "MG",
+      "scale": "1/100",
+      "priceJpy": 4730,
+      "releaseDate": "2021-04-17",
+      "image": "assets/kits/k19.jpg",
+      "barcode": "4573102615473"
+    },
+    {
+      "id": 20,
+      "unitId": 20,
+      "name": "MGEX 1/100 스트라이크 프리덤 건담",
+      "nameJa": "MGEX 1 / 100 ストライクフリーダムガンダム",
+      "grade": "MG",
+      "scale": "1/100",
+      "priceJpy": 17050,
+      "releaseDate": "2022-11-19",
+      "image": "assets/kits/k20.jpg",
+      "barcode": "4573102633682"
+    },
+    {
+      "id": 21,
+      "unitId": 21,
+      "name": "HGCE 1/144 데스티니 건담(하이네 전용기)",
+      "nameJa": "HGCE 1 / 144 デスティニーガンダム(ハイネ専用機)",
+      "grade": "HG",
+      "scale": "1/144",
+      "priceJpy": 2640,
+      "releaseDate": "2019-07-06",
+      "image": "assets/kits/k21.jpg",
+      "barcode": "4573102577931"
+    },
+    {
+      "id": 22,
+      "unitId": 22,
+      "name": "HG 1/144 레전드 건담",
+      "nameJa": "HG 1 / 144 レジェンドガンダム",
+      "grade": "HG",
+      "scale": "1/144",
+      "priceJpy": 3080,
+      "releaseDate": "2026-01-31",
+      "image": "assets/kits/k22.jpg",
+      "barcode": "4573102720030"
+    },
+    {
+      "id": 23,
+      "unitId": 23,
+      "name": "HG 1/144 구프 이그나이티드(하이네 전용기)",
+      "nameJa": "HG 1 / 144 グフイグナイテッド(ハイネ・ヴェステンフルス専用機)",
+      "grade": "HG",
+      "scale": "1/144",
+      "priceJpy": 2860,
+      "releaseDate": "2026-07-11",
+      "image": "assets/kits/k23.jpg",
+      "barcode": "4573102742490"
+    },
+    {
+      "id": 24,
+      "unitId": 24,
+      "name": "HG 1/144 라이징 프리덤 건담",
+      "nameJa": "HG 1 / 144 ライジングフリーダムガンダム",
+      "grade": "HG",
+      "scale": "1/144",
+      "priceJpy": 2640,
+      "releaseDate": "2024-01-26",
+      "image": "assets/kits/k24.jpg",
+      "barcode": "4573102662842"
+    }
+  ],
+  "prices": [
+    {
+      "id": 1,
+      "kitId": 1,
+      "date": "2026-07-12",
+      "priceKrw": 15900,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 2,
+      "kitId": 1,
+      "date": "2026-08-09",
+      "priceKrw": 18300,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 3,
+      "kitId": 1,
+      "date": "2026-09-06",
+      "priceKrw": 16100,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 4,
+      "kitId": 1,
+      "date": "2026-10-11",
+      "priceKrw": 18400,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 5,
+      "kitId": 2,
+      "date": "2026-07-12",
+      "priceKrw": 38900,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 6,
+      "kitId": 2,
+      "date": "2026-08-09",
+      "priceKrw": 44500,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 7,
+      "kitId": 2,
+      "date": "2026-09-06",
+      "priceKrw": 39300,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 8,
+      "kitId": 2,
+      "date": "2026-10-11",
+      "priceKrw": 44900,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 9,
+      "kitId": 3,
+      "date": "2026-07-12",
+      "priceKrw": 18000,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 10,
+      "kitId": 3,
+      "date": "2026-08-09",
+      "priceKrw": 20500,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 11,
+      "kitId": 3,
+      "date": "2026-09-06",
+      "priceKrw": 18200,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 12,
+      "kitId": 3,
+      "date": "2026-10-11",
+      "priceKrw": 20700,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 13,
+      "kitId": 4,
+      "date": "2026-07-12",
+      "priceKrw": 21700,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 14,
+      "kitId": 4,
+      "date": "2026-08-09",
+      "priceKrw": 24700,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 15,
+      "kitId": 4,
+      "date": "2026-09-06",
+      "priceKrw": 21900,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 16,
+      "kitId": 4,
+      "date": "2026-10-11",
+      "priceKrw": 24900,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 17,
+      "kitId": 5,
+      "date": "2026-07-12",
+      "priceKrw": 17900,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 18,
+      "kitId": 5,
+      "date": "2026-08-09",
+      "priceKrw": 15700,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 19,
+      "kitId": 5,
+      "date": "2026-09-06",
+      "priceKrw": 18100,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 20,
+      "kitId": 5,
+      "date": "2026-10-11",
+      "priceKrw": 20400,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 21,
+      "kitId": 7,
+      "date": "2026-07-12",
+      "priceKrw": 18900,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 22,
+      "kitId": 7,
+      "date": "2026-08-09",
+      "priceKrw": 16700,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 23,
+      "kitId": 7,
+      "date": "2026-09-06",
+      "priceKrw": 19100,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 24,
+      "kitId": 7,
+      "date": "2026-10-11",
+      "priceKrw": 16900,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 25,
+      "kitId": 8,
+      "date": "2026-07-12",
+      "priceKrw": 23100,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 26,
+      "kitId": 8,
+      "date": "2026-08-09",
+      "priceKrw": 20500,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 27,
+      "kitId": 8,
+      "date": "2026-09-06",
+      "priceKrw": 23300,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 28,
+      "kitId": 8,
+      "date": "2026-10-11",
+      "priceKrw": 20700,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 29,
+      "kitId": 9,
+      "date": "2026-07-12",
+      "priceKrw": 18300,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 30,
+      "kitId": 9,
+      "date": "2026-08-09",
+      "priceKrw": 21100,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 31,
+      "kitId": 9,
+      "date": "2026-09-06",
+      "priceKrw": 23900,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 32,
+      "kitId": 9,
+      "date": "2026-10-11",
+      "priceKrw": 21300,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 33,
+      "kitId": 10,
+      "date": "2026-07-12",
+      "priceKrw": 18900,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 34,
+      "kitId": 10,
+      "date": "2026-08-09",
+      "priceKrw": 21700,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 35,
+      "kitId": 10,
+      "date": "2026-09-06",
+      "priceKrw": 19100,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 36,
+      "kitId": 10,
+      "date": "2026-10-11",
+      "priceKrw": 21900,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 37,
+      "kitId": 11,
+      "date": "2026-07-12",
+      "priceKrw": 16400,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 38,
+      "kitId": 11,
+      "date": "2026-08-09",
+      "priceKrw": 18800,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 39,
+      "kitId": 11,
+      "date": "2026-09-06",
+      "priceKrw": 16600,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 40,
+      "kitId": 11,
+      "date": "2026-10-11",
+      "priceKrw": 18900,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 41,
+      "kitId": 13,
+      "date": "2026-07-12",
+      "priceKrw": 13100,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 42,
+      "kitId": 13,
+      "date": "2026-08-09",
+      "priceKrw": 14900,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 43,
+      "kitId": 13,
+      "date": "2026-09-06",
+      "priceKrw": 13200,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 44,
+      "kitId": 13,
+      "date": "2026-10-11",
+      "priceKrw": 15000,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 45,
+      "kitId": 14,
+      "date": "2026-07-12",
+      "priceKrw": 7800,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 46,
+      "kitId": 14,
+      "date": "2026-08-09",
+      "priceKrw": 6900,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 47,
+      "kitId": 14,
+      "date": "2026-09-06",
+      "priceKrw": 7900,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 48,
+      "kitId": 14,
+      "date": "2026-10-11",
+      "priceKrw": 9000,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 49,
+      "kitId": 15,
+      "date": "2026-07-12",
+      "priceKrw": 9200,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 50,
+      "kitId": 15,
+      "date": "2026-08-09",
+      "priceKrw": 8100,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 51,
+      "kitId": 15,
+      "date": "2026-09-06",
+      "priceKrw": 9200,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 52,
+      "kitId": 15,
+      "date": "2026-10-11",
+      "priceKrw": 8100,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 53,
+      "kitId": 16,
+      "date": "2026-07-12",
+      "priceKrw": 59100,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 54,
+      "kitId": 16,
+      "date": "2026-08-09",
+      "priceKrw": 52300,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 55,
+      "kitId": 16,
+      "date": "2026-09-06",
+      "priceKrw": 59700,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 56,
+      "kitId": 16,
+      "date": "2026-10-11",
+      "priceKrw": 52800,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 57,
+      "kitId": 17,
+      "date": "2026-07-12",
+      "priceKrw": 70400,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 58,
+      "kitId": 17,
+      "date": "2026-08-09",
+      "priceKrw": 62400,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 59,
+      "kitId": 17,
+      "date": "2026-09-06",
+      "priceKrw": 71000,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 60,
+      "kitId": 17,
+      "date": "2026-10-11",
+      "priceKrw": 63000,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 61,
+      "kitId": 19,
+      "date": "2026-07-12",
+      "priceKrw": 42700,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 62,
+      "kitId": 19,
+      "date": "2026-08-09",
+      "priceKrw": 49000,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 63,
+      "kitId": 19,
+      "date": "2026-09-06",
+      "priceKrw": 43100,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 64,
+      "kitId": 19,
+      "date": "2026-10-11",
+      "priceKrw": 49500,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 65,
+      "kitId": 20,
+      "date": "2026-07-12",
+      "priceKrw": 158800,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 66,
+      "kitId": 20,
+      "date": "2026-08-09",
+      "priceKrw": 181700,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 67,
+      "kitId": 20,
+      "date": "2026-09-06",
+      "priceKrw": 160400,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 68,
+      "kitId": 20,
+      "date": "2026-10-11",
+      "priceKrw": 183300,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 69,
+      "kitId": 21,
+      "date": "2026-07-12",
+      "priceKrw": 25300,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 70,
+      "kitId": 21,
+      "date": "2026-08-09",
+      "priceKrw": 28800,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 71,
+      "kitId": 21,
+      "date": "2026-09-06",
+      "priceKrw": 25600,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 72,
+      "kitId": 21,
+      "date": "2026-10-11",
+      "priceKrw": 29100,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 73,
+      "kitId": 22,
+      "date": "2026-07-12",
+      "priceKrw": 30500,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 74,
+      "kitId": 22,
+      "date": "2026-08-09",
+      "priceKrw": 34600,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 75,
+      "kitId": 22,
+      "date": "2026-09-06",
+      "priceKrw": 30800,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 76,
+      "kitId": 22,
+      "date": "2026-10-11",
+      "priceKrw": 34900,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 77,
+      "kitId": 23,
+      "date": "2026-07-12",
+      "priceKrw": 29200,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 78,
+      "kitId": 23,
+      "date": "2026-08-09",
+      "priceKrw": 25600,
+      "source": "중고 거래 (예시)"
+    },
+    {
+      "id": 79,
+      "kitId": 23,
+      "date": "2026-09-06",
+      "priceKrw": 29400,
+      "source": "매장 판매가 (예시)"
+    },
+    {
+      "id": 80,
+      "kitId": 23,
+      "date": "2026-10-11",
+      "priceKrw": 33300,
+      "source": "중고 거래 (예시)"
+    }
+  ],
+  "collection": [
+    {
+      "id": 1,
+      "kitId": 1,
+      "status": "owned",
+      "addedAt": "2026-08-05"
+    },
+    {
+      "id": 2,
+      "kitId": 2,
+      "status": "wanted",
+      "addedAt": "2026-09-07"
+    },
+    {
+      "id": 3,
+      "kitId": 4,
+      "status": "owned",
+      "addedAt": "2026-10-09"
+    },
+    {
+      "id": 4,
+      "kitId": 5,
+      "status": "owned",
+      "addedAt": "2026-07-11"
+    },
+    {
+      "id": 5,
+      "kitId": 8,
+      "status": "wanted",
+      "addedAt": "2026-08-13"
+    },
+    {
+      "id": 6,
+      "kitId": 9,
+      "status": "wanted",
+      "addedAt": "2026-09-15"
+    },
+    {
+      "id": 7,
+      "kitId": 10,
+      "status": "owned",
+      "addedAt": "2026-10-17"
+    },
+    {
+      "id": 8,
+      "kitId": 11,
+      "status": "owned",
+      "addedAt": "2026-07-19"
+    },
+    {
+      "id": 9,
+      "kitId": 14,
+      "status": "owned",
+      "addedAt": "2026-08-21"
+    },
+    {
+      "id": 10,
+      "kitId": 16,
+      "status": "wanted",
+      "addedAt": "2026-09-23"
+    },
+    {
+      "id": 11,
+      "kitId": 19,
+      "status": "owned",
+      "addedAt": "2026-10-25"
+    },
+    {
+      "id": 12,
+      "kitId": 20,
+      "status": "owned",
+      "addedAt": "2026-07-27"
+    },
+    {
+      "id": 13,
+      "kitId": 21,
+      "status": "owned",
+      "addedAt": "2026-08-29"
+    },
+    {
+      "id": 14,
+      "kitId": 22,
+      "status": "wanted",
+      "addedAt": "2026-09-31"
+    },
+    {
+      "id": 15,
+      "kitId": 23,
+      "status": "wanted",
+      "addedAt": "2026-10-33"
     }
   ]
 }
