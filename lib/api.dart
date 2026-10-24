@@ -1,5 +1,5 @@
 // 데이터 가져오기 — GET만 쓴다 (중간고사 안내 5장: POST/PUT/DELETE·저장은 감점)
-// 화면 코드는 이 파일의 fetchItems() / fetchNotes()만 부른다. (관심사 분리)
+// 화면 코드는 이 파일의 fetchKits() · fetchKitsOfUnit() · fetchPrices() · fetchSeries()만 부른다. (관심사 분리)
 //
 // 서버 주소 (코드 수정 없이 실행할 때 바꾼다):
 //   기본값  Android 에뮬레이터 → http://10.0.2.2:3000   그 외(Chrome·macOS·iOS 시뮬레이터) → http://localhost:3000
@@ -70,20 +70,53 @@ Future<List<Object?>> _getList(String path) async {
   return decoded;
 }
 
-// TODO: db.json의 최상위 키 이름을 바꾸면 아래 경로('items', 'notes')도 같이 바꾼다.
+// db.json 최상위 키: series · units · kits · prices · collection
+// _embed / _expand / _sort 는 json-server의 GET 쿼리 — 서버가 묶어서 내려 줄 뿐 쓰기 요청이 아니다.
 
-/// A 목록 화면: GET /items
-Future<List<Item>> fetchItems() async {
-  final list = await _getList('items');
-  return list.map(Item.fromJson).nonNulls.toList();
+/// A 카탈로그 · F 내 컬렉션: GET /kits (내 소장 상태 + 기체 포함)
+Future<List<Kit>> fetchKits() async {
+  final list = await _getList('kits?_embed=collection&_expand=unit');
+  return list.map(Kit.fromJson).nonNulls.toList();
 }
 
-/// B 상세 화면 '메모' 탭: GET /notes?itemId=1 (json-server의 필터 — 여전히 GET)
-Future<List<Note>> fetchNotes(int itemId) async {
-  final list = await _getList('notes?itemId=$itemId');
-  return list.map(Note.fromJson).nonNulls.toList();
+/// E 기체 상세의 대응 키트: GET /kits?unitId=
+Future<List<Kit>> fetchKitsOfUnit(int unitId) async {
+  final list = await _getList(
+    'kits?unitId=$unitId&_embed=collection&_expand=unit',
+  );
+  return list.map(Kit.fromJson).nonNulls.toList();
+}
+
+/// B 키트 상세 '시세 기록' 탭: GET /prices?kitId= (최신이 위)
+Future<List<PricePoint>> fetchPrices(int kitId) async {
+  final list = await _getList('prices?kitId=$kitId&_sort=date&_order=desc');
+  return list.map(PricePoint.fromJson).nonNulls.toList();
+}
+
+/// D 도감: GET /series (작품마다 기체 목록 포함)
+Future<List<Series>> fetchSeries() async {
+  final list = await _getList('series?_embed=units');
+  return list.map(Series.fromJson).nonNulls.toList();
 }
 
 /// 화면이 데이터를 받는 함수 모양 — 테스트에서는 가짜 함수를 넣는다.
-typedef ItemsLoader = Future<List<Item>> Function();
-typedef NotesLoader = Future<List<Note>> Function(int itemId);
+typedef KitsLoader = Future<List<Kit>> Function();
+typedef UnitKitsLoader = Future<List<Kit>> Function(int unitId);
+typedef PricesLoader = Future<List<PricePoint>> Function(int kitId);
+typedef SeriesLoader = Future<List<Series>> Function();
+
+/// 화면 사이에 그대로 넘겨 주는 데이터 함수 묶음 (상태관리가 아니라 의존성 주입).
+/// 앱은 기본값(실제 GET)을, 테스트는 가짜 함수를 넣는다.
+class Loaders {
+  const Loaders({
+    this.kits = fetchKits,
+    this.kitsOfUnit = fetchKitsOfUnit,
+    this.prices = fetchPrices,
+    this.series = fetchSeries,
+  });
+
+  final KitsLoader kits;
+  final UnitKitsLoader kitsOfUnit;
+  final PricesLoader prices;
+  final SeriesLoader series;
+}
