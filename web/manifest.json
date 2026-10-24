@@ -1,12 +1,12 @@
 {
-    "name": "Mid Project Template",
-    "short_name": "MidProject",
+    "name": "hobbyDB v2",
+    "short_name": "hobbyDB v2",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "GAI3008 중간고사 — 실제 앱 v2 UI 템플릿 (UI만 구현)",
-    "orientation": "portrait-primary",
+    "description": "hobbyDB v2 — 건프라 컬렉션을 도감처럼 채우는 수집 관리 앱 (UI 프로토타입)",
+    "orientation": "any",
     "prefer_related_applications": false,
     "icons": [
         {
