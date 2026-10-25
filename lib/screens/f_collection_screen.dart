@@ -273,7 +273,7 @@ class _CollectionScreenState extends State<CollectionScreen> with ChannelScope {
     );
     if (kits.isEmpty) {
       return EmptyView( // F-9 P09
-        icon: _ownedTab ? Icons.check_circle_outline : Icons.bookmark_border,
+        icon: _ownedTab ? Icons.bookmark_added_outlined : Icons.favorite_border, // 구매함 = 리본, 좋아요 = ♡
         message: _ownedTab ? '아직 구매함에 넣은 상품이 없어요' : '아직 좋아요에 담은 상품이 없어요',
         detail: channel == allChannelId
             ? '상품 상세에서 좋아요 · 구매함을 누르면 여기에 모여요'

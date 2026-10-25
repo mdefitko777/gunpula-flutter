@@ -725,8 +725,9 @@ class _BottomActions extends StatelessWidget {
                 Expanded(
                   child: TogglePill(
                     label: '구매함',
-                    icon: Icons.check_circle_outline,
-                    activeIcon: Icons.check_circle,
+                    icon: Icons.bookmark_add_outlined, // 리본 + = 구매함 (상품 사진 위 리본과 같은 모양)
+                    activeIcon: Icons.bookmark_added,
+                    color: Gp.own,
                     active: owned,
                     onTap: onOwned,
                   ),

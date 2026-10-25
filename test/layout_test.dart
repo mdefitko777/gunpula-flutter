@@ -91,7 +91,7 @@ void main() {
 
       testWidgets('앱 셸 · 탭 4개 돌기', (tester) async {
         await _show(tester, s.value, AppShell(loaders: fakeLoaders));
-        for (final icon in [Icons.search, Icons.calendar_today_outlined, Icons.bookmark_border]) {
+        for (final icon in [Icons.search, Icons.calendar_today_outlined, Icons.auto_awesome_mosaic_outlined]) {
           await tester.tap(find.byIcon(icon).last);
           for (var i = 0; i < 5; i++) {
             await tester.pump(const Duration(milliseconds: 300));

@@ -56,7 +56,7 @@ const _tabs = <(IconData, IconData, String)>[
   (Icons.home_outlined, Icons.home, '홈'),
   (Icons.search, Icons.search, '검색'),
   (Icons.calendar_today_outlined, Icons.calendar_today, '캘린더'),
-  (Icons.bookmark_border, Icons.bookmark, '컬렉션'),
+  (Icons.auto_awesome_mosaic_outlined, Icons.auto_awesome_mosaic, '컬렉션'), // 책갈피 리본은 구매함 표시라 겹치지 않게
 ];
 
 class _AppShellState extends State<AppShell> {

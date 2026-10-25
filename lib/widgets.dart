@@ -3,7 +3,7 @@
 //   ErrorView    오류 안내·다시 시도   P09 오류 인식·진단·복구
 //   EmptyView    빈 목록 안내(+ 할 일) P01 · P09
 // 그리고 여러 화면이 같은 모양으로 쓰는 조각 (P04 일관성):
-//   GpSearchBar 검색창 · SectionHeader 색 막대 제목 · ProductTile 상품 카드 · PhotoThumb 둥근 사진 · MarkButtons/QuickMarks ♡ +
+//   GpSearchBar 검색창 · SectionHeader 색 막대 제목 · ProductTile 상품 카드 · PhotoThumb 둥근 사진 · MarkOverlay/QuickMarks (리본 = 구매함 · ♡ = 좋아요)
 //   UnderlineTab 밑줄 탭 · PageDots 넘김 점 · ThumbRow 사진 줄 · TagPill 알약 글자 · TogglePill 켜고 끄는 버튼
 //   AccentBar 진행 막대 · SectionPanel 흰 띠 섹션 · AccentRing 브랜드 색 고리(돌아가는 것 포함) · joinDot
 //   AppImage · CircleThumb · RaisedCircleButton · ChannelGlyph · showSoon · showToast · navClearance · 가격 표기
@@ -555,10 +555,10 @@ class ProductTile extends StatelessWidget {
   }
 }
 
-/// 사진 위 작은 버튼 두 개 — ♡ 좋아요 · + 구매함 (켜지면 ✓)
-/// 좋아요 = 갖고 싶다, 구매함 = 이미 가졌다. 둘 다 켤 수 있다.
-class MarkButtons extends StatelessWidget {
-  const MarkButtons({
+/// 사진 위 표시 (모든 상품 사진 · 도감 칸 공통): 왼쪽 위 책갈피 리본 = 구매함(+ → ✓) · 왼쪽 아래 ♡ = 좋아요
+/// 보이는 크기는 작아도 누르는 자리는 44dp 이상 (P09 접근성)
+class MarkOverlay extends StatelessWidget {
+  const MarkOverlay({
     super.key,
     required this.liked,
     required this.owned,
@@ -575,51 +575,77 @@ class MarkButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget dot({
-      required IconData icon,
-      required String label,
-      required bool on,
-      required bool filled,
-      required VoidCallback onTap,
-    }) => Semantics(
-      button: true,
-      selected: on,
-      label: label,
-      child: GestureDetector(
-        onTap: onTap,
-        behavior: HitTestBehavior.opaque,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 160),
-          width: size,
-          height: size,
-          decoration: BoxDecoration(
-            color: filled ? Gp.accent : const Color(0xE6FFFFFF),
-            shape: BoxShape.circle,
-            border: Border.all(color: on ? Gp.accent : Gp.line),
-          ),
-          child: Icon(icon, size: size * 0.58, color: filled ? Colors.white : (on ? Gp.accent : Gp.ink)),
-        ),
-      ),
-    );
-    return Row(
-      mainAxisSize: MainAxisSize.min,
+    final inset = size * 0.22;
+    return Stack(
       children: [
-        dot(
-          icon: liked ? Icons.favorite : Icons.favorite_border,
-          label: '좋아요',
-          on: liked,
-          filled: false,
-          onTap: onLike,
+        Positioned(
+          left: 0,
+          top: 0,
+          child: Semantics(
+            button: true,
+            selected: owned,
+            label: '구매함',
+            child: GestureDetector(
+              onTap: onOwn,
+              behavior: HitTestBehavior.opaque,
+              child: Container(
+                // 누르는 자리 44 × 52
+                width: 44,
+                height: 52,
+                alignment: Alignment.topLeft,
+                padding: EdgeInsets.only(left: inset + 2),
+                child: ClipPath(
+                  clipper: const _RibbonClipper(),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 180),
+                    width: size + 2,
+                    height: size * 1.4,
+                    alignment: const Alignment(0, -0.3),
+                    color: owned ? Gp.own : const Color(0xA6222222),
+                    child: Icon(owned ? Icons.check : Icons.add, size: size * 0.7, color: Colors.white),
+                  ),
+                ),
+              ),
+            ),
+          ),
         ),
-        SizedBox(width: size * 0.18),
-        dot(icon: owned ? Icons.check : Icons.add, label: '구매함', on: owned, filled: owned, onTap: onOwn),
+        Positioned(
+          left: 0,
+          bottom: 0,
+          child: Semantics(
+            button: true,
+            selected: liked,
+            label: '좋아요',
+            child: GestureDetector(
+              onTap: onLike,
+              behavior: HitTestBehavior.opaque,
+              child: Container(
+                // 누르는 자리 44 × 44
+                width: 44,
+                height: 44,
+                alignment: Alignment.bottomLeft,
+                padding: EdgeInsets.only(left: inset, bottom: inset),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 180),
+                  width: size,
+                  height: size,
+                  decoration: BoxDecoration(shape: BoxShape.circle, color: liked ? Gp.panel : const Color(0x8C222222)),
+                  child: Icon(
+                    liked ? Icons.favorite : Icons.favorite_border,
+                    size: size * 0.6,
+                    color: liked ? Gp.accent : Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
 }
 
-/// 상품 카드 사진 위 표시 (IMDb 처럼): 왼쪽 위 책갈피 리본 + = 구매함 · 왼쪽 아래 ♡ = 좋아요
-/// 스스로 켜고 끔 — 가짜 저장, 토스트 + 되돌리기
+/// 상품 카드용 MarkOverlay — 스스로 켜고 끔 (가짜 저장, 토스트 + 되돌리기)
 class QuickMarks extends StatefulWidget {
   const QuickMarks({super.key, required this.name, this.liked = false, this.owned = false, this.size = 28});
   final String name;
@@ -653,7 +679,7 @@ class _QuickMarksState extends State<QuickMarks> {
 
   void _own() {
     final before = _owned;
-    setState(() => _owned = !before); // STATE: 구매함 → + 가 ✓ 로
+    setState(() => _owned = !before); // STATE: 구매함 → 리본 + 가 ✓ 로
     showToast(
       context,
       before ? '구매함에서 뺐어요' : '「${widget.name}」 구매함에 넣었어요',
@@ -662,58 +688,8 @@ class _QuickMarksState extends State<QuickMarks> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Positioned(
-          left: 8,
-          top: 0,
-          child: Semantics(
-            button: true,
-            selected: _owned,
-            label: '구매함',
-            child: GestureDetector(
-              onTap: _own,
-              child: ClipPath(
-                clipper: const _RibbonClipper(),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 180),
-                  width: widget.size + 2,
-                  height: widget.size * 1.4,
-                  alignment: const Alignment(0, -0.3),
-                  color: _owned ? Gp.accent : const Color(0xA6222222),
-                  child: Icon(_owned ? Icons.check : Icons.add, size: widget.size * 0.7, color: Colors.white),
-                ),
-              ),
-            ),
-          ),
-        ),
-        Positioned(
-          left: 6,
-          bottom: 6,
-          child: Semantics(
-            button: true,
-            selected: _liked,
-            label: '좋아요',
-            child: GestureDetector(
-              onTap: _like,
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 180),
-                width: widget.size,
-                height: widget.size,
-                decoration: BoxDecoration(shape: BoxShape.circle, color: _liked ? Gp.panel : const Color(0x8C222222)),
-                child: Icon(
-                  _liked ? Icons.favorite : Icons.favorite_border,
-                  size: widget.size * 0.6,
-                  color: _liked ? Gp.accent : Colors.white,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+  Widget build(BuildContext context) =>
+      MarkOverlay(liked: _liked, owned: _owned, onLike: _like, onOwn: _own, size: widget.size);
 }
 
 /// 책갈피 리본 모양 (아래 가운데가 파인 사각형)
@@ -745,7 +721,7 @@ class VerifiedBadge extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        gradient: Gp.accentGradient,
+        color: Gp.own, // 인증 = 가진 것 (민트)
         border: Border.all(color: Gp.panel, width: 1.5),
       ),
       child: Icon(Icons.workspace_premium, size: size * 0.66, color: Colors.white),
@@ -1097,6 +1073,7 @@ class TogglePill extends StatelessWidget {
     required this.active,
     required this.onTap,
     this.height = 44,
+    this.color = Gp.accent,
   });
 
   final String label;
@@ -1105,6 +1082,9 @@ class TogglePill extends StatelessWidget {
   final bool active;
   final VoidCallback onTap;
   final double height;
+
+  /// 켜졌을 때 색 — 좋아요 · 알림 = 파랑, 구매함 · 인증 = 민트(Gp.own)
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -1118,16 +1098,17 @@ class TogglePill extends StatelessWidget {
           height: height,
           padding: const EdgeInsets.symmetric(horizontal: 12),
           decoration: BoxDecoration(
-            color: active ? Gp.accent.withValues(alpha: 0.07) : Gp.panel,
+            color: active ? color.withValues(alpha: 0.07) : Gp.panel,
             borderRadius: BorderRadius.circular(99),
-            border: Border.all(color: active ? Gp.accent : Gp.line, width: active ? 1.3 : 1),
+            border: Border.all(color: active ? color : Gp.line, width: active ? 1.3 : 1),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(active ? activeIcon : icon, size: 18, color: active ? Gp.accent : Gp.ink),
+              Icon(active ? activeIcon : icon, size: 18, color: active ? color : Gp.ink),
               const SizedBox(width: 5),
-              Flexible( // 좁은 화면에서는 말줄임
+              Flexible(
+                // 좁은 화면에서는 말줄임
                 child: Text(
                   label,
                   maxLines: 1,

@@ -7,7 +7,7 @@
 // │ G-3  │ 섹션별 작품 카드 + 진행 막대          │ 건담 작품 도감 (수집 n/전체)            │ P01 · P06     │
 // │ G-4  │ 기체 칸 격자 (4단계)                 │ 흑백 → ♡ 컬러 → + 컬러·테두리 → 사진·도는 고리 │ P01 · P04 │
 // │ G-4a │ Lv 막대 (좋아요 1 · 구매 2 · 사진 3점) │ 하나 더할 때마다 오르는 작품 레벨        │ P01           │
-// │ G-4b │ 칸 위 MarkButtons ♡ +               │ 칸에서 바로 좋아요 · 구매함              │ P07           │
+// │ G-4b │ 칸 위 MarkOverlay (리본 · ♡)          │ 칸에서 바로 좋아요 · 구매함 (상품 사진과 같음) │ P07 · P04 │
 // │ G-5  │ 바텀 시트: 기체 → 대응 상품           │ 이 기체의 상품 → 상품 상세              │ P07           │
 // │ G-5b │ 시트의 TogglePill 3개                │ 좋아요 · 구매함 · 내 사진 (가짜 저장)    │ P03 · P07     │
 // │ G-5c │ 바텀 시트(카메라 · 최근 사진) → 확인  │ 이 기체가 찍힌 사진이어야 켜짐 (가짜 판정) │ P05 · P09   │
@@ -123,7 +123,7 @@ Widget _tierFrame(CellTier tier, Widget child, {double radius = 12}) {
       borderRadius: BorderRadius.circular(photo ? radius - 2 : radius),
       border: switch (tier) {
         CellTier.photo => null,
-        CellTier.owned => Border.all(color: Gp.accent, width: 2.2),
+        CellTier.owned => Border.all(color: Gp.own, width: 2.2), // 가진 것 = 민트
         _ => Border.all(color: Gp.line),
       },
     ),
@@ -197,8 +197,8 @@ class _HelpSheet extends StatelessWidget {
           children: [
             const SectionHeader('도감 읽는 법', subtitle: '하나 더할 때마다 한 단계씩 올라가요', padding: EdgeInsets.fromLTRB(0, 0, 0, 8)),
             row(CellTier.none, '흑백', '아직 없어요'),
-            row(CellTier.liked, '컬러', '♡ 좋아요 — 갖고 싶어요'),
-            row(CellTier.owned, '컬러 + 파란 테두리', '+ 구매함 — 가지고 있어요 (누르면 ✓)'),
+            row(CellTier.liked, '컬러', '♡ 좋아요 — 갖고 싶어요 (파랑)'),
+            row(CellTier.owned, '컬러 + 초록 테두리', '리본 + 구매함 — 가지고 있어요 (누르면 ✓)'),
             row(CellTier.photo, '내 사진 + 도는 고리 + 배지', '이 기체가 찍힌 내 사진으로 인증했어요'),
             const SizedBox(height: 10),
             Text(
@@ -259,7 +259,9 @@ class _Progress extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(child: AccentBar(value: total == 0 ? 0 : owned / total)),
+        Expanded(
+          child: AccentBar(value: total == 0 ? 0 : owned / total, color: Gp.own),
+        ),
         const SizedBox(width: 8),
         Text('$owned/$total', style: const TextStyle(fontSize: 11.5, color: Gp.muted)),
       ],
@@ -583,7 +585,7 @@ class _WorkGuideScreenState extends State<WorkGuideScreen> {
             Text(w.name, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600)),
             Text(
               '수집 $ownedNow / ${w.total}',
-              style: const TextStyle(fontSize: 12, color: Gp.accent, fontWeight: FontWeight.w500),
+              style: const TextStyle(fontSize: 12, color: Gp.own, fontWeight: FontWeight.w500),
             ),
           ],
         ),
@@ -710,10 +712,8 @@ class _LitCellState extends State<_LitCell> with SingleTickerProviderStateMixin 
         if (t == CellTier.photo)
           const Positioned(right: 4, bottom: 4, child: VerifiedBadge()) // 3점 = 배지
         else if (widget.onLike != null && widget.onOwn != null)
-          Positioned(
-            right: 4,
-            bottom: 4,
-            child: MarkButtons(
+          Positioned.fill(
+            child: MarkOverlay(
               size: 22,
               liked: widget.liked,
               owned: t.index >= CellTier.owned.index,
@@ -819,7 +819,11 @@ class _UnitSheetState extends State<_UnitSheet> {
                         status,
                         style: TextStyle(
                           fontSize: 12.5,
-                          color: tier == CellTier.none ? Gp.faint : Gp.accent,
+                          color: switch (tier) {
+                            CellTier.none => Gp.faint,
+                            CellTier.liked => Gp.accent,
+                            _ => Gp.own,
+                          },
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -845,8 +849,9 @@ class _UnitSheetState extends State<_UnitSheet> {
                 Expanded(
                   child: TogglePill(
                     label: '구매함',
-                    icon: Icons.add,
-                    activeIcon: Icons.check,
+                    icon: Icons.bookmark_add_outlined,
+                    activeIcon: Icons.bookmark_added,
+                    color: Gp.own,
                     active: owned,
                     onTap: widget.onOwn,
                   ),
@@ -857,6 +862,7 @@ class _UnitSheetState extends State<_UnitSheet> {
                     label: '내 사진',
                     icon: Icons.add_a_photo_outlined,
                     activeIcon: Icons.workspace_premium,
+                    color: Gp.own,
                     active: widget.photo != null,
                     onTap: widget.onPhoto, // G-5c
                   ),
@@ -1078,7 +1084,7 @@ class _TopSheet extends StatelessWidget {
             Text(top.name, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600)),
             Text(
               '부품 ${top.owned} / ${top.total} 보유',
-              style: const TextStyle(fontSize: 12.5, color: Gp.accent, fontWeight: FontWeight.w500),
+              style: const TextStyle(fontSize: 12.5, color: Gp.own, fontWeight: FontWeight.w500),
             ),
             const SizedBox(height: 12),
             for (final p in top.parts)
@@ -1102,7 +1108,7 @@ class _TopSheet extends StatelessWidget {
                     ),
                     Text(
                       p.have ? '보유' : '미보유',
-                      style: TextStyle(fontWeight: FontWeight.w600, color: p.have ? Gp.accent : Gp.faint),
+                      style: TextStyle(fontWeight: FontWeight.w600, color: p.have ? Gp.own : Gp.faint),
                     ),
                   ],
                 ),
