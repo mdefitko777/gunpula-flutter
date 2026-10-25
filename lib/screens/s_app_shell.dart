@@ -12,6 +12,7 @@
 // │ S-9  │ 오른쪽 위 🔔 (새 알림 점)         │ 알림 열기                              │ P01           │
 // │ S-10 │ 오른쪽 위 ⚙                     │ 설정 열기 (K)                          │ P04 · P06     │
 // │ S-11 │ Drawer (홈 가장자리 밀기)          │ 친구 서랍 (M)                          │ P07           │
+// │ S-13 │ AnimatedAlign(heightFactor) 아바타 줄 │ 아래로 스크롤하면 위 줄도 접힘          │ P08           │
 // │ S-12 │ Row(왼쪽 폰 화면 | 오른쪽 Navigator)│ 반반 화면 (폴드 · 태블릿 · 넓은 창 ≥700dp) │ 적응형      │
 // │ S-8  │ AnimatedSlide · AnimatedPositioned │ 아래로 스크롤하면 탭 바 숨김, 카메라만 오른쪽 아래 │ P08 · P07 │
 // └────────────────────────────────────────────────────────────────────────────────┘
@@ -154,7 +155,16 @@ class _AppShellState extends State<AppShell> {
       onPressed: () => openSettings(context),
       icon: const Icon(Icons.settings_outlined, color: Gp.ink),
     );
-    final topRow = Row(children: [avatar, const Spacer(), bell, gear]);
+    // S-13 아래로 스크롤하면 탭 바와 함께 아바타 줄도 접힘 (채널 바 · 검색창은 남음) — 내용이 더 보이게
+    final topRow = ClipRect(
+      child: AnimatedAlign(
+        duration: const Duration(milliseconds: 220),
+        curve: Curves.easeOutCubic,
+        alignment: Alignment.bottomCenter,
+        heightFactor: _barShown ? 1 : 0,
+        child: Row(children: [avatar, const Spacer(), bell, gear]),
+      ),
+    );
     Widget page(int i) => i == 0
         ? HomeScreen(
             // A
@@ -203,7 +213,12 @@ class _AppShellState extends State<AppShell> {
       child: IndexedStack(
         // S-6 P03
         index: _tab,
-        children: [for (var i = 0; i < _tabs.length; i++) page(i)],
+        children: [
+          for (var i = 0; i < _tabs.length; i++)
+            // 뒤에 살아 있는 탭의 스크롤 알림은 막는다 — 위 줄이 접히면 그 탭들도 크기가 바뀌어
+            // "스크롤할 게 없음" 알림을 보내 탭 바를 도로 꺼내 버린다
+            NotificationListener<ScrollMetricsNotification>(onNotification: (_) => i != _tab, child: page(i)),
+        ],
       ),
     );
     final narrow = _NarrowLayout(
@@ -376,7 +391,10 @@ class _NarrowLayout extends StatelessWidget {
             child: NotificationListener<ScrollMetricsNotification>(
               // 내용이 짧아 스크롤할 수 없게 되면 탭 바를 다시 보인다
               onNotification: (n) {
-                if (n.metrics.axis == Axis.vertical && n.metrics.maxScrollExtent <= 0) onScroll(true);
+                // depth 0 = 그 탭의 바깥 목록만 (검색창 글자칸 · 가로 줄 같은 안쪽 스크롤은 무시)
+                if (n.depth == 0 && n.metrics.axis == Axis.vertical && n.metrics.maxScrollExtent <= 0) {
+                  onScroll(true);
+                }
                 return false;
               },
               child: NotificationListener<UserScrollNotification>(
