@@ -97,7 +97,7 @@ class _AnnouncementScreenState extends State<AnnouncementScreen> {
                         const SizedBox(width: 10),
                         Expanded(
                           child: OutlinedButton.icon(
-                            onPressed: () => showToast(context, '원문(반다이 공식)은 프로토타입에서 열지 않아요'), // J-5 P10
+                            onPressed: () => showToast(context, '반다이 공식 페이지를 브라우저에서 열어요'), // J-5 P10
                             style: OutlinedButton.styleFrom(
                               minimumSize: const Size.fromHeight(44),
                               shape: const StadiumBorder(),

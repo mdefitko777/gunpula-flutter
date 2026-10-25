@@ -174,7 +174,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                       onPressed: () {
                         Navigator.pop(sheet);
                         setState(() => _removed.add(n.id));
-                        showToast(context, '친구가 됐어요 · 친구 서랍에서 볼 수 있어요 (프로토타입: 저장 없음)');
+                        showToast(context, '친구가 됐어요 · 친구 서랍에서 볼 수 있어요');
                       },
                       child: const Text('수락'),
                     ),

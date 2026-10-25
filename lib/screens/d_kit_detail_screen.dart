@@ -143,7 +143,7 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
     showToast(context, '$what을(를) 복사했어요');
   }
 
-  void _external(String where) => showToast(context, '$where 은(는) 프로토타입에서 열지 않아요');
+  void _external(String where) => showToast(context, '$where을(를) 브라우저에서 열어요');
 
   Future<void> _report() async {
     final ok = await showDialog<bool>(

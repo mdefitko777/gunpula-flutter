@@ -7,7 +7,7 @@
 // │ I-2  │ TagPill 줄                          │ 내 취향 태그                           │ P06           │
 // │ I-3  │ 프로필 편집 → 바텀 시트(액션 목록)    │ 아바타 · 배경 · 닉네임 · 태그 바꾸기 (가짜) │ P03 · P07  │
 // │ I-4  │ 숫자 3칸 (누르면 이동)               │ 좋아요 · 도감 레벨(배지 n) · 구매함 → 컬렉션 │ P01 · P07   │
-// │ I-5  │ 초대 코드 + 복사 · 멤버 줄           │ 공유 공간과 친구 → 친구 프로필          │ P07           │
+// │ I-5  │ 초대 코드 + 복사                    │ 공유 공간 초대 (친구 목록은 M 서랍에만)   │ P07 · P08     │
 // │ I-6  │ 사진 3열 격자                       │ 게시물 (도감에서 인증한 사진 · 친구 공개)  │ P02 · P06    │
 // │ I-7  │ 사진 보기: 미리보기 + 워터마크 스위치  │ 저장 시 "GP · @아이디" 워터마크 (끌 수 있음) │ P05 · P10  │
 // │ I-9  │ 바텀 시트: 스위치 + 친구 체크 목록     │ 게시물 공개 범위 (전체 끄기 · 친구별 숨기기) │ P05 · P07 │
@@ -100,7 +100,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     ]).then((r) => _ProfileData(r[0] as Profile, r[1] as List<Kit>, litCount(r[2] as List<GuideWork>)));
   }
 
-  void _fake(String what) => showToast(context, '$what은(는) 프로토타입이라 실제로 바뀌지 않아요');
+  void _fake(String what) => showToast(context, '$what은(는) 준비 중이에요');
 
   /// I-9 게시물 공개 범위
   void _openPrivacy(Profile p) {
@@ -261,7 +261,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SectionHeader('공유 공간과 친구', subtitle: p.workspace),
+              SectionHeader('공유 공간 초대', subtitle: '${p.workspace} · 친구 목록은 왼쪽 위 아바타(친구 서랍)에서'),
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 16),
                 padding: const EdgeInsets.fromLTRB(14, 6, 4, 6),
@@ -283,39 +283,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(height: 6),
-              for (final m in p.members)
-                ListTile(
-                  leading: CircleThumb(image: '', label: m.name, size: 36),
-                  title: Text(m.self ? '${m.name} (나)' : m.name),
-                  subtitle: Text(
-                    m.self
-                        ? '좋아요 $liked · Lv.${guideLevel(d.lit, photos.length)} · 구매 $owned'
-                        : '좋아요 ${m.liked} · Lv.${guideLevel(m.lit, m.verified)} · 구매 ${m.owned}',
-                    style: const TextStyle(fontSize: 12, color: Gp.muted),
-                  ),
-                  trailing: m.self
-                      ? TagPill(m.role)
-                      : Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            TagPill(m.role),
-                            const Icon(Icons.chevron_right, color: Gp.faint),
-                          ],
-                        ),
-                  onTap: m.self
-                      ? null
-                      : () => openFriend(
-                          context,
-                          p.friendOf(m), // 친구 목록의 자세한 정보
-                          loaders: widget.loaders,
-                        ),
-                ),
-              ListTile(
-                leading: const Icon(Icons.person_add_alt_1_outlined),
-                title: const Text('친구 추가'),
-                onTap: () => _fake('친구 추가'),
               ),
             ],
           ),
@@ -600,7 +567,7 @@ class _PhotoViewScreenState extends State<PhotoViewScreen> {
   void _save() {
     final mark = watermarkText(widget.photo.owner);
     final msg = widget.mine ? '내 사진은 워터마크 없이 저장했어요' : (_watermark ? '「$mark」 워터마크가 들어간 사진을 저장했어요' : '사진을 저장했어요');
-    showToast(context, '$msg (프로토타입: 실제 저장 없음)');
+    showToast(context, msg);
   }
 
   @override

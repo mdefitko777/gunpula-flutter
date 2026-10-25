@@ -52,7 +52,7 @@ const barcodeScene = CameraScene(
 /// 앨범의 "최근 사진" — 고르면 그 장면으로 결과
 const albumScenes = <CameraScene>[
   CameraScene(photo: 'assets/gp/kits/gu04.jpg', candidates: [
-    ('gu04', 91, '흰색/파랑 몸체 · 수성의 마녀 로고'),
+    ('gu04', 91, '흰색/파랑 몸체 · Witch from Mercury 로고'),
     ('gu05', 63, '같은 작품의 다른 기체'),
   ]),
   CameraScene(photo: 'assets/gp/kits/po19.png', candidates: [

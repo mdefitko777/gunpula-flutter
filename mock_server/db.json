@@ -494,7 +494,7 @@
       "franchiseId": "gundam",
       "name": "RG 1/144 RX-78-2 건담 Ver.2.0",
       "nameJa": "RG 1 / 144 RX-78-2 ガンダム Ver.2.0",
-      "series": "초대",
+      "series": "Mobile Suit Gundam",
       "line": "RG",
       "type": "프라모델",
       "scale": "1/144",
@@ -515,7 +515,9 @@
       "keywords": [
         "RG 1/144 RX-78-2 건담 Ver.2.0",
         "RG 건담 Ver.2.0",
-        "RG 1 / 144 RX-78-2 ガンダム Ver.2.0"
+        "RG 1 / 144 RX-78-2 ガンダム Ver.2.0",
+        "초대",
+        "기동전사 건담"
       ],
       "purchaseKrw": 41000
     },
@@ -524,7 +526,7 @@
       "franchiseId": "gundam",
       "name": "MGEX 1/100 스트라이크 프리덤 건담",
       "nameJa": "MGEX 1 / 100 ストライクフリーダムガンダム",
-      "series": "SEED",
+      "series": "Gundam SEED",
       "line": "MGEX",
       "type": "프라모델",
       "scale": "1/100",
@@ -545,7 +547,9 @@
       "keywords": [
         "MGEX 1/100 스트라이크 프리덤 건담",
         "MGEX 프리덤 건담",
-        "MGEX 1 / 100 ストライクフリーダムガンダム"
+        "MGEX 1 / 100 ストライクフリーダムガンダム",
+        "SEED",
+        "건담 SEED"
       ],
       "purchaseKrw": 189000
     },
@@ -554,7 +558,7 @@
       "franchiseId": "gundam",
       "name": "HG 1/144 레전드 건담",
       "nameJa": "HG 1 / 144 レジェンドガンダム",
-      "series": "SEED",
+      "series": "Gundam SEED",
       "line": "HG",
       "type": "프라모델",
       "scale": "1/144",
@@ -579,7 +583,9 @@
       "keywords": [
         "HG 1/144 레전드 건담",
         "HG 레전드 건담",
-        "HG 1 / 144 レジェンドガンダム"
+        "HG 1 / 144 レジェンドガンダム",
+        "SEED",
+        "건담 SEED"
       ]
     },
     {
@@ -587,7 +593,7 @@
       "franchiseId": "gundam",
       "name": "FULL MECHANICS 1/100 건담 에어리얼",
       "nameJa": "FULL MECHANICS 1 / 100 ガンダムエアリアル",
-      "series": "수성",
+      "series": "The Witch from Mercury",
       "line": "FM",
       "type": "프라모델",
       "scale": "1/100",
@@ -612,7 +618,9 @@
       "keywords": [
         "FULL MECHANICS 1/100 건담 에어리얼",
         "FM 건담 에어리얼",
-        "FULL MECHANICS 1 / 100 ガンダムエアリアル"
+        "FULL MECHANICS 1 / 100 ガンダムエアリアル",
+        "수성",
+        "수성의 마녀"
       ]
     },
     {
@@ -620,7 +628,7 @@
       "franchiseId": "gundam",
       "name": "HG 1/144 건담 캘리번",
       "nameJa": "HG 1 / 144 ガンダムキャリバーン",
-      "series": "수성",
+      "series": "The Witch from Mercury",
       "line": "HG",
       "type": "프라모델",
       "scale": "1/144",
@@ -641,7 +649,9 @@
       "keywords": [
         "HG 1/144 건담 캘리번",
         "HG 건담 캘리번",
-        "HG 1 / 144 ガンダムキャリバーン"
+        "HG 1 / 144 ガンダムキャリバーン",
+        "수성",
+        "수성의 마녀"
       ],
       "purchaseKrw": 24000
     },
@@ -650,7 +660,7 @@
       "franchiseId": "gundam",
       "name": "MGSD 프리덤 건담",
       "nameJa": "MGSD フリーダムガンダム",
-      "series": "SEED",
+      "series": "Gundam SEED",
       "line": "MGSD",
       "type": "프라모델",
       "scale": "non-scale",
@@ -671,7 +681,9 @@
       "keywords": [
         "MGSD 프리덤 건담",
         "MGSD 프리덤 건담",
-        "MGSD フリーダムガンダム"
+        "MGSD フリーダムガンダム",
+        "SEED",
+        "건담 SEED"
       ]
     },
     {
@@ -679,7 +691,7 @@
       "franchiseId": "gundam",
       "name": "MG 1/100 건담 버체",
       "nameJa": "MG 1 / 100 ガンダムヴァーチェ",
-      "series": "00",
+      "series": "Gundam 00",
       "line": "MG",
       "type": "프라모델",
       "scale": "1/100",
@@ -700,7 +712,9 @@
       "keywords": [
         "MG 1/100 건담 버체",
         "MG 건담 버체",
-        "MG 1 / 100 ガンダムヴァーチェ"
+        "MG 1 / 100 ガンダムヴァーチェ",
+        "00",
+        "건담 00"
       ]
     },
     {
@@ -708,7 +722,7 @@
       "franchiseId": "gundam",
       "name": "RG 1/144 Hi-ν 건담",
       "nameJa": "RG 1 / 144 Hi-νガンダム",
-      "series": "역샤아",
+      "series": "Char's Counterattack",
       "line": "RG",
       "type": "프라모델",
       "scale": "1/144",
@@ -733,7 +747,9 @@
       "keywords": [
         "RG 1/144 Hi-ν 건담",
         "RG Hi-ν 건담",
-        "RG 1 / 144 Hi-νガンダム"
+        "RG 1 / 144 Hi-νガンダム",
+        "역샤아",
+        "역습의 샤아"
       ]
     },
     {
@@ -741,7 +757,7 @@
       "franchiseId": "gundam",
       "name": "MG 1/100 제타 건담 Ver.Ka",
       "nameJa": "MG 1 / 100 ゼータガンダム Ver.Ka",
-      "series": "Z",
+      "series": "Zeta Gundam",
       "line": "MG",
       "type": "프라모델",
       "scale": "1/100",
@@ -762,7 +778,8 @@
       "keywords": [
         "MG 1/100 제타 건담 Ver.Ka",
         "MG 건담 Ver.Ka",
-        "MG 1 / 100 ゼータガンダム Ver.Ka"
+        "MG 1 / 100 ゼータガンダム Ver.Ka",
+        "Z"
       ]
     },
     {
@@ -770,7 +787,7 @@
       "franchiseId": "gundam",
       "name": "RG 1/144 윙 건담 제로",
       "nameJa": "RG 1 / 144 ウイングガンダムゼロ",
-      "series": "W",
+      "series": "Gundam Wing",
       "line": "RG",
       "type": "프라모델",
       "scale": "1/144",
@@ -791,7 +808,9 @@
       "keywords": [
         "RG 1/144 윙 건담 제로",
         "RG 건담 제로",
-        "RG 1 / 144 ウイングガンダムゼロ"
+        "RG 1 / 144 ウイングガンダムゼロ",
+        "W",
+        "신기동전기 건담 W"
       ]
     },
     {
@@ -799,7 +818,7 @@
       "franchiseId": "gundam",
       "name": "MG 1/100 건담 발바토스 루프스",
       "nameJa": "MG 1 / 100 ガンダムバルバトスルプス",
-      "series": "철혈",
+      "series": "Iron-Blooded Orphans",
       "line": "MG",
       "type": "프라모델",
       "scale": "1/100",
@@ -824,7 +843,9 @@
       "keywords": [
         "MG 1/100 건담 발바토스 루프스",
         "MG 발바토스 루프스",
-        "MG 1 / 100 ガンダムバルバトスルプス"
+        "MG 1 / 100 ガンダムバルバトスルプス",
+        "철혈",
+        "철혈의 오펀스"
       ]
     },
     {
@@ -832,7 +853,7 @@
       "franchiseId": "gundam",
       "name": "ENTRY GRADE 1/144 스트라이크 건담",
       "nameJa": "ENTRY GRADE 1 / 144 ストライクガンダム",
-      "series": "SEED",
+      "series": "Gundam SEED",
       "line": "EG",
       "type": "프라모델",
       "scale": "1/144",
@@ -853,7 +874,9 @@
       "keywords": [
         "ENTRY GRADE 1/144 스트라이크 건담",
         "EG 스트라이크 건담",
-        "ENTRY GRADE 1 / 144 ストライクガンダム"
+        "ENTRY GRADE 1 / 144 ストライクガンダム",
+        "SEED",
+        "건담 SEED"
       ],
       "purchaseKrw": 9800
     },
@@ -883,7 +906,8 @@
       "keywords": [
         "HG 1/144 GQuuuuuuX",
         "HG 1/144 GQuuuuuuX",
-        "HG 1 / 144 GQuuuuuuX(エンディミオン・ユニット覚醒時)"
+        "HG 1 / 144 GQuuuuuuX(エンディミオン・ユニット覚醒時)",
+        "GQuuuuuuX"
       ]
     },
     {
@@ -891,7 +915,7 @@
       "franchiseId": "gundam",
       "name": "RG 1/144 아카츠키 건담 (오오와시 장비)",
       "nameJa": "RG 1 / 144 アカツキガンダム(オオワシ装備)",
-      "series": "SEED",
+      "series": "Gundam SEED",
       "line": "RG",
       "type": "프라모델",
       "scale": "1/144",
@@ -912,7 +936,9 @@
       "keywords": [
         "RG 1/144 아카츠키 건담 (오오와시 장비)",
         "RG (오오와시 장비)",
-        "RG 1 / 144 アカツキガンダム(オオワシ装備)"
+        "RG 1 / 144 アカツキガンダム(オオワシ装備)",
+        "SEED",
+        "건담 SEED"
       ]
     },
     {
@@ -920,7 +946,7 @@
       "franchiseId": "gundam",
       "name": "MG 1/100 블레이즈 자쿠 팬텀 (하이네 기)",
       "nameJa": "MG 1 / 100 ブレイズザクファントム(ハイネ・ヴェステンフルス専用機)",
-      "series": "SEED",
+      "series": "Gundam SEED",
       "line": "MG",
       "type": "프라모델",
       "scale": "1/100",
@@ -941,7 +967,9 @@
       "keywords": [
         "MG 1/100 블레이즈 자쿠 팬텀 (하이네 기)",
         "MG (하이네 기)",
-        "MG 1 / 100 ブレイズザクファントム(ハイネ・ヴェステンフルス専用機)"
+        "MG 1 / 100 ブレイズザクファントム(ハイネ・ヴェステンフルス専用機)",
+        "SEED",
+        "건담 SEED"
       ]
     },
     {
@@ -949,7 +977,7 @@
       "franchiseId": "gundam",
       "name": "HG 1/144 Ξ건담",
       "nameJa": "HG 1 / 144 Ξガンダム (機動戦士ガンダム 閃光のハサウェイ キルケーの魔女)",
-      "series": "섬하사",
+      "series": "Hathaway",
       "line": "HG",
       "type": "프라모델",
       "scale": "1/144",
@@ -970,7 +998,9 @@
       "keywords": [
         "HG 1/144 Ξ건담",
         "HG 1/144 Ξ건담",
-        "HG 1 / 144 Ξガンダム (機動戦士ガンダム 閃光のハサウェイ キルケーの魔女)"
+        "HG 1 / 144 Ξガンダム (機動戦士ガンダム 閃光のハサウェイ キルケーの魔女)",
+        "섬하사",
+        "섬광의 하사웨이"
       ]
     },
     {
@@ -978,7 +1008,7 @@
       "franchiseId": "gundam",
       "name": "BB전사 ZGMF 자쿠 시리즈 세트",
       "nameJa": "BB戦士 ＺＧＭＦザクシリーズセット",
-      "series": "SEED",
+      "series": "Gundam SEED",
       "line": "굿즈",
       "type": "프라모델",
       "scale": "non-scale",
@@ -999,7 +1029,9 @@
       "keywords": [
         "BB전사 ZGMF 자쿠 시리즈 세트",
         "굿즈 시리즈 세트",
-        "BB戦士 ＺＧＭＦザクシリーズセット"
+        "BB戦士 ＺＧＭＦザクシリーズセット",
+        "SEED",
+        "건담 SEED"
       ]
     },
     {
@@ -1007,7 +1039,7 @@
       "franchiseId": "gundam",
       "name": "FULL MECHANICS 1/100 포비든 건담",
       "nameJa": "FULL MECHANICS 1 / 100 フォビドゥンガンダム",
-      "series": "SEED",
+      "series": "Gundam SEED",
       "line": "FM",
       "type": "프라모델",
       "scale": "1/100",
@@ -1028,7 +1060,9 @@
       "keywords": [
         "FULL MECHANICS 1/100 포비든 건담",
         "FM 포비든 건담",
-        "FULL MECHANICS 1 / 100 フォビドゥンガンダム"
+        "FULL MECHANICS 1 / 100 フォビドゥンガンダム",
+        "SEED",
+        "건담 SEED"
       ]
     },
     {
@@ -2372,7 +2406,7 @@
       "id": "w10",
       "franchiseId": "gundam",
       "section": "UC",
-      "name": "기동전사 건담",
+      "name": "Mobile Suit Gundam",
       "image": "assets/gp/works/w10.webp",
       "total": 245,
       "owned": 1
@@ -2381,7 +2415,7 @@
       "id": "w810",
       "franchiseId": "gundam",
       "section": "UC",
-      "name": "Z 건담 A New Translation",
+      "name": "Zeta Gundam: A New Translation",
       "image": "assets/gp/works/w810.webp",
       "total": 75,
       "owned": 0
@@ -2390,7 +2424,7 @@
       "id": "w950",
       "franchiseId": "gundam",
       "section": "UC",
-      "name": "기동전사 건담 ZZ",
+      "name": "Gundam ZZ",
       "image": "assets/gp/works/w950.webp",
       "total": 77,
       "owned": 0
@@ -2399,7 +2433,7 @@
       "id": "w1100",
       "franchiseId": "gundam",
       "section": "UC",
-      "name": "역습의 샤아",
+      "name": "Char's Counterattack",
       "image": "assets/gp/works/w1100.webp",
       "total": 42,
       "owned": 0
@@ -2408,7 +2442,7 @@
       "id": "w1250",
       "franchiseId": "gundam",
       "section": "UC",
-      "name": "건담 UC",
+      "name": "Gundam Unicorn",
       "image": "assets/gp/works/w1250.webp",
       "total": 79,
       "owned": 0
@@ -2417,7 +2451,7 @@
       "id": "w1440",
       "franchiseId": "gundam",
       "section": "UC",
-      "name": "건담 NT",
+      "name": "Gundam Narrative",
       "image": "assets/gp/works/w1440.webp",
       "total": 22,
       "owned": 0
@@ -2426,7 +2460,7 @@
       "id": "w1500",
       "franchiseId": "gundam",
       "section": "UC",
-      "name": "섬광의 하사웨이",
+      "name": "Hathaway",
       "image": "assets/gp/works/w1500.webp",
       "total": 10,
       "owned": 0
@@ -2435,7 +2469,7 @@
       "id": "w1620",
       "franchiseId": "gundam",
       "section": "UC",
-      "name": "건담 F91",
+      "name": "Gundam F91",
       "image": "assets/gp/works/w1620.webp",
       "total": 41,
       "owned": 0
@@ -2444,7 +2478,7 @@
       "id": "w3000",
       "franchiseId": "gundam",
       "section": "SEED",
-      "name": "건담 SEED",
+      "name": "Gundam SEED",
       "image": "assets/gp/works/w3000.webp",
       "total": 99,
       "owned": 3
@@ -2462,7 +2496,7 @@
       "id": "w3300",
       "franchiseId": "gundam",
       "section": "SEED",
-      "name": "SEED DESTINY",
+      "name": "Gundam SEED Destiny",
       "image": "assets/gp/works/w3300.webp",
       "total": 75,
       "owned": 0
@@ -2471,7 +2505,7 @@
       "id": "w3700",
       "franchiseId": "gundam",
       "section": "00",
-      "name": "건담 00",
+      "name": "Gundam 00",
       "image": "assets/gp/works/w3700.webp",
       "total": 121,
       "owned": 0
@@ -2480,7 +2514,7 @@
       "id": "w2100",
       "franchiseId": "gundam",
       "section": "W",
-      "name": "신기동전기 건담 W",
+      "name": "Gundam Wing",
       "image": "assets/gp/works/w2100.webp",
       "total": 64,
       "owned": 0
@@ -2489,7 +2523,7 @@
       "id": "w2190",
       "franchiseId": "gundam",
       "section": "W",
-      "name": "W Endless Waltz",
+      "name": "Endless Waltz",
       "image": "assets/gp/works/w2190.webp",
       "total": 27,
       "owned": 0
@@ -2497,8 +2531,8 @@
     {
       "id": "w4300",
       "franchiseId": "gundam",
-      "section": "철혈",
-      "name": "철혈의 오펀스",
+      "section": "Iron-Blooded Orphans",
+      "name": "Iron-Blooded Orphans",
       "image": "assets/gp/works/w4300.webp",
       "total": 101,
       "owned": 0
@@ -2506,8 +2540,8 @@
     {
       "id": "w5010",
       "franchiseId": "gundam",
-      "section": "수성",
-      "name": "수성의 마녀",
+      "section": "Witch from Mercury",
+      "name": "The Witch from Mercury",
       "image": "assets/gp/works/w5010.webp",
       "total": 41,
       "owned": 1
@@ -3787,19 +3821,146 @@
     }
   ],
   "notifications": [
-    {"id": "n01", "type": "release", "franchiseId": "gundam", "title": "좋아요한 상품이 오늘 발매돼요", "body": "HG 1/144 레전드 건담 · 정가 ¥3,080", "image": "assets/gp/kits/gu03.jpg", "at": "2026-10-25T09:00", "read": false, "kitId": "gu03"},
-    {"id": "n02", "type": "friend", "title": "미나님이 새 게시물을 올렸어요", "body": "수성의 마녀 · 건담 에어리얼 🏅 인증", "image": "assets/gp/kits/gu04.jpg", "at": "2026-10-25T18:20", "read": false, "friend": "mina_plamo"},
-    {"id": "n03", "type": "request", "title": "타카님이 친구 요청을 보냈어요", "body": "함께 아는 친구 3명", "image": "", "at": "2026-10-25T12:05", "read": false, "friend": "taka_gpl"},
-    {"id": "n04", "type": "announce", "franchiseId": "gundam", "title": "선발 선거 투표 마감 D-5", "body": "건프라 재판 회의 2026 겨울 · 『0083』", "image": "assets/gp/ann/yt_Ninhgtydeiw.jpg", "at": "2026-10-25T10:00", "read": false, "annId": "ann01"},
-    {"id": "n05", "type": "reserve", "franchiseId": "gundam", "title": "예약이 시작됐어요", "body": "카르라 전용 이펙트 파츠 세트", "image": "assets/gp/ann/-10-05-16192.webp", "at": "2026-10-24T11:00", "read": false, "annId": "ann06"},
-    {"id": "n06", "type": "price", "franchiseId": "gundam", "title": "구매함 상품의 시세가 올랐어요", "body": "MGEX 스트라이크 프리덤 · 189,000원 → 205,000원", "image": "assets/gp/kits/gu02.jpg", "at": "2026-10-24T20:00", "read": true, "kitId": "gu02"},
-    {"id": "n07", "type": "friend", "title": "동생님이 사진으로 인증했어요", "body": "RX-78-2 건담 🏅 · 공유 공간", "image": "assets/gp/kits/gu01.jpg", "at": "2026-10-23T21:40", "read": true, "friend": "gp_dongsaeng"},
-    {"id": "n08", "type": "friend", "franchiseId": "gundam", "title": "동생님이 이미 산 상품이에요", "body": "HG 1/144 건담 캘리번 · 겹쳐 사지 않게 확인하세요", "image": "assets/gp/kits/gu05.jpg", "at": "2026-10-21T15:10", "read": true, "kitId": "gu05", "friend": "gp_dongsaeng"},
-    {"id": "n09", "type": "friend", "title": "건담덕후님이 회원님의 게시물을 저장했어요", "body": "스트라이크 건담 · 워터마크 GP · @gunpula_me 포함", "image": "assets/gp/kits/gu12.jpg", "at": "2026-10-22T08:30", "read": true, "friend": "gundam_otaku"},
-    {"id": "n10", "type": "release", "franchiseId": "fate", "title": "좋아요한 상품 발매 D-6", "body": "제일복권 FGO 칼데아 픽업", "image": "assets/gp/kits/fa34.webp", "at": "2026-10-25T08:00", "read": false, "kitId": "fa34"},
-    {"id": "n11", "type": "announce", "franchiseId": "pokemon", "title": "상품화가 확정됐어요", "body": "포켓프라 Quick!! 불꽃숭이 신등장", "image": "assets/gp/ann/yt_Sr30ILcabUc.jpg", "at": "2026-10-16T12:00", "read": true, "annId": "ann02"},
-    {"id": "n12", "type": "announce", "franchiseId": "gundam", "title": "상품화가 확정됐어요", "body": "SEED FREEDOM 블랙 나이트 스쿼드 카르라", "image": "assets/gp/ann/-10-05-16191.webp", "at": "2026-10-05T12:00", "read": true, "annId": "ann05"},
-    {"id": "n13", "type": "release", "franchiseId": "pokemon", "title": "오늘 발매", "body": "포켓몬 스토어 「빗속의 고라파덕」 피카츄 대형 피규어", "image": "assets/gp/kits/po24.png", "at": "2026-10-05T09:00", "read": true, "kitId": "po24"}
+    {
+      "id": "n01",
+      "type": "release",
+      "franchiseId": "gundam",
+      "title": "좋아요한 상품이 오늘 발매돼요",
+      "body": "HG 1/144 레전드 건담 · 정가 ¥3,080",
+      "image": "assets/gp/kits/gu03.jpg",
+      "at": "2026-10-25T09:00",
+      "read": false,
+      "kitId": "gu03"
+    },
+    {
+      "id": "n02",
+      "type": "friend",
+      "title": "미나님이 새 게시물을 올렸어요",
+      "body": "The Witch from Mercury · 건담 에어리얼 🏅 인증",
+      "image": "assets/gp/kits/gu04.jpg",
+      "at": "2026-10-25T18:20",
+      "read": false,
+      "friend": "mina_plamo"
+    },
+    {
+      "id": "n03",
+      "type": "request",
+      "title": "타카님이 친구 요청을 보냈어요",
+      "body": "함께 아는 친구 3명",
+      "image": "",
+      "at": "2026-10-25T12:05",
+      "read": false,
+      "friend": "taka_gpl"
+    },
+    {
+      "id": "n04",
+      "type": "announce",
+      "franchiseId": "gundam",
+      "title": "선발 선거 투표 마감 D-5",
+      "body": "건프라 재판 회의 2026 겨울 · 『0083』",
+      "image": "assets/gp/ann/yt_Ninhgtydeiw.jpg",
+      "at": "2026-10-25T10:00",
+      "read": false,
+      "annId": "ann01"
+    },
+    {
+      "id": "n05",
+      "type": "reserve",
+      "franchiseId": "gundam",
+      "title": "예약이 시작됐어요",
+      "body": "카르라 전용 이펙트 파츠 세트",
+      "image": "assets/gp/ann/-10-05-16192.webp",
+      "at": "2026-10-24T11:00",
+      "read": false,
+      "annId": "ann06"
+    },
+    {
+      "id": "n06",
+      "type": "price",
+      "franchiseId": "gundam",
+      "title": "구매함 상품의 시세가 올랐어요",
+      "body": "MGEX 스트라이크 프리덤 · 189,000원 → 205,000원",
+      "image": "assets/gp/kits/gu02.jpg",
+      "at": "2026-10-24T20:00",
+      "read": true,
+      "kitId": "gu02"
+    },
+    {
+      "id": "n07",
+      "type": "friend",
+      "title": "동생님이 사진으로 인증했어요",
+      "body": "RX-78-2 건담 🏅 · 공유 공간",
+      "image": "assets/gp/kits/gu01.jpg",
+      "at": "2026-10-23T21:40",
+      "read": true,
+      "friend": "gp_dongsaeng"
+    },
+    {
+      "id": "n08",
+      "type": "friend",
+      "franchiseId": "gundam",
+      "title": "동생님이 이미 산 상품이에요",
+      "body": "HG 1/144 건담 캘리번 · 겹쳐 사지 않게 확인하세요",
+      "image": "assets/gp/kits/gu05.jpg",
+      "at": "2026-10-21T15:10",
+      "read": true,
+      "kitId": "gu05",
+      "friend": "gp_dongsaeng"
+    },
+    {
+      "id": "n09",
+      "type": "friend",
+      "title": "건담덕후님이 회원님의 게시물을 저장했어요",
+      "body": "스트라이크 건담 · 워터마크 GP · @gunpula_me 포함",
+      "image": "assets/gp/kits/gu12.jpg",
+      "at": "2026-10-22T08:30",
+      "read": true,
+      "friend": "gundam_otaku"
+    },
+    {
+      "id": "n10",
+      "type": "release",
+      "franchiseId": "fate",
+      "title": "좋아요한 상품 발매 D-6",
+      "body": "제일복권 FGO 칼데아 픽업",
+      "image": "assets/gp/kits/fa34.webp",
+      "at": "2026-10-25T08:00",
+      "read": false,
+      "kitId": "fa34"
+    },
+    {
+      "id": "n11",
+      "type": "announce",
+      "franchiseId": "pokemon",
+      "title": "상품화가 확정됐어요",
+      "body": "포켓프라 Quick!! 불꽃숭이 신등장",
+      "image": "assets/gp/ann/yt_Sr30ILcabUc.jpg",
+      "at": "2026-10-16T12:00",
+      "read": true,
+      "annId": "ann02"
+    },
+    {
+      "id": "n12",
+      "type": "announce",
+      "franchiseId": "gundam",
+      "title": "상품화가 확정됐어요",
+      "body": "SEED FREEDOM 블랙 나이트 스쿼드 카르라",
+      "image": "assets/gp/ann/-10-05-16191.webp",
+      "at": "2026-10-05T12:00",
+      "read": true,
+      "annId": "ann05"
+    },
+    {
+      "id": "n13",
+      "type": "release",
+      "franchiseId": "pokemon",
+      "title": "오늘 발매",
+      "body": "포켓몬 스토어 「빗속의 고라파덕」 피카츄 대형 피규어",
+      "image": "assets/gp/kits/po24.png",
+      "at": "2026-10-05T09:00",
+      "read": true,
+      "kitId": "po24"
+    }
   ],
   "profile": {
     "id": 1,
@@ -3808,7 +3969,7 @@
     "avatarText": "A",
     "tags": [
       "SEED",
-      "수성",
+      "Mercury",
       "MG 위주"
     ],
     "favoriteFranchises": [
@@ -3847,33 +4008,243 @@
       }
     ],
     "friends": [
-      { "name": "동생", "handle": "gp_dongsaeng", "role": "공유 공간", "group": "special", "status": "[최근] RX-78-2 건담 인증", "liked": 5, "lit": 7, "owned": 4, "verified": 3,
-        "likedIds": ["gu03", "gu08", "po20", "be46", "fa29"], "ownedIds": ["gu01", "po19", "ar37", "gu10"], "guide": { "w10": 4, "w3000": 2, "w5010": 1 } },
-      { "name": "미나", "handle": "mina_plamo", "role": "친구", "group": "friend", "status": "수성의 마녀 도감 Lv.3", "liked": 6, "lit": 9, "owned": 5, "verified": 2,
-        "likedIds": ["gu04", "gu05", "gu11", "po22", "po24", "fa31"], "ownedIds": ["gu04", "gu12", "gu16", "po21", "be41"], "guide": { "w5010": 6, "w3000": 2, "w4300": 1 } },
-      { "name": "건담덕후", "handle": "gundam_otaku", "role": "친구", "group": "friend", "status": "재판 회의 투표 완료", "liked": 4, "lit": 15, "owned": 7, "verified": 5,
-        "likedIds": ["gu07", "gu09", "gu13", "gu15"], "ownedIds": ["gu01", "gu02", "gu03", "gu06", "gu08", "gu14", "gu18"], "guide": { "w10": 6, "w3000": 4, "w1250": 3, "w3300": 2 } },
-      { "name": "베이블레이더", "handle": "bey_x_kr", "role": "친구", "group": "friend", "status": "BBX 3on3 덱 완성", "liked": 3, "lit": 4, "owned": 6, "verified": 1,
-        "likedIds": ["be42", "be47", "be48"], "ownedIds": ["be41", "be43", "be44", "be45", "be46", "gu12"], "guide": { "w3000": 1 } }
+      {
+        "name": "동생",
+        "handle": "gp_dongsaeng",
+        "role": "공유 공간",
+        "group": "special",
+        "status": "[최근] RX-78-2 건담 인증",
+        "liked": 5,
+        "lit": 7,
+        "owned": 4,
+        "verified": 3,
+        "likedIds": [
+          "gu03",
+          "gu08",
+          "po20",
+          "be46",
+          "fa29"
+        ],
+        "ownedIds": [
+          "gu01",
+          "po19",
+          "ar37",
+          "gu10"
+        ],
+        "guide": {
+          "w10": 4,
+          "w3000": 2,
+          "w5010": 1
+        }
+      },
+      {
+        "name": "미나",
+        "handle": "mina_plamo",
+        "role": "친구",
+        "group": "friend",
+        "status": "The Witch from Mercury 도감 Lv.3",
+        "liked": 6,
+        "lit": 9,
+        "owned": 5,
+        "verified": 2,
+        "likedIds": [
+          "gu04",
+          "gu05",
+          "gu11",
+          "po22",
+          "po24",
+          "fa31"
+        ],
+        "ownedIds": [
+          "gu04",
+          "gu12",
+          "gu16",
+          "po21",
+          "be41"
+        ],
+        "guide": {
+          "w5010": 6,
+          "w3000": 2,
+          "w4300": 1
+        }
+      },
+      {
+        "name": "건담덕후",
+        "handle": "gundam_otaku",
+        "role": "친구",
+        "group": "friend",
+        "status": "재판 회의 투표 완료",
+        "liked": 4,
+        "lit": 15,
+        "owned": 7,
+        "verified": 5,
+        "likedIds": [
+          "gu07",
+          "gu09",
+          "gu13",
+          "gu15"
+        ],
+        "ownedIds": [
+          "gu01",
+          "gu02",
+          "gu03",
+          "gu06",
+          "gu08",
+          "gu14",
+          "gu18"
+        ],
+        "guide": {
+          "w10": 6,
+          "w3000": 4,
+          "w1250": 3,
+          "w3300": 2
+        }
+      },
+      {
+        "name": "베이블레이더",
+        "handle": "bey_x_kr",
+        "role": "친구",
+        "group": "friend",
+        "status": "BBX 3on3 덱 완성",
+        "liked": 3,
+        "lit": 4,
+        "owned": 6,
+        "verified": 1,
+        "likedIds": [
+          "be42",
+          "be47",
+          "be48"
+        ],
+        "ownedIds": [
+          "be41",
+          "be43",
+          "be44",
+          "be45",
+          "be46",
+          "gu12"
+        ],
+        "guide": {
+          "w3000": 1
+        }
+      }
     ],
     "suggested": [
-      { "name": "타카", "handle": "taka_gpl", "mutual": 3 },
-      { "name": "Evening", "handle": "evening_29", "mutual": 2 }
+      {
+        "name": "타카",
+        "handle": "taka_gpl",
+        "mutual": 3
+      },
+      {
+        "name": "Evening",
+        "handle": "evening_29",
+        "mutual": 2
+      }
     ],
     "showcase": [
-      { "id": "ph1", "owner": "gunpula_me", "image": "assets/gp/kits/gu12.jpg", "unit": "스트라이크 건담", "work": "건담 SEED", "watermark": true },
-      { "id": "ph2", "owner": "gunpula_me", "image": "assets/gp/kits/gu02.jpg", "unit": "스트라이크 프리덤 건담", "work": "SEED DESTINY", "watermark": true },
-      { "id": "ph3", "owner": "gunpula_me", "image": "assets/gp/kits/gu05.jpg", "unit": "건담 캘리번", "work": "수성의 마녀", "watermark": false },
-      { "id": "ph4", "owner": "gunpula_me", "image": "assets/gp/kits/be43.png", "unit": "드랜 소드 3-60F", "work": "베이블레이드 X", "watermark": true },
-      { "id": "ph5", "owner": "gunpula_me", "image": "assets/gp/kits/fa30.jpg", "unit": "세이버 얼터", "work": "Fate/stay night", "watermark": true },
-      { "id": "ph6", "owner": "gp_dongsaeng", "image": "assets/gp/kits/gu01.jpg", "unit": "RX-78-2 건담", "work": "기동전사 건담", "watermark": true },
-      { "id": "ph7", "owner": "gp_dongsaeng", "image": "assets/gp/kits/po19.png", "unit": "이브이", "work": "포켓몬", "watermark": false },
-      { "id": "ph8", "owner": "gp_dongsaeng", "image": "assets/gp/kits/ar37.jpg", "unit": "화이트 글린트", "work": "ACfA", "watermark": true },
-      { "id": "ph9", "owner": "mina_plamo", "image": "assets/gp/kits/gu04.jpg", "unit": "건담 에어리얼", "work": "수성의 마녀", "watermark": true },
-      { "id": "ph10", "owner": "mina_plamo", "image": "assets/gp/kits/gu16.jpg", "unit": "Ξ건담", "work": "섬광의 하사웨이", "watermark": true },
-      { "id": "ph11", "owner": "gundam_otaku", "image": "assets/gp/kits/gu08.jpg", "unit": "Hi-ν 건담", "work": "역습의 샤아", "watermark": false },
-      { "id": "ph12", "owner": "gundam_otaku", "image": "assets/gp/kits/gu14.jpg", "unit": "아카츠키 건담", "work": "SEED DESTINY", "watermark": true },
-      { "id": "ph13", "owner": "bey_x_kr", "image": "assets/gp/kits/be41.png", "unit": "티가 레이지", "work": "베이블레이드 X", "watermark": true }
+      {
+        "id": "ph1",
+        "owner": "gunpula_me",
+        "image": "assets/gp/kits/gu12.jpg",
+        "unit": "스트라이크 건담",
+        "work": "Gundam SEED",
+        "watermark": true
+      },
+      {
+        "id": "ph2",
+        "owner": "gunpula_me",
+        "image": "assets/gp/kits/gu02.jpg",
+        "unit": "스트라이크 프리덤 건담",
+        "work": "Gundam SEED Destiny",
+        "watermark": true
+      },
+      {
+        "id": "ph3",
+        "owner": "gunpula_me",
+        "image": "assets/gp/kits/gu05.jpg",
+        "unit": "건담 캘리번",
+        "work": "The Witch from Mercury",
+        "watermark": false
+      },
+      {
+        "id": "ph4",
+        "owner": "gunpula_me",
+        "image": "assets/gp/kits/be43.png",
+        "unit": "드랜 소드 3-60F",
+        "work": "베이블레이드 X",
+        "watermark": true
+      },
+      {
+        "id": "ph5",
+        "owner": "gunpula_me",
+        "image": "assets/gp/kits/fa30.jpg",
+        "unit": "세이버 얼터",
+        "work": "Fate/stay night",
+        "watermark": true
+      },
+      {
+        "id": "ph6",
+        "owner": "gp_dongsaeng",
+        "image": "assets/gp/kits/gu01.jpg",
+        "unit": "RX-78-2 건담",
+        "work": "Mobile Suit Gundam",
+        "watermark": true
+      },
+      {
+        "id": "ph7",
+        "owner": "gp_dongsaeng",
+        "image": "assets/gp/kits/po19.png",
+        "unit": "이브이",
+        "work": "포켓몬",
+        "watermark": false
+      },
+      {
+        "id": "ph8",
+        "owner": "gp_dongsaeng",
+        "image": "assets/gp/kits/ar37.jpg",
+        "unit": "화이트 글린트",
+        "work": "ACfA",
+        "watermark": true
+      },
+      {
+        "id": "ph9",
+        "owner": "mina_plamo",
+        "image": "assets/gp/kits/gu04.jpg",
+        "unit": "건담 에어리얼",
+        "work": "The Witch from Mercury",
+        "watermark": true
+      },
+      {
+        "id": "ph10",
+        "owner": "mina_plamo",
+        "image": "assets/gp/kits/gu16.jpg",
+        "unit": "Ξ건담",
+        "work": "Hathaway",
+        "watermark": true
+      },
+      {
+        "id": "ph11",
+        "owner": "gundam_otaku",
+        "image": "assets/gp/kits/gu08.jpg",
+        "unit": "Hi-ν 건담",
+        "work": "Char's Counterattack",
+        "watermark": false
+      },
+      {
+        "id": "ph12",
+        "owner": "gundam_otaku",
+        "image": "assets/gp/kits/gu14.jpg",
+        "unit": "아카츠키 건담",
+        "work": "Gundam SEED Destiny",
+        "watermark": true
+      },
+      {
+        "id": "ph13",
+        "owner": "bey_x_kr",
+        "image": "assets/gp/kits/be41.png",
+        "unit": "티가 레이지",
+        "work": "베이블레이드 X",
+        "watermark": true
+      }
     ]
   }
 }

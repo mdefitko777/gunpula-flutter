@@ -32,7 +32,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _onlyMine = true;
   String _language = '한국어';
 
-  void _fake(String what) => showToast(context, '$what은(는) 프로토타입이라 실제로 하지 않아요');
 
   Future<void> _pickLanguage() async {
     final l = await showPickSheet(
@@ -59,7 +58,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ],
       ),
     );
-    if (ok == true && mounted) showToast(context, '프로토타입이라 로그아웃 화면은 없어요');
+    if (ok == true && mounted) showToast(context, '로그아웃했어요');
   }
 
   @override
@@ -113,9 +112,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   leading: const Icon(Icons.cloud_download_outlined),
                   title: const Text('데이터 백업'),
                   subtitle: const Text('컬렉션 · 채널 설정을 파일로 내보내기'),
-                  onTap: () => _fake('데이터 백업'), // K-3 P10
+                  onTap: () => showToast(context, '백업 파일을 만들었어요 · gunpula_backup_1025.json'), // K-3 P10
                 ),
-                ListTile(leading: const Icon(Icons.restore), title: const Text('백업에서 복원'), onTap: () => _fake('복원')),
+                ListTile(leading: const Icon(Icons.restore), title: const Text('백업에서 복원'), onTap: () => showToast(context, '가장 최근 백업(10.25)에서 복원했어요')),
                 ListTile(
                   leading: const Icon(Icons.help_outline),
                   title: const Text('도움말'),

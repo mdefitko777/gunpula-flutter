@@ -578,7 +578,8 @@ class AppNotice {
 bool kitMatches(Kit k, String query) {
   final q = query.trim().toLowerCase();
   if (q.isEmpty) return true;
-  return [k.name, k.nameJa, k.series, k.line, k.type].any((f) => f.toLowerCase().contains(q));
+  // keywords: 한글 줄임말(수성 · 철혈 …) · 다른 표기로도 찾히게
+  return [k.name, k.nameJa, k.series, k.line, k.type, ...k.keywords].any((f) => f.toLowerCase().contains(q));
 }
 
 /// 작품 묶음 이름 (홈 전체 목록 거르기). 베이블레이드는 작품이 하나라 series(한정 · UX…) 대신 이름 하나로
