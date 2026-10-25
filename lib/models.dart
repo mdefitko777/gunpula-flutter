@@ -313,6 +313,7 @@ class Announcement {
     required this.date,
     required this.source,
     required this.image,
+    required this.hero,
   });
 
   final String id;
@@ -322,6 +323,9 @@ class Announcement {
   final String date;
   final String source;
   final String image;
+
+  /// 가로로 넓은 고화질 배너 — 홈 맨 위 큰 사진에 쓴다
+  final bool hero;
 
   static Announcement? fromJson(Object? json) {
     if (json is! Map<String, Object?>) return null;
@@ -335,6 +339,7 @@ class Announcement {
       date: _s(json, 'date'),
       source: _s(json, 'source'),
       image: _s(json, 'image'),
+      hero: _b(json, 'hero'),
     );
   }
 }

@@ -3688,58 +3688,94 @@
   ],
   "announcements": [
     {
-      "id": "bandai-youtube-Ninhgtydeiw",
+      "id": "ann01",
       "franchiseId": "gundam",
-      "title": "빌더즈 노트 건프라 재판 회의 2026 겨울 제2회 선발 선거 『0083 STARDUST MEMORY』",
-      "status": "공식 발표",
       "date": "2026-10-16",
-      "source": "BANDAI Hobby Site YouTube",
-      "image": "assets/gp/ann/-Ninhgtydeiw.jpg"
+      "title": "건프라 재판 회의 2026 겨울 · 제2회 선발 선거 『0083』",
+      "status": "공식 발표",
+      "source": "BANDAI Hobby YouTube",
+      "image": "assets/gp/ann/yt_Ninhgtydeiw.jpg",
+      "hero": true
     },
     {
-      "id": "bandai-youtube-Sr30ILcabUc",
+      "id": "ann02",
       "franchiseId": "pokemon",
-      "title": "포켓프라 Quick!! 불꽃숭이 신등장 · 디아루가와 나란히",
-      "status": "공식 발표",
       "date": "2026-10-16",
-      "source": "BANDAI Hobby Site YouTube",
-      "image": "assets/gp/ann/-Sr30ILcabUc.jpg"
+      "title": "포켓프라 Quick!! 불꽃숭이 신등장",
+      "status": "상품화 확정",
+      "source": "BANDAI SPIRITS YouTube",
+      "image": "assets/gp/ann/yt_Sr30ILcabUc.jpg",
+      "hero": true
     },
     {
-      "id": "bandai-news-2026-10-13-vMDFfNzQyMy8",
+      "id": "ann03",
       "franchiseId": "gundam",
-      "title": "2026년 10월 일반 매장 발매 아이템",
-      "status": "상품화 확정",
       "date": "2026-10-13",
-      "source": "BANDAI SPIRITS",
-      "image": "assets/gp/ann/vMDFfNzQyMy8.jpg"
-    },
-    {
-      "id": "tamashii-news-2026-10-09-aS1maWcv",
-      "franchiseId": "gundam",
-      "title": "스마트폰 앱 「디지피그」에 풀아머 건담 등장",
+      "title": "2026년 10월 일반 매장 발매 아이템",
       "status": "공식 발표",
+      "source": "BANDAI SPIRITS 뉴스",
+      "image": "assets/gp/ann/vMDFfNzQyMy8.jpg",
+      "hero": false
+    },
+    {
+      "id": "ann04",
+      "franchiseId": "gundam",
       "date": "2026-10-09",
-      "source": "TAMASHII WEB",
-      "image": "assets/gp/ann/-09-aS1maWcv.webp"
+      "title": "앱 「디지피그」에 풀아머 건담 등장",
+      "status": "공식 발표",
+      "source": "TAMASHII NATIONS",
+      "image": "assets/gp/ann/-09-aS1maWcv.webp",
+      "hero": false
     },
     {
-      "id": "tamashii-news-2026-10-05-16191",
+      "id": "ann05",
       "franchiseId": "gundam",
-      "title": "【SEED FREEDOM】 블랙 나이트 스쿼드 카르라 METAL ROBOT 魂 상품화",
+      "date": "2026-10-05",
+      "title": "SEED FREEDOM 블랙 나이트 스쿼드 카르라 · METAL ROBOT 魂",
       "status": "상품화 확정",
-      "date": "2026-10-05",
-      "source": "TAMASHII WEB",
-      "image": "assets/gp/ann/-10-05-16191.webp"
+      "source": "TAMASHII NATIONS",
+      "image": "assets/gp/ann/-10-05-16191.webp",
+      "hero": false
     },
     {
-      "id": "tamashii-news-2026-10-05-16192",
+      "id": "ann06",
       "franchiseId": "gundam",
-      "title": "【SEED FREEDOM】 카르라 전용 이펙트 파츠 세트 예약 시작",
-      "status": "예약 시작",
       "date": "2026-10-05",
-      "source": "TAMASHII WEB",
-      "image": "assets/gp/ann/-10-05-16192.webp"
+      "title": "카르라 전용 이펙트 파츠 세트",
+      "status": "예약 시작",
+      "source": "TAMASHII NATIONS",
+      "image": "assets/gp/ann/-10-05-16192.webp",
+      "hero": false
+    },
+    {
+      "id": "ann07",
+      "franchiseId": "pokemon",
+      "date": "2026-09-03",
+      "title": "셀렉트 시리즈 흑색 메가 레쿠쟈 등장",
+      "status": "상품화 확정",
+      "source": "BANDAI SPIRITS YouTube",
+      "image": "assets/gp/ann/yt_nO5UjCREUaQ.jpg",
+      "hero": true
+    },
+    {
+      "id": "ann08",
+      "franchiseId": "gundam",
+      "date": "2026-09-01",
+      "title": "건프라 재판 회의 2026 가을 · 제3회 선발 선거 『건담 00』",
+      "status": "공식 발표",
+      "source": "BANDAI Hobby YouTube",
+      "image": "assets/gp/ann/yt_R5Z9RpP7Cn0.jpg",
+      "hero": true
+    },
+    {
+      "id": "ann09",
+      "franchiseId": "pokemon",
+      "date": "2026-08-04",
+      "title": "포켓프라 Quick!! 28 나옹 등장",
+      "status": "예약 시작",
+      "source": "BANDAI SPIRITS YouTube",
+      "image": "assets/gp/ann/yt_ciF6OFBrz4M.jpg",
+      "hero": true
     }
   ],
   "profile": {
