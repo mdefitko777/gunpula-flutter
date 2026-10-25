@@ -4,12 +4,12 @@
 // │ 번호 │ Flutter 위젯명                     │ 비즈니스 명칭(한글)                    │ 원칙(P번호)   │
 // │ B-1  │ ChannelHeader                      │ 검색 범위 = 내 채널 (C-0 공용)          │ P04 · P06     │
 // │ B-2  │ GpSearchBar (지우기 + 카메라)       │ 검색창(홈과 같은 모양)                 │ P07 · P04     │
-// │ B-3  │ Wrap(InputChip ×)                  │ 최근 검색어 (하나씩 · 전체 지우기)      │ P06 · P03     │
+// │ B-3  │ Wrap(InputChip ×) — 검색창을 누르면   │ 최근 검색어 (하나씩 · 전체 지우기)      │ P06 · P03     │
 // │ B-4  │ 2열 번호 목록                       │ 인기 검색어 (1–3위 브랜드 색)           │ P06           │
 // │ B-5  │ 예시 문장 칩                        │ AI에게 설명해서 찾기 (미리 쓴 가짜 응답) │ P10 · P07     │
 // │ B-6  │ 가로 카드 + 일치도 %                │ AI 추천 후보                           │ P01 · P09     │
 // │ B-7  │ SectionListView (O 전체 목록 재사용) │ 검색 결과 · 필터 · 정렬 · 격자/목록      │ P08 · 적응형 │
-// │ B-9  │ 줄 버튼 → 같은 목록(검색어 없이)      │ 전체 상품 둘러보기 (내 채널 상품 전부)    │ P07 · P06     │
+// │ B-9  │ 검색어 · 포커스 없을 때 같은 목록      │ 처음 화면 = 전체 상품 (내 채널 상품 전부)  │ P07 · P06     │
 // │ B-8  │ LoadingView / ErrorView / EmptyView │ 불러오는 중 · 오류 · 결과 없음          │ P01 · P09     │
 // └──────────────────────────────────────────────────────────────────────────────────┘
 // 가짜 검색: GET /kits 로 받은 목록 안에서만 거른다(setState). 실제 검색 엔진 · AI 호출 없음.
@@ -76,9 +76,6 @@ class _SearchScreenState extends State<SearchScreen> with ChannelScope {
   final _controller = TextEditingController();
   final _focus = FocusNode();
   String _query = '';
-
-  /// 검색어 없이 전체 상품 목록을 펼쳤는지 (B-9)
-  bool _browse = false;
   final List<String> _recent = [...initialRecentQueries];
   late Future<List<Kit>> _future;
 
@@ -94,6 +91,8 @@ class _SearchScreenState extends State<SearchScreen> with ChannelScope {
   void initState() {
     super.initState();
     reloadScope();
+    // 검색창을 누르면(포커스) 최근 · 인기 · AI 판, 벗어나면 다시 전체 상품
+    _focus.addListener(() => setState(() {})); // STATE: 포커스 → 보여 줄 판
   }
 
   @override
@@ -128,6 +127,18 @@ class _SearchScreenState extends State<SearchScreen> with ChannelScope {
 
   @override
   Widget build(BuildContext context) {
+    return PopScope(
+      canPop: !_focus.hasFocus && _query.isEmpty,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        if (_query.isNotEmpty) _setQuery('');
+        _focus.unfocus(); // 뒤로 = 판 닫고 전체 상품
+      },
+      child: _page(),
+    );
+  }
+
+  Widget _page() {
     return Column(
       children: [
         ChannelHeader(
@@ -159,7 +170,8 @@ class _SearchScreenState extends State<SearchScreen> with ChannelScope {
               if (snap.hasError) {
                 return ErrorView(message: '${snap.error}', onRetry: () => setState(reloadScope)); // B-8 P09
               }
-              return _query.isEmpty && !_browse ? _idle(snap.data!.length) : _results(snap.data!);
+              // B-9 검색어가 없으면: 검색창을 누른 동안 = 최근 · 인기 · AI, 아니면 = 전체 상품
+              return _query.isEmpty && _focus.hasFocus ? _idle() : _results(snap.data!);
             },
           ),
         ),
@@ -168,38 +180,15 @@ class _SearchScreenState extends State<SearchScreen> with ChannelScope {
   }
 
   /// 검색어가 없을 때: 최근 검색 · 인기 검색어 · AI로 찾기
-  Widget _idle(int total) {
+  Widget _idle() {
+    // 이 판을 눌러도 "검색창 밖을 누름"으로 치지 않게 — 아니면 포커스가 먼저 풀려 판이 사라지고 누른 칩이 안 먹는다
+    return TextFieldTapRegion(child: _idleList());
+  }
+
+  Widget _idleList() {
     return ListView(
       padding: EdgeInsets.only(bottom: navClearance(context)),
       children: [
-        Padding(
-          // B-9 전체 상품 둘러보기
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(Gp.radius),
-            onTap: () => setState(() => _browse = true), // STATE: 둘러보기 → 전체 상품 목록
-            child: Container(
-              padding: const EdgeInsets.fromLTRB(16, 14, 10, 14),
-              decoration: Gp.raised(radius: Gp.radius),
-              child: Row(
-                children: [
-                  const Icon(Icons.grid_view_rounded, color: Gp.accent),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('전체 상품 둘러보기', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
-                        Text('$total개 · 작품 · 종류 · 가격으로 거르기', style: const TextStyle(fontSize: 12.5, color: Gp.muted)),
-                      ],
-                    ),
-                  ),
-                  const Icon(Icons.chevron_right, color: Gp.faint),
-                ],
-              ),
-            ),
-          ),
-        ),
         if (_recent.isNotEmpty) ...[
           SectionHeader(
             '최근 검색',
@@ -345,10 +334,12 @@ class _SearchScreenState extends State<SearchScreen> with ChannelScope {
               items: candidates,
               onTap: (k) => openKitDetail(context, k, loaders: widget.loaders),
             ), // B-6
-      onBack: () {
-        _browse = false;
-        _setQuery(''); // STATE: 돌아가기 → 최근 · 인기 검색어
-      },
+      onBack: _query.isEmpty
+          ? null // 처음 화면(전체 상품)에는 돌아갈 곳이 없음
+          : () {
+              _setQuery(''); // STATE: 돌아가기 → 전체 상품
+              _focus.unfocus();
+            },
       loaders: widget.loaders,
     );
   }

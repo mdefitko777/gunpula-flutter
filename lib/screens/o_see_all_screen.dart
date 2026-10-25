@@ -7,7 +7,7 @@
 // │ 번호 │ Flutter 위젯명                     │ 비즈니스 명칭(한글)                    │ 원칙(P번호)   │
 // │ O-1  │ ‹ + 제목 + 개수 · 필터 · 보기 전환    │ 어느 목록인지 · 돌아가기 · 격자/목록     │ P03 · P07     │
 // │ O-2  │ 오른쪽 패널(showGeneralDialog)       │ 필터: 작품 · 종류 · 라인 · 가격 · 발매   │ P06 · P08     │
-// │      │ 접히는 칸 + 체크 · 초기화 · n개 보기  │ (고르는 동안 결과 개수가 바로 바뀜)       │ P01 · P05     │
+// │      │ 접히는 칸 + 체크 · 초기화 · n개 보기  │ 칸마다 개수 = 다른 조건을 건 뒤의 개수     │ P01 · P05     │
 // │ O-3  │ 고른 필터 한 줄 + PopupMenuButton    │ 지금 거르는 조건 · 정렬 4가지             │ P01 · P07     │
 // │ O-4  │ 격자 ProductTile(+ ♡) / ThumbRow     │ 상품 (가격 · 발매일 보임) → D 상세       │ P08 · P07     │
 // │ O-5  │ 밑줄 탭 + 16:9 카드                  │ 공식 예고: 공식 발표 · 상품화 확정 · 예약  │ P02 · P06     │
@@ -137,7 +137,7 @@ class SectionListView extends StatefulWidget {
   const SectionListView({
     super.key,
     required this.title,
-    required this.onBack,
+    this.onBack,
     this.subtitle = '',
     this.kits = const [],
     this.announcements,
@@ -149,7 +149,9 @@ class SectionListView extends StatefulWidget {
   });
 
   final String title;
-  final VoidCallback onBack;
+
+  /// 없으면 ‹ 를 숨긴다 (검색 탭 기본 목록)
+  final VoidCallback? onBack;
   final String subtitle;
   final List<Kit> kits;
 
@@ -256,11 +258,10 @@ class _SectionListViewState extends State<SectionListView> {
           padding: const EdgeInsets.fromLTRB(4, 0, 8, 0),
           child: Row(
             children: [
-              IconButton(
-                tooltip: '돌아가기',
-                onPressed: widget.onBack,
-                icon: const Icon(Icons.arrow_back_ios_new, size: 18),
-              ),
+              if (widget.onBack case final back?)
+                IconButton(tooltip: '돌아가기', onPressed: back, icon: const Icon(Icons.arrow_back_ios_new, size: 18))
+              else
+                const SizedBox(width: 12),
               Container(width: 3, height: 16, color: Gp.accent), // 홈 줄 제목과 같은 색 막대
               const SizedBox(width: 8),
               Text(widget.title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
@@ -613,8 +614,16 @@ class _FilterPanelState extends State<_FilterPanel> {
 
     String summary(Set<String> s) => s.isEmpty ? '전체' : (s.length == 1 ? s.first : '${s.first} 외 ${s.length - 1}');
 
-    Widget checks(Set<String> set, List<(String, int)> values) =>
-        Column(children: [for (final (v, n) in values) check(v, n, set.contains(v), () => _toggle(set, v))]);
+    // 칸 순서는 전체 개수 순으로 고정, 숫자는 "다른 칸의 조건 + 이 값"일 때 개수 (0이면 흐리게)
+    Widget checks(Set<String> set, List<(String, int)> values, Set<String> Function(KitFilter) facet) => Column(
+      children: [
+        for (final (v, _) in values)
+          Opacity(
+            opacity: _facetCount(facet, v) == 0 && !set.contains(v) ? 0.4 : 1,
+            child: check(v, _facetCount(facet, v), set.contains(v), () => _toggle(set, v)),
+          ),
+      ],
+    );
 
     Widget radios<T>(List<T> values, T current, String Function(T) label, ValueChanged<T> onPick) => Column(
       children: [for (final v in values) check(label(v), _countFor(v), current == v, () => setState(() => onPick(v)))],
@@ -646,9 +655,15 @@ class _FilterPanelState extends State<_FilterPanel> {
                   child: ListView(
                     padding: EdgeInsets.zero,
                     children: [
-                      section('작품', summary(_draft.works), [checks(_draft.works, _counts(kits.map(kitWork)))]),
-                      section('종류', summary(_draft.types), [checks(_draft.types, _counts(kits.map((k) => k.type)))]),
-                      section('라인', summary(_draft.lines), [checks(_draft.lines, _counts(kits.map((k) => k.line)))]),
+                      section('작품', summary(_draft.works), [
+                        checks(_draft.works, _counts(kits.map(kitWork)), (f) => f.works),
+                      ]),
+                      section('종류', summary(_draft.types), [
+                        checks(_draft.types, _counts(kits.map((k) => k.type)), (f) => f.types),
+                      ]),
+                      section('라인', summary(_draft.lines), [
+                        checks(_draft.lines, _counts(kits.map((k) => k.line)), (f) => f.lines),
+                      ]),
                       section('가격', _draft.price.label, [
                         radios(PriceBand.values, _draft.price, (p) => p.label, (p) => _draft.price = p),
                       ]),
@@ -696,6 +711,15 @@ class _FilterPanelState extends State<_FilterPanel> {
         ),
       ),
     );
+  }
+
+  /// 작품 · 종류 · 라인 한 값을 골랐을 때 개수 (같은 칸의 다른 선택은 빼고, 다른 칸 조건은 그대로)
+  int _facetCount(Set<String> Function(KitFilter) facet, String v) {
+    final f = _draft.copy();
+    facet(f)
+      ..clear()
+      ..add(v);
+    return widget.kits.where(f.matches).length;
   }
 
   /// 가격 · 발매 한 칸을 골랐을 때 개수 (다른 조건은 그대로)
