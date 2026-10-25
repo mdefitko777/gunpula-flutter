@@ -3,7 +3,7 @@
 // ┌──────── 디자인 가이드 대응표: B 검색 ──────────────────────────────────────────────┐
 // │ 번호 │ Flutter 위젯명                     │ 비즈니스 명칭(한글)                    │ 원칙(P번호)   │
 // │ B-1  │ ChannelBar                         │ 검색 범위 = 내 채널 (C-1 공용)          │ P04 · P06     │
-// │ B-2  │ TextField + 지우기 + 카메라         │ 검색창                                 │ P07 · P03     │
+// │ B-2  │ GpSearchBar (지우기 + 카메라)       │ 검색창(홈과 같은 모양)                 │ P07 · P04     │
 // │ B-3  │ Wrap(InputChip ×)                  │ 최근 검색어 (하나씩 · 전체 지우기)      │ P06 · P03     │
 // │ B-4  │ 2열 번호 목록                       │ 인기 검색어 (1–3위 브랜드 색)           │ P06           │
 // │ B-5  │ 예시 문장 칩                        │ AI에게 설명해서 찾기 (미리 쓴 가짜 응답) │ P10 · P07     │
@@ -152,12 +152,11 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
-          child: _SearchField( // B-2 P07
+          child: GpSearchBar( // B-2 P04
             controller: _controller,
-            focus: _focus,
+            focusNode: _focus,
             onChanged: (q) => setState(() => _query = q.trim()),
             onSubmitted: _submit,
-            onClear: () => _setQuery(''),
             onCamera: widget.onCamera,
           ),
         ),
@@ -383,70 +382,6 @@ class _Header extends StatelessWidget {
             child: Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
           ),
           ?trailing,
-        ],
-      ),
-    );
-  }
-}
-
-/// B-2 검색창 — 떠 있는 흰 알약
-class _SearchField extends StatelessWidget {
-  const _SearchField({
-    required this.controller,
-    required this.focus,
-    required this.onChanged,
-    required this.onSubmitted,
-    required this.onClear,
-    required this.onCamera,
-  });
-
-  final TextEditingController controller;
-  final FocusNode focus;
-  final ValueChanged<String> onChanged;
-  final ValueChanged<String> onSubmitted;
-  final VoidCallback onClear;
-  final VoidCallback onCamera;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 48,
-      padding: const EdgeInsets.only(left: 14, right: 4),
-      decoration: Gp.raised(radius: 24),
-      child: Row(
-        children: [
-          const Icon(Icons.search, size: 20, color: Gp.muted),
-          const SizedBox(width: 8),
-          Expanded(
-            child: TextField(
-              controller: controller,
-              focusNode: focus,
-              onChanged: onChanged,
-              onSubmitted: onSubmitted,
-              textInputAction: TextInputAction.search,
-              decoration: const InputDecoration(
-                hintText: '이름 · 번호 · 생김새로 찾기',
-                filled: false,
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.zero,
-              ),
-            ),
-          ),
-          ValueListenableBuilder(
-            valueListenable: controller,
-            builder: (context, v, _) => v.text.isEmpty
-                ? const SizedBox.shrink()
-                : IconButton(
-                    tooltip: '지우기', // P03
-                    icon: const Icon(Icons.cancel, size: 18, color: Gp.faint),
-                    onPressed: onClear,
-                  ),
-          ),
-          IconButton(
-            tooltip: '찍어서 찾기',
-            icon: const Icon(Icons.photo_camera_outlined, size: 21, color: Gp.ink),
-            onPressed: onCamera,
-          ),
         ],
       ),
     );

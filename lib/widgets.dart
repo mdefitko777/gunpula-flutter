@@ -298,6 +298,95 @@ class _ChannelGlyphPainter extends CustomPainter {
   bool shouldRepaint(_ChannelGlyphPainter old) => old.color != color;
 }
 
+/// 검색창 — 홈과 검색 화면이 같은 것을 쓴다 (크기 · 글자 · 아이콘 통일, P04).
+/// [onTap]을 주면 입력하지 않는 "입구"(홈): 누르면 검색 화면으로 간다.
+/// 아니면 [controller]로 바로 입력하는 검색창(검색 화면).
+class GpSearchBar extends StatelessWidget {
+  const GpSearchBar({
+    super.key,
+    required this.onCamera,
+    this.onTap,
+    this.controller,
+    this.focusNode,
+    this.onChanged,
+    this.onSubmitted,
+  });
+
+  /// 오른쪽 카메라 → 찍어서 찾기 (하단 카메라 버튼과 같은 동작)
+  final VoidCallback onCamera;
+  final VoidCallback? onTap;
+  final TextEditingController? controller;
+  final FocusNode? focusNode;
+  final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onSubmitted;
+
+  static const hint = '이름 · 번호 · 생김새로 찾기';
+  static const _textStyle = TextStyle(fontSize: 14.5, color: Gp.ink);
+  static const _hintStyle = TextStyle(fontSize: 14.5, color: Gp.faint);
+
+  @override
+  Widget build(BuildContext context) {
+    final c = controller;
+    final Widget field = onTap != null || c == null
+        ? const Text(hint, maxLines: 1, overflow: TextOverflow.ellipsis, style: _hintStyle)
+        : TextField(
+            controller: c,
+            focusNode: focusNode,
+            onChanged: onChanged,
+            onSubmitted: onSubmitted,
+            textInputAction: TextInputAction.search,
+            style: _textStyle,
+            decoration: const InputDecoration(
+              hintText: hint,
+              hintStyle: _hintStyle,
+              filled: false,
+              isDense: true,
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.zero,
+            ),
+          );
+    return Semantics(
+      button: onTap != null,
+      label: onTap != null ? '검색 열기' : null,
+      child: GestureDetector(
+        onTap: onTap,
+        behavior: HitTestBehavior.opaque,
+        child: Container(
+          height: 48,
+          padding: const EdgeInsets.only(left: 16, right: 4),
+          decoration: Gp.raised(radius: 24),
+          child: Row(
+            children: [
+              const Icon(Icons.search, size: 20, color: Gp.muted),
+              const SizedBox(width: 10),
+              Expanded(child: field),
+              if (c != null && onTap == null)
+                ValueListenableBuilder(
+                  valueListenable: c,
+                  builder: (context, v, _) => v.text.isEmpty
+                      ? const SizedBox.shrink()
+                      : IconButton(
+                          tooltip: '지우기', // P03
+                          icon: const Icon(Icons.cancel, size: 18, color: Gp.faint),
+                          onPressed: () {
+                            c.clear();
+                            onChanged?.call('');
+                          },
+                        ),
+                ),
+              IconButton(
+                tooltip: '찍어서 찾기',
+                icon: const Icon(Icons.photo_camera_outlined, size: 21, color: Gp.ink),
+                onPressed: onCamera,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 String _comma(int v) => v.toString().replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (_) => ',');
 
 /// 일본 정가: ¥3,850 (없으면 '가격 미정')

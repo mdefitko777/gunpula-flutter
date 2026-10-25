@@ -86,6 +86,7 @@ class _AppShellState extends State<AppShell> {
             leading: wide ? null : avatar,
             myChannels: _myChannels,
             onMyChannelsChanged: _setChannels,
+            onCamera: _openAdd,
             onOpenSearch: () => setState(() {
               _tab = 1; // STATE: 홈 검색 알약 → 검색 탭 + 검색창 커서
               _searchFocusTick++;

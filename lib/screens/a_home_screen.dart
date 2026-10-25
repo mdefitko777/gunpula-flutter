@@ -3,7 +3,7 @@
 // ┌──────── 디자인 가이드 대응표: A 홈 ────────────────────────────────────────────────┐
 // │ 번호 │ Flutter 위젯명                     │ 비즈니스 명칭(한글)                    │ 원칙(P번호)   │
 // │ A-1  │ ChannelBar                         │ 내 채널 바 (C-1 공용)                  │ P04 · P06     │
-// │ A-2  │ 검색 알약 (탭하면 검색 탭으로)      │ 이름·번호로 찾기                       │ P07           │
+// │ A-2  │ GpSearchBar 입구 (탭하면 검색 탭)   │ 검색창(검색 화면과 같은 모양) · 카메라  │ P07 · P04     │
 // │ A-3  │ PageView(화면 끝까지) + 점 표시     │ 공식 예고 배너 (완성된 홍보 이미지)     │ P08 · P02     │
 // │ A-4  │ 배너 아래 상태 · 제목               │ 예고 상태(공식 발표·상품화 확정·예약)   │ P01           │
 // │ A-5  │ 색 막대 + 제목 줄 + ›               │ 줄 이름 · 전체 보기 (최근 추가는 기간)  │ P06 · P07     │
@@ -39,6 +39,7 @@ class HomeScreen extends StatefulWidget {
     required this.myChannels,
     required this.onMyChannelsChanged,
     required this.onOpenSearch,
+    required this.onCamera,
     this.leading,
     this.loaders = const Loaders(),
   });
@@ -46,6 +47,9 @@ class HomeScreen extends StatefulWidget {
   final List<String> myChannels;
   final ValueChanged<List<String>> onMyChannelsChanged;
   final VoidCallback onOpenSearch;
+
+  /// 검색창 카메라 → 앱 셸의 찍어서 찾기 시트
+  final VoidCallback onCamera;
   final Widget? leading;
   final Loaders loaders;
 
@@ -154,7 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _body(_HomeData data) {
     final search = Padding(
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
-      child: _SearchPill(onTap: widget.onOpenSearch), // A-2 P07
+      child: GpSearchBar(onTap: widget.onOpenSearch, onCamera: widget.onCamera), // A-2 P04
     );
     if (data.kits.isEmpty && data.announcements.isEmpty) {
       final noData = _ids.isNotEmpty && _ids.every((id) => !channelOf(id).hasData);
@@ -229,37 +233,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
       ],
-    );
-  }
-}
-
-class _SearchPill extends StatelessWidget {
-  const _SearchPill({required this.onTap});
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      button: true,
-      label: '검색 열기',
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          height: 46,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          decoration: Gp.raised(radius: 23),
-          child: const Row(
-            children: [
-              Icon(Icons.search, size: 20, color: Gp.muted),
-              SizedBox(width: 10),
-              Expanded(
-                child: Text('이름 · 번호 · 작품으로 찾기', style: TextStyle(color: Gp.faint, fontSize: 14)),
-              ),
-              Icon(Icons.center_focus_strong_outlined, size: 20, color: Gp.muted),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }
