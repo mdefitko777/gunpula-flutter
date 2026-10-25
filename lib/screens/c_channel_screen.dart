@@ -3,7 +3,7 @@
 // ┌──────── 디자인 가이드 대응표: C 채널 ──────────────────────────────────────────┐
 // │ 번호 │ Flutter 위젯명                    │ 비즈니스 명칭(한글)              │ 원칙(P번호)   │
 // │ C-1  │ ChannelBar (가로 스크롤 텍스트 탭) │ 내 채널 바 (전체 + 내 IP)        │ P06 · P04     │
-// │ C-2  │ IconButton(☰)                     │ 채널 관리 열기                   │ P07 · P03     │
+// │ C-2  │ IconButton(ChannelGlyph 세 줄)     │ 채널 관리 열기                   │ P07 · P03     │
 // │ C-3  │ CupertinoPageRoute                │ 오른쪽에서 밀려 들어오는 관리 화면 │ P03           │
 // │ C-4  │ LongPressDraggable + DragTarget   │ 내 채널 (길게 눌러 순서 변경)     │ P03 · P07     │
 // │ C-5  │ 타일 오른쪽 위 − / + 표시          │ 채널 빼기 · 더하기               │ P06 · P01     │
@@ -29,8 +29,11 @@ class ChannelBar extends StatelessWidget {
     required this.selected,
     required this.onSelect,
     required this.onMyChannelsChanged,
+    this.leading,
   });
 
+  /// 왼쪽 끝(좁은 화면: 아바타)
+  final Widget? leading;
   final List<String> myChannels;
 
   /// allChannelId 또는 채널 id
@@ -42,9 +45,10 @@ class ChannelBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final ids = [allChannelId, ...myChannels];
     return SizedBox(
-      height: 44,
+      height: 60,
       child: Row(
         children: [
+          if (leading != null) ...[const SizedBox(width: 14), leading!],
           Expanded(
             child: ShaderMask(
               // 오른쪽 끝을 흐리게 — 더 있다는 신호
@@ -55,7 +59,7 @@ class ChannelBar extends StatelessWidget {
               blendMode: BlendMode.dstIn,
               child: ListView(
                 scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
                 children: [
                   for (final id in ids)
                     _ChannelTab(
@@ -69,7 +73,7 @@ class ChannelBar extends StatelessWidget {
           ),
           IconButton(
             tooltip: '채널 관리',
-            icon: const Icon(Icons.menu), // C-2 P07
+            icon: const ChannelGlyph(), // C-2 P07
             onPressed: () => Navigator.of(context).push(
               CupertinoPageRoute<void>( // C-3 P03
                 builder: (_) => ChannelManagerScreen(
@@ -79,6 +83,7 @@ class ChannelBar extends StatelessWidget {
               ),
             ),
           ),
+          const SizedBox(width: 6),
         ],
       ),
     );
@@ -105,15 +110,16 @@ class _ChannelTab extends StatelessWidget {
               label,
               style: TextStyle(
                 fontSize: 15,
-                fontWeight: selected ? FontWeight.w800 : FontWeight.w500,
+                letterSpacing: 0.2,
+                fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
                 color: selected ? Gp.ink : Gp.faint,
               ),
             ),
             const SizedBox(height: 4),
             AnimatedContainer(
               duration: const Duration(milliseconds: 150),
-              height: 2.5,
-              width: selected ? 18 : 0,
+              height: 2,
+              width: selected ? 14 : 0,
               color: Gp.ink,
             ),
           ],
@@ -258,8 +264,8 @@ class _Grid extends StatelessWidget {
       crossAxisCount: cols,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      mainAxisSpacing: 12,
-      crossAxisSpacing: 12,
+      mainAxisSpacing: 14,
+      crossAxisSpacing: 14,
       childAspectRatio: 1.05,
       children: children,
     );
@@ -288,15 +294,15 @@ class _ChannelTile extends StatelessWidget {
     return Stack(
       children: [
         Positioned.fill(
-          child: Material(
-            color: Gp.bg,
-            elevation: lifted ? 6 : 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(Gp.radius),
-              side: BorderSide(color: highlighted ? Gp.ink : Gp.line, width: highlighted ? 1.5 : 1),
+          child: DecoratedBox(
+            decoration: Gp.raised().copyWith(
+              border: Border.all(color: highlighted ? Gp.ink : const Color(0xE6FFFFFF), width: highlighted ? 1.5 : 1),
+              boxShadow: lifted
+                  ? const [BoxShadow(color: Color(0x33000000), blurRadius: 24, offset: Offset(0, 10))]
+                  : null,
             ),
-            child: InkWell(
-              borderRadius: BorderRadius.circular(Gp.radius),
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
               onTap: onTap,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -322,19 +328,20 @@ class _ChannelTile extends StatelessWidget {
         ),
         if (badge != _Badge.none)
           Positioned(
-            top: 6,
-            right: 6,
+            top: 7,
+            right: 7,
             child: IgnorePointer(
               child: Container(
-                width: 16,
-                height: 16,
+                width: 18,
+                height: 18,
                 decoration: BoxDecoration(
-                  color: badge == _Badge.add ? Gp.soft : Gp.ink,
-                  borderRadius: BorderRadius.circular(4),
+                  shape: BoxShape.circle,
+                  color: badge == _Badge.add ? Colors.transparent : Gp.ink,
+                  border: Border.all(color: badge == _Badge.add ? Gp.faint : Gp.ink),
                 ),
                 child: Icon(
                   badge == _Badge.add ? Icons.add : Icons.remove,
-                  size: 13,
+                  size: 12,
                   color: badge == _Badge.add ? Gp.muted : Colors.white,
                 ),
               ),

@@ -1,17 +1,19 @@
-// 화면 S: 앱 셸 — 위: 아바타 + 화면 제목 / 아래: 홈 · 검색 · (+) · 캘린더 · 컬렉션
+// 화면 S: 앱 셸 — 위: 아바타 + 채널 바 한 줄 / 아래: 떠 있는 반투명 탭 바 (홈 · 검색 · (+) · 캘린더 · 컬렉션)
 //
 // ┌──────── 디자인 가이드 대응표: S 앱 셸 ───────────────────────────────────────────┐
 // │ 번호 │ Flutter 위젯명                  │ 비즈니스 명칭(한글)                    │ 원칙(P번호)   │
-// │ S-1  │ CircleAvatar 버튼 (왼쪽 위)     │ 내 정보 열기                           │ P04 · P06     │
-// │ S-2  │ Text(제목)                      │ 지금 있는 화면 이름                    │ P01           │
+// │ S-1  │ RaisedCircleButton (왼쪽 위)    │ 내 정보 열기 (아바타)                  │ P04 · P06     │
+// │ S-2  │ BackdropFilter 떠 있는 탭 바    │ 반투명 하단 탭 바                      │ P08           │
 // │ S-3  │ 하단 탭 4개 (<840dp)            │ 홈 · 검색 · 캘린더 · 컬렉션            │ P06 · P04     │
-// │ S-4  │ 가운데 원형 + 버튼              │ 추가 (사진으로 찾기 · 바코드 · 앨범)   │ P07           │
+// │ S-4  │ 가운데 떠 있는 + 버튼           │ 추가 (사진으로 찾기 · 바코드 · 앨범)   │ P07           │
 // │ S-5  │ NavigationRail (≥840dp)         │ 측면 탭 + 위쪽 추가 버튼               │ 적응형 · P04  │
 // │ S-6  │ IndexedStack                    │ 탭 상태 유지                           │ P03           │
 // │ S-7  │ 내 채널 목록(상태)              │ 네 화면이 같이 쓰는 내 IP 채널         │ P04           │
 // └────────────────────────────────────────────────────────────────────────────────┘
 // 전환: S-3 옆으로(탭) · S-4 덮기(bottom sheet) · S-1 쌓기(push).
 // 현행 앱 문제: 위 5개 IP + 아래 5개 화면 + 도감 안 탭 → v2는 아래 탭 하나 + 화면 안 채널 바 하나.
+import 'dart:ui' show ImageFilter;
+
 import 'package:flutter/material.dart';
 
 import '../api.dart';
@@ -55,21 +57,29 @@ class _AppShellState extends State<AppShell> {
     );
   }
 
-  Widget _page(int i) => _TabPage(
-    key: ValueKey(i),
-    title: _tabs[i].$3,
-    myChannels: _myChannels,
-    onMyChannelsChanged: _setChannels,
-  );
+  void _openProfile() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('내 정보 화면은 다음 단계에서 만들어요')),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final wide = MediaQuery.sizeOf(context).width >= railBreakpoint;
+    final avatar = _AvatarButton(onTap: _openProfile); // S-1 P04
+    Widget page(int i) => _TabPage(
+      key: ValueKey(i),
+      title: _tabs[i].$3,
+      leading: wide ? null : avatar,
+      myChannels: _myChannels,
+      onMyChannelsChanged: _setChannels,
+    );
     final body = IndexedStack( // S-6 P03
       index: _tab,
-      children: [for (var i = 0; i < _tabs.length; i++) _page(i)],
+      children: [for (var i = 0; i < _tabs.length; i++) page(i)],
     );
     return Scaffold(
+      extendBody: true, // 탭 바 뒤로 내용이 비쳐 보이게
       body: SafeArea(
         bottom: false,
         child: wide
@@ -82,8 +92,8 @@ class _AppShellState extends State<AppShell> {
                     leading: Column(
                       children: [
                         const SizedBox(height: 8),
-                        const _AvatarButton(),
-                        const SizedBox(height: 16),
+                        avatar,
+                        const SizedBox(height: 18),
                         _PlusButton(onTap: _openAdd),
                         const SizedBox(height: 8),
                       ],
@@ -101,12 +111,7 @@ class _AppShellState extends State<AppShell> {
                   Expanded(child: body),
                 ],
               )
-            : Column(
-                children: [
-                  _TopBar(title: _tabs[_tab].$3),
-                  Expanded(child: body),
-                ],
-              ),
+            : body,
       ),
       bottomNavigationBar: wide
           ? null
@@ -119,45 +124,17 @@ class _AppShellState extends State<AppShell> {
   }
 }
 
-class _TopBar extends StatelessWidget {
-  const _TopBar({required this.title});
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 56,
-      child: Row(
-        children: [
-          const SizedBox(width: 12),
-          const _AvatarButton(), // S-1 P04
-          const SizedBox(width: 12),
-          Text(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800)), // S-2 P01
-        ],
-      ),
-    );
-  }
-}
-
 class _AvatarButton extends StatelessWidget {
-  const _AvatarButton();
+  const _AvatarButton({required this.onTap});
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Tooltip(
-      message: '내 정보',
-      child: InkResponse(
-        radius: 22,
-        onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('내 정보 화면은 다음 단계에서 만들어요')),
-        ),
-        child: const CircleAvatar(
-          radius: 17,
-          backgroundColor: Gp.ink,
-          foregroundColor: Colors.white,
-          child: Text('A', style: TextStyle(fontWeight: FontWeight.w800)),
-        ),
-      ),
+    return RaisedCircleButton(
+      tooltip: '내 정보',
+      size: 38,
+      onTap: onTap,
+      child: const Text('A', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15, color: Gp.ink)),
     );
   }
 }
@@ -168,23 +145,16 @@ class _PlusButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Semantics(
-      button: true,
-      label: '추가',
-      child: InkResponse(
-        onTap: onTap,
-        radius: 28,
-        child: Container(
-          width: 48,
-          height: 48,
-          decoration: const BoxDecoration(color: Gp.ink, shape: BoxShape.circle),
-          child: const Icon(Icons.add, color: Colors.white, size: 28),
-        ),
-      ),
+    return RaisedCircleButton(
+      tooltip: '추가',
+      size: 48,
+      onTap: onTap,
+      child: const Icon(Icons.add, color: Gp.ink, size: 26, weight: 300),
     );
   }
 }
 
+/// S-2 떠 있는 반투명 탭 바 (뒤 내용이 흐리게 비친다)
 class _BottomBar extends StatelessWidget {
   const _BottomBar({required this.index, required this.onSelect, required this.onPlus});
 
@@ -198,44 +168,68 @@ class _BottomBar extends StatelessWidget {
       final t = _tabs[i];
       final on = i == index;
       return Expanded(
-        child: InkResponse(
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
           onTap: () => onSelect(i),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(on ? t.$2 : t.$1, color: on ? Gp.ink : Gp.faint),
-              const SizedBox(height: 2),
-              Text(
-                t.$3,
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: on ? FontWeight.w700 : FontWeight.w500,
-                  color: on ? Gp.ink : Gp.faint,
+          child: Semantics(
+            selected: on,
+            button: true,
+            label: t.$3,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(on ? t.$2 : t.$1, size: 23, color: on ? Gp.ink : const Color(0xFF9A9A98)),
+                const SizedBox(height: 3),
+                Text(
+                  t.$3,
+                  style: TextStyle(
+                    fontSize: 10.5,
+                    letterSpacing: 0.4,
+                    fontWeight: on ? FontWeight.w700 : FontWeight.w400,
+                    color: on ? Gp.ink : const Color(0xFF9A9A98),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       );
     }
 
-    return DecoratedBox(
-      decoration: const BoxDecoration(
-        color: Gp.bg,
-        border: Border(top: BorderSide(color: Gp.line)),
-      ),
-      child: SafeArea(
-        top: false,
-        child: SizedBox(
-          height: 60,
-          child: Row(
-            children: [
-              item(0), // S-3 P06
-              item(1),
-              Expanded(child: Center(child: _PlusButton(onTap: onPlus))), // S-4 P07
-              item(2),
-              item(3),
+    return SafeArea(
+      top: false,
+      minimum: const EdgeInsets.only(bottom: 10),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(34),
+            boxShadow: const [
+              BoxShadow(color: Color(0x1F000000), blurRadius: 28, offset: Offset(0, 10)),
             ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(34),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+              child: Container(
+                height: 68,
+                decoration: BoxDecoration(
+                  color: const Color(0xB8FFFFFF),
+                  borderRadius: BorderRadius.circular(34),
+                  border: Border.all(color: const Color(0xCCFFFFFF)),
+                ),
+                child: Row(
+                  children: [
+                    item(0), // S-3 P06
+                    item(1),
+                    Expanded(child: Center(child: _PlusButton(onTap: onPlus))), // S-4 P07
+                    item(2),
+                    item(3),
+                  ],
+                ),
+              ),
+            ),
           ),
         ),
       ),
@@ -294,9 +288,11 @@ class _TabPage extends StatefulWidget {
     required this.title,
     required this.myChannels,
     required this.onMyChannelsChanged,
+    this.leading,
   });
 
   final String title;
+  final Widget? leading;
   final List<String> myChannels;
   final ValueChanged<List<String>> onMyChannelsChanged;
 
@@ -314,12 +310,12 @@ class _TabPageState extends State<_TabPage> {
     return Column(
       children: [
         ChannelBar(
+          leading: widget.leading,
           myChannels: widget.myChannels,
           selected: sel,
           onSelect: (id) => setState(() => _selected = id),
           onMyChannelsChanged: widget.onMyChannelsChanged,
         ),
-        const Divider(),
         Expanded(
           child: EmptyView(
             icon: Icons.construction_outlined,

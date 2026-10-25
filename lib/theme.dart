@@ -7,10 +7,32 @@ abstract final class Gp {
   static const muted = Color(0xFF6B6B6B);
   static const faint = Color(0xFFA3A3A3);
   static const line = Color(0xFFE6E6E6);
-  static const soft = Color(0xFFF4F4F4);
-  static const bg = Color(0xFFFFFFFF);
+  static const soft = Color(0xFFF0F0EE);
+
+  /// 페이지 바탕: 아주 옅은 따뜻한 회백색 — 흰 버튼이 떠 보이게
+  static const bg = Color(0xFFF7F7F5);
+
+  /// 카드·시트 면
+  static const panel = Color(0xFFFFFFFF);
   static const danger = Color(0xFFC0392B);
   static const radius = 12.0;
+
+  /// 떠 있는 흰 버튼(아바타 · + · 채널 타일): 흰→옅은 회색 그라데이션 + 부드러운 그림자
+  static BoxDecoration raised({BoxShape shape = BoxShape.rectangle, double radius = 14}) =>
+      BoxDecoration(
+        shape: shape,
+        borderRadius: shape == BoxShape.circle ? null : BorderRadius.circular(radius),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFFFFFFFF), Color(0xFFEDEDEB)],
+        ),
+        border: Border.all(color: const Color(0xE6FFFFFF)),
+        boxShadow: const [
+          BoxShadow(color: Color(0x1A000000), blurRadius: 16, offset: Offset(0, 6)),
+          BoxShadow(color: Color(0x0F000000), blurRadius: 2, offset: Offset(0, 1)),
+        ],
+      );
 }
 
 ThemeData buildGpTheme() {
@@ -67,12 +89,12 @@ ThemeData buildGpTheme() {
       ),
     ),
     bottomSheetTheme: const BottomSheetThemeData(
-      backgroundColor: Gp.bg,
+      backgroundColor: Gp.panel,
       showDragHandle: true,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
     ),
     dialogTheme: DialogThemeData(
-      backgroundColor: Gp.bg,
+      backgroundColor: Gp.panel,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     ),
     snackBarTheme: const SnackBarThemeData(

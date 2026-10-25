@@ -229,6 +229,75 @@ class SectionTitle extends StatelessWidget {
   }
 }
 
+/// 떠 있는 흰 원형 버튼 — 아바타 · 가운데 + 버튼
+class RaisedCircleButton extends StatelessWidget {
+  const RaisedCircleButton({
+    super.key,
+    required this.child,
+    required this.onTap,
+    required this.tooltip,
+    this.size = 40,
+  });
+
+  final Widget child;
+  final VoidCallback onTap;
+  final String tooltip;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: tooltip,
+      child: Semantics(
+        button: true,
+        label: tooltip,
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            width: size,
+            height: size,
+            decoration: Gp.raised(shape: BoxShape.circle),
+            alignment: Alignment.center,
+            child: child,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// 채널 관리 아이콘: 짧은 선(왼쪽 위) · 긴 선(가운데) · 짧은 선(오른쪽 아래)
+class ChannelGlyph extends StatelessWidget {
+  const ChannelGlyph({super.key, this.size = 22, this.color = Gp.ink});
+
+  final double size;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) =>
+      CustomPaint(size: Size.square(size), painter: _ChannelGlyphPainter(color));
+}
+
+class _ChannelGlyphPainter extends CustomPainter {
+  const _ChannelGlyphPainter(this.color);
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size s) {
+    final p = Paint()
+      ..color = color
+      ..strokeWidth = s.width * 0.085
+      ..strokeCap = StrokeCap.round;
+    canvas
+      ..drawLine(Offset(s.width * 0.12, s.height * 0.26), Offset(s.width * 0.52, s.height * 0.26), p)
+      ..drawLine(Offset(s.width * 0.12, s.height * 0.5), Offset(s.width * 0.88, s.height * 0.5), p)
+      ..drawLine(Offset(s.width * 0.48, s.height * 0.74), Offset(s.width * 0.88, s.height * 0.74), p);
+  }
+
+  @override
+  bool shouldRepaint(_ChannelGlyphPainter old) => old.color != color;
+}
+
 String _comma(int v) => v.toString().replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (_) => ',');
 
 /// 일본 정가: ¥3,850 (없으면 '가격 미정')
