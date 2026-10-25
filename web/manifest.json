@@ -1,11 +1,11 @@
 {
-    "name": "hobbyDB v2",
-    "short_name": "hobbyDB v2",
+    "name": "Gunpula v2",
+    "short_name": "Gunpula",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "hobbyDB v2 — 건프라 컬렉션을 도감처럼 채우는 수집 관리 앱 (UI 프로토타입)",
+    "description": "Gunpula v2 — 관심 IP의 새 소식 · 발매일과 내 컬렉션(좋아요 · 구매함 · 도감)을 한 앱에서 (GAI3008 중간고사 UI 프로토타입)",
     "orientation": "any",
     "prefer_related_applications": false,
     "icons": [
