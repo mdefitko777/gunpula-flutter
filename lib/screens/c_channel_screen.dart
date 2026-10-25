@@ -170,6 +170,8 @@ class _ChannelTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
+      hoverColor: Colors.transparent, // 마우스를 올려도 회색 상자가 생기지 않게
+      highlightColor: Colors.transparent,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Column(

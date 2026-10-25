@@ -27,6 +27,7 @@ import 'a_home_screen.dart';
 import 'b_search_screen.dart';
 import 'c_channel_screen.dart';
 import 'e_camera_screen.dart';
+import 'f_collection_screen.dart';
 
 /// 넓은 화면 기준 (Material 3 window size class: expanded ≥ 840dp)
 const railBreakpoint = 840.0;
@@ -115,6 +116,16 @@ class _AppShellState extends State<AppShell> {
             onMyChannelsChanged: _setChannels,
             onCamera: _openAdd,
             focusTick: _searchFocusTick,
+            loaders: widget.loaders,
+          )
+        : i == 3
+        ? CollectionScreen(
+            // F
+            key: const ValueKey(3),
+            leading: wide ? null : avatar,
+            myChannels: _myChannels,
+            onMyChannelsChanged: _setChannels,
+            onGoSearch: _goSearch,
             loaders: widget.loaders,
           )
         : _TabPage(
