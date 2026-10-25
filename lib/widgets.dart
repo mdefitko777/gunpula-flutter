@@ -635,6 +635,16 @@ class _QuickMarksState extends State<QuickMarks> {
   late bool _liked = widget.liked;
   late bool _owned = widget.owned;
 
+  /// 거르기 · 정렬로 같은 자리에 다른 상품이 오면 그 상품의 값으로 다시 시작
+  @override
+  void didUpdateWidget(QuickMarks old) {
+    super.didUpdateWidget(old);
+    if (old.name != widget.name || old.liked != widget.liked || old.owned != widget.owned) {
+      _liked = widget.liked;
+      _owned = widget.owned;
+    }
+  }
+
   void _like() {
     final before = _liked;
     setState(() => _liked = !before); // STATE: 좋아요 → 하트 채움

@@ -6,7 +6,7 @@
 // │ A-2  │ GpSearchBar 입구 (탭하면 검색 탭)   │ 검색창(검색 화면과 같은 모양) · 카메라  │ P07 · P04     │
 // │ A-3  │ PageView(화면 끝까지) + 점 표시     │ 공식 예고 배너 (완성된 홍보 이미지)     │ P08 · P02     │
 // │ A-4  │ 배너 아래 상태 · 제목               │ 예고 상태(공식 발표·상품화 확정·예약)   │ P01           │
-// │ A-5  │ SectionHeader (색 막대 + ›)         │ 줄 이름 · 전체 보기 (최근 추가는 기간)  │ P06 · P07     │
+// │ A-5  │ SectionHeader (색 막대 + ›)         │ 줄 이름 · 전체 보기 → O 전체 목록       │ P06 · P07     │
 // │ A-6  │ 가로 ListView + ProductTile         │ 최근 추가 · 10월 발매 · 공식 예고 · 최근 본 │ P08        │
 // │ A-7  │ LoadingView / ErrorView / EmptyView │ 불러오는 중 · 오류 · 빈 채널           │ P01 · P09     │
 // │ A-8  │ 흰 띠(섹션마다) + 회백색 틈          │ 줄과 줄 사이 층 구분                   │ P08 · P04     │
@@ -25,6 +25,7 @@ import '../widgets.dart';
 import 'c_channel_screen.dart';
 import 'd_kit_detail_screen.dart';
 import 'j_announcement_screen.dart';
+import 'o_see_all_screen.dart';
 
 /// 가짜 "최근 본 상품" 기록 — 영구 저장 금지라 상수로 둔다.
 const recentViewedIds = ['gu03', 'be43', 'po21', 'fa30', 'ar35'];
@@ -76,8 +77,11 @@ class _Item {
 
 /// 가로 줄 하나
 class _Row {
-  const _Row(this.title, this.items, {this.subtitle = '', this.wide = false});
+  const _Row(this.title, this.items, {required this.onMore, this.subtitle = '', this.wide = false});
   final String title;
+
+  /// › → O 전체 목록
+  final VoidCallback onMore;
   final List<_Item> items;
   final String subtitle;
   final bool wide;
@@ -114,7 +118,8 @@ class _HomeScreenState extends State<HomeScreen> with ChannelScope {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ChannelHeader( // A-1 P04
+        ChannelHeader(
+          // A-1 P04
           leading: widget.leading,
           myChannels: widget.myChannels,
           selected: channel,
@@ -129,7 +134,8 @@ class _HomeScreenState extends State<HomeScreen> with ChannelScope {
                 return const LoadingView(); // A-7 P01
               }
               if (snap.hasError) {
-                return ErrorView( // A-7 P09
+                return ErrorView(
+                  // A-7 P09
                   message: '${snap.error}',
                   onRetry: () => setState(reloadScope),
                 );
@@ -153,7 +159,8 @@ class _HomeScreenState extends State<HomeScreen> with ChannelScope {
       return ListView(
         children: [
           search,
-          EmptyView( // A-7 P09
+          EmptyView(
+            // A-7 P09
             icon: Icons.auto_awesome_outlined,
             message: ids.isEmpty
                 ? '내 채널이 비어 있어요'
@@ -163,10 +170,7 @@ class _HomeScreenState extends State<HomeScreen> with ChannelScope {
             detail: ids.isEmpty ? '채널 관리에서 관심 IP를 추가하세요' : '상품이 들어오면 여기에 먼저 보여요',
             action: channel == allChannelId
                 ? null
-                : OutlinedButton(
-                    onPressed: () => selectChannel(allChannelId),
-                    child: const Text('전체 보기'),
-                  ),
+                : OutlinedButton(onPressed: () => selectChannel(allChannelId), child: const Text('전체 보기')),
           ),
         ],
       );
@@ -174,14 +178,51 @@ class _HomeScreenState extends State<HomeScreen> with ChannelScope {
 
     final byId = {for (final k in data.kits) k.id: k};
     _Item kitItem(Kit k) => _Item(k.image, k.name, kit: k);
+    final recent = [
+      for (final k in data.kits)
+        if (k.recent) k,
+    ];
+    final month = [
+      for (final k in data.kits)
+        if (k.month) k,
+    ];
+    final viewed = [for (final id in recentViewedIds) ?byId[id]];
+    // 전체 목록 제목 옆: 채널 하나를 보고 있으면 그 이름
+    final scope = channel == allChannelId ? '' : channelOf(channel).label;
+    void seeAll(
+      String title, {
+      List<Kit> kits = const [],
+      List<Announcement> anns = const [],
+      String sub = '',
+      bool history = false,
+      KitSort sort = KitSort.newest,
+    }) => openSeeAll(
+      context,
+      title: title,
+      subtitle: joinDot([scope, sub]),
+      kits: kits,
+      announcements: anns,
+      history: history,
+      sort: sort,
+      loaders: widget.loaders,
+    );
     final rows = [
-      _Row('최근 추가', [for (final k in data.kits.where((k) => k.recent)) kitItem(k)],
-          subtitle: recentRangeLabel),
-      _Row(currentMonthTitle, [for (final k in data.kits.where((k) => k.month)) kitItem(k)]),
-      _Row('공식 예고', [
-        for (final a in data.announcements) _Item(a.image, a.title, ann: a),
-      ], wide: true),
-      _Row('최근 본', [for (final id in recentViewedIds) if (byId[id] case final k?) kitItem(k)]),
+      _Row(
+        '최근 추가',
+        [for (final k in recent) kitItem(k)],
+        subtitle: recentRangeLabel,
+        onMore: () => seeAll('최근 추가', kits: recent, sub: recentRangeLabel),
+      ),
+      _Row(currentMonthTitle, [
+        for (final k in month) kitItem(k),
+      ], onMore: () => seeAll(currentMonthTitle, kits: month, sort: KitSort.release)),
+      _Row(
+        '공식 예고',
+        [for (final a in data.announcements) _Item(a.image, a.title, ann: a)],
+        wide: true,
+        onMore: () => seeAll('공식 예고', anns: data.announcements),
+      ),
+      _Row('최근 본', [for (final k in viewed) kitItem(k)], onMore: () => seeAll('최근 본', kits: viewed, history: true)),
     ];
     final heroes = data.announcements.where((a) => a.hero).toList();
 
@@ -192,22 +233,25 @@ class _HomeScreenState extends State<HomeScreen> with ChannelScope {
         if (heroes.isNotEmpty)
           ColoredBox(
             color: Gp.panel,
-            child: _HeroBanner( // A-3
+            child: _HeroBanner(
+              // A-3
               items: heroes,
               onTap: (a) => openAnnouncement(context, a, loaders: widget.loaders),
             ),
           ),
         for (final row in rows)
           if (row.items.isNotEmpty)
-            SectionPanel( // A-8 흰 띠 + 회백색 틈 = 층 구분 (상세와 같은 부품)
+            SectionPanel(
+              // A-8 흰 띠 + 회백색 틈 = 층 구분 (상세와 같은 부품)
               padding: const EdgeInsets.only(bottom: 18),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SectionHeader( // A-5 P06
+                  SectionHeader(
+                    // A-5 P06
                     row.title,
                     subtitle: row.subtitle,
-                    onMore: () => showSoon(context, '${row.title} 전체 목록'),
+                    onMore: row.onMore, // → O 전체 목록
                   ),
                   _HorizontalRow(row: row, loaders: widget.loaders), // A-6 P08
                 ],
@@ -260,11 +304,7 @@ class _HeroBannerState extends State<_HeroBanner> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(
-                          height: imageHeight,
-                          width: double.infinity,
-                          child: AppImage(a.image),
-                        ),
+                        SizedBox(height: imageHeight, width: double.infinity, child: AppImage(a.image)),
                         Padding(
                           padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
                           child: Column(
@@ -340,7 +380,13 @@ class _HorizontalRow extends StatelessWidget {
                 openAnnouncement(context, ann, loaders: loaders);
               }
             },
-            marks: kit == null ? null : QuickMarks(name: kit.name, liked: kit.status == CollectStatus.wanted, owned: kit.status == CollectStatus.owned), // A-9 P07
+            marks: kit == null
+                ? null
+                : QuickMarks(
+                    name: kit.name,
+                    liked: kit.status == CollectStatus.wanted,
+                    owned: kit.status == CollectStatus.owned,
+                  ), // A-9 P07
           );
         },
       ),
