@@ -103,7 +103,8 @@ class _AppShellState extends State<AppShell> {
     );
   }
 
-  void _openProfile() => openProfile( // S-1 → I 내 정보
+  void _openProfile() => openProfile(
+    // S-1 → I 내 정보
     context,
     loaders: widget.loaders,
     myChannels: _myChannels,
@@ -117,7 +118,10 @@ class _AppShellState extends State<AppShell> {
 
   @override
   Widget build(BuildContext context) {
-    final wide = MediaQuery.sizeOf(context).width >= railBreakpoint;
+    final size = MediaQuery.sizeOf(context);
+    // 넓은 창 · 가로로 눕힌 폰(높이가 낮음) → 측면 탭: 위 아바타 줄과 아래 탭 바를 빼서 내용 높이를 확보
+    final shortLandscape = size.width > size.height && size.height < 520;
+    final wide = size.width >= railBreakpoint || shortLandscape;
     // S-1 P04 아바타 → 친구 서랍(M). 서랍 머리의 아바타를 한 번 더 누르면 내 정보(I)
     final avatar = RingAvatar(
       text: 'A',
@@ -126,7 +130,8 @@ class _AppShellState extends State<AppShell> {
       tooltip: '친구 · 내 정보',
       onTap: () => _scaffold.currentState?.openDrawer(),
     );
-    final bell = IconButton( // S-9 알림 (N)
+    final bell = IconButton(
+      // S-9 알림 (N)
       tooltip: '알림',
       onPressed: () => openNotifications(context, myChannels: _myChannels, loaders: widget.loaders), // N
       icon: const Badge(
@@ -135,7 +140,8 @@ class _AppShellState extends State<AppShell> {
         child: Icon(Icons.notifications_none, color: Gp.ink),
       ),
     );
-    final gear = IconButton( // S-10 설정
+    final gear = IconButton(
+      // S-10 설정
       tooltip: '설정',
       onPressed: () => openSettings(context),
       icon: const Icon(Icons.settings_outlined, color: Gp.ink),
@@ -204,31 +210,51 @@ class _AppShellState extends State<AppShell> {
         child: wide
             ? Row(
                 children: [
-                  NavigationRail(
-                    // S-5
-                    selectedIndex: _tab,
-                    labelType: NavigationRailLabelType.all,
-                    onDestinationSelected: (i) => setState(() => _tab = i),
-                    leading: Column(
-                      children: [
-                        const SizedBox(height: 8),
-                        avatar,
-                        const SizedBox(height: 8),
-                        bell,
-                        gear,
-                        const SizedBox(height: 10),
-                        _CameraButton(onTap: _openAdd),
-                        const SizedBox(height: 8),
-                      ],
-                    ),
-                    destinations: [
-                      for (final t in _tabs)
-                        NavigationRailDestination(
-                          icon: Icon(t.$1),
-                          selectedIcon: Icon(t.$2),
-                          label: Text(t.$3),
+                  // S-5 높이가 모자라면 측면 탭이 위아래로 스크롤 (넘침 방지)
+                  LayoutBuilder(
+                    builder: (context, box) => SingleChildScrollView(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(minHeight: box.maxHeight),
+                        child: IntrinsicHeight(
+                          child: NavigationRail(
+                            selectedIndex: _tab,
+                            labelType: shortLandscape ? NavigationRailLabelType.none : NavigationRailLabelType.all,
+                            onDestinationSelected: (i) => setState(() => _tab = i),
+                            // 가로 폰: 탭이 먼저 보이게 — 아바타 / 탭 4개 / 🔔 ⚙ 한 줄 (카메라는 검색창 카메라로)
+                            leading: shortLandscape
+                                ? Padding(padding: const EdgeInsets.only(top: 4), child: avatar)
+                                : Column(
+                                    children: [
+                                      const SizedBox(height: 8),
+                                      avatar,
+                                      const SizedBox(height: 8),
+                                      bell,
+                                      gear,
+                                      const SizedBox(height: 10),
+                                      _CameraButton(onTap: _openAdd),
+                                      const SizedBox(height: 8),
+                                    ],
+                                  ),
+                            trailing: shortLandscape
+                                ? IconButtonTheme(
+                                    data: const IconButtonThemeData(
+                                      style: ButtonStyle(visualDensity: VisualDensity.compact),
+                                    ),
+                                    child: Row(mainAxisSize: MainAxisSize.min, children: [bell, gear]),
+                                  )
+                                : null,
+                            destinations: [
+                              for (final t in _tabs)
+                                NavigationRailDestination(
+                                  icon: Icon(t.$1),
+                                  selectedIcon: Icon(t.$2),
+                                  label: Text(t.$3),
+                                ),
+                            ],
+                          ),
                         ),
-                    ],
+                      ),
+                    ),
                   ),
                   const VerticalDivider(width: 1),
                   Expanded(child: body),
@@ -321,14 +347,16 @@ class _NarrowLayout extends StatelessWidget {
             left: 0,
             right: 0,
             bottom: 0,
-            child: AnimatedSlide( // S-8
+            child: AnimatedSlide(
+              // S-8
               offset: barShown ? Offset.zero : const Offset(0, 1.1),
               duration: duration,
               curve: curve,
               child: bar,
             ),
           ),
-          AnimatedPositioned( // S-8 P07
+          AnimatedPositioned(
+            // S-8 P07
             duration: duration,
             curve: curve,
             left: barShown ? (box.maxWidth - _cameraSize) / 2 : box.maxWidth - _cameraSize - 18,

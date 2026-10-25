@@ -87,8 +87,10 @@ class _CalendarScreenState extends State<CalendarScreen> with ChannelScope {
   @override
   void loadScope(List<String> ids) {
     // STATE: 채널 → GET /kits · /announcements → 달력 점 · 일정 목록
-    _future = Future.wait([widget.loaders.kits(ids), widget.loaders.announcements(ids)])
-        .then((r) => _CalData(r[0] as List<Kit>, r[1] as List<Announcement>));
+    _future = Future.wait([
+      widget.loaders.kits(ids),
+      widget.loaders.announcements(ids),
+    ]).then((r) => _CalData(r[0] as List<Kit>, r[1] as List<Announcement>));
   }
 
   @override
@@ -123,8 +125,7 @@ class _CalendarScreenState extends State<CalendarScreen> with ChannelScope {
             day: dayOf(k.date),
           ),
       for (final a in d.announcements)
-        if (a.date.startsWith(ym))
-          _Event(title: a.title, image: a.image, sub: a.source, ann: a, day: dayOf(a.date)),
+        if (a.date.startsWith(ym)) _Event(title: a.title, image: a.image, sub: a.source, ann: a, day: dayOf(a.date)),
     ];
   }
 
@@ -132,7 +133,8 @@ class _CalendarScreenState extends State<CalendarScreen> with ChannelScope {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ChannelHeader( // H-1 P04
+        ChannelHeader(
+          // H-1 P04
           leading: widget.leading,
           myChannels: widget.myChannels,
           selected: channel,
@@ -151,8 +153,14 @@ class _CalendarScreenState extends State<CalendarScreen> with ChannelScope {
               final calendar = _MonthCalendar(
                 month: _month,
                 selected: _day,
-                releaseDays: {for (final e in events) if (e.isRelease) ?e.day},
-                noticeDays: {for (final e in events) if (!e.isRelease) ?e.day},
+                releaseDays: {
+                  for (final e in events)
+                    if (e.isRelease) ?e.day,
+                },
+                noticeDays: {
+                  for (final e in events)
+                    if (!e.isRelease) ?e.day,
+                },
                 onPrev: () => _moveMonth(-1),
                 onNext: () => _moveMonth(1),
                 onToday: () => setState(() {
@@ -190,7 +198,8 @@ class _CalendarScreenState extends State<CalendarScreen> with ChannelScope {
   List<Widget> _list(List<_Event> all) {
     final inDay = _day == null ? all : all.where((e) => e.day == _day).toList();
     final shown = inDay.where((e) => _kind == 0 || (_kind == 1) == e.isRelease).toList();
-    final kinds = Padding( // H-3b 종류 거르기
+    final kinds = Padding(
+      // H-3b 종류 거르기
       padding: const EdgeInsets.fromLTRB(8, 10, 8, 0),
       child: Row(
         children: [
@@ -212,7 +221,8 @@ class _CalendarScreenState extends State<CalendarScreen> with ChannelScope {
     if (shown.isEmpty) {
       return [
         kinds,
-        EmptyView( // H-8 P09
+        EmptyView(
+          // H-8 P09
           icon: Icons.event_busy_outlined,
           message: _day == null ? '${_month.month}월에는 발매 · 예고 일정이 없어요' : '${_month.month}월 $_day일에는 일정이 없어요',
           detail: _day == null ? '다른 달로 넘기거나 채널을 바꿔 보세요' : '날짜를 다시 누르면 한 달 전체를 봐요',
@@ -226,15 +236,21 @@ class _CalendarScreenState extends State<CalendarScreen> with ChannelScope {
       if (_day != null)
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-          child: Text('${_month.month}월 $_day일만 보는 중 · 날짜를 다시 누르면 한 달 전체',
-              style: const TextStyle(color: Gp.muted, fontSize: 12.5)),
+          child: Text(
+            '${_month.month}월 $_day일만 보는 중 · 날짜를 다시 누르면 한 달 전체',
+            style: const TextStyle(color: Gp.muted, fontSize: 12.5),
+          ),
         ),
       for (final d in days) ...[
         _DayHeader(date: DateTime(_month.year, _month.month, d)), // H-5
         for (final e in shown.where((e) => e.day == d)) _EventRow(event: e, dday: _dday(d), loaders: widget.loaders),
       ],
       if (undated.isNotEmpty) ...[
-        SectionHeader('날짜 미정', subtitle: '${_month.month}월 중', padding: const EdgeInsets.fromLTRB(16, 20, 12, 8)), // H-6
+        SectionHeader(
+          '날짜 미정',
+          subtitle: '${_month.month}월 중',
+          padding: const EdgeInsets.fromLTRB(16, 20, 12, 8),
+        ), // H-6
         for (final e in undated) _EventRow(event: e, dday: '', loaders: widget.loaders),
       ],
     ];
@@ -302,7 +318,10 @@ class _MonthCalendar extends StatelessWidget {
             ],
           ),
           if (!isThisMonth)
-            TextButton(onPressed: onToday, child: const Text('오늘로', style: TextStyle(color: Gp.accent))), // P07
+            TextButton(
+              onPressed: onToday,
+              child: const Text('오늘로', style: TextStyle(color: Gp.accent)),
+            ), // P07
           Row(
             children: [
               for (final (i, w) in _weekdays.indexed)
@@ -402,40 +421,45 @@ class _DayCell extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 32,
-            height: 32,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: selected ? Gp.accent.withValues(alpha: 0.12) : null,
-              border: today ? Border.all(color: Gp.ink, width: 1.2) : null, // 오늘
-            ),
-            child: Text(
-              '$day',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: selected || today ? FontWeight.w700 : FontWeight.w400,
-                color: selected ? Gp.accent : (sunday ? Gp.danger : Gp.ink),
+      // 칸이 낮으면(작은 폰 · 가로) 통째로 줄인다
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 32,
+              height: 32,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: selected ? Gp.accent.withValues(alpha: 0.12) : null,
+                border: today ? Border.all(color: Gp.ink, width: 1.2) : null, // 오늘
+              ),
+              child: Text(
+                '$day',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: selected || today ? FontWeight.w700 : FontWeight.w400,
+                  color: selected ? Gp.accent : (sunday ? Gp.danger : Gp.ink),
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 2),
-          SizedBox( // H-3 ● 발매일 · ○ 예고·공지
-            height: 6,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (release) const _Dot(filled: true),
-                if (release && notice) const SizedBox(width: 3),
-                if (notice) const _Dot(filled: false),
-              ],
+            const SizedBox(height: 2),
+            SizedBox(
+              // H-3 ● 발매일 · ○ 예고·공지
+              height: 6,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (release) const _Dot(filled: true),
+                  if (release && notice) const SizedBox(width: 3),
+                  if (notice) const _Dot(filled: false),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -467,7 +491,8 @@ class _EventRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final kit = event.kit;
     final ann = event.ann;
-    return ThumbRow( // H-5 — 컬렉션·검색과 같은 줄
+    return ThumbRow(
+      // H-5 — 컬렉션·검색과 같은 줄
       image: event.image,
       title: event.title,
       subtitle: event.sub,
@@ -483,7 +508,10 @@ class _EventRow extends StatelessWidget {
       },
       trailing: dday.isEmpty
           ? null
-          : Text(dday, style: const TextStyle(fontWeight: FontWeight.w700, color: Gp.accent, fontSize: 13)),
+          : Text(
+              dday,
+              style: const TextStyle(fontWeight: FontWeight.w700, color: Gp.accent, fontSize: 13),
+            ),
     );
   }
 }

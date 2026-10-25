@@ -1,0 +1,100 @@
+// 화면 크기별 배치 테스트 — 작은 폰 · 보통 폰 · 가로 폰 · 태블릿 · 넓은 창에서
+// 주요 화면을 그려 보고, 넘침(RenderFlex overflowed) 같은 그리기 오류가 없는지 확인한다.
+// 데이터는 mock_server/db.json 을 직접 읽는 가짜 Loaders (서버 없이 돌아감).
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mid_project_template/api.dart';
+import 'package:mid_project_template/models.dart';
+import 'package:mid_project_template/screens/d_kit_detail_screen.dart';
+import 'package:mid_project_template/screens/f_collection_screen.dart';
+import 'package:mid_project_template/screens/g_guide_view.dart';
+import 'package:mid_project_template/screens/i_profile_screen.dart';
+import 'package:mid_project_template/screens/l_friend_collection_screen.dart';
+import 'package:mid_project_template/screens/n_notifications_screen.dart';
+import 'package:mid_project_template/screens/s_app_shell.dart';
+import 'package:mid_project_template/theme.dart';
+
+final Map<String, Object?> db = jsonDecode(File('mock_server/db.json').readAsStringSync()) as Map<String, Object?>;
+
+List<T> _list<T extends Object>(String key, T? Function(Object?) parse) =>
+    (db[key]! as List).map(parse).nonNulls.toList();
+
+int _byDateDesc(Kit a, Kit b) => b.date.compareTo(a.date);
+
+/// db.json 을 그대로 쓰는 가짜 Loaders
+final fakeLoaders = Loaders(
+  kits: (ids) async => _list<Kit>('kits', Kit.fromJson).where((k) => ids.contains(k.franchiseId)).toList()..sort(_byDateDesc),
+  collection: () async =>
+      _list<Kit>('kits', Kit.fromJson).where((k) => k.status != CollectStatus.none).toList()..sort(_byDateDesc),
+  kitsByIds: (ids) async => _list<Kit>('kits', Kit.fromJson).where((k) => ids.contains(k.id)).toList(),
+  worlds: (c) async => _list<World>('worlds', World.fromJson).where((w) => w.franchiseId == c).toList(),
+  guideWorks: () async => _list<GuideWork>('guideWorks', GuideWork.fromJson),
+  guideUnits: (id) async =>
+      (db['guideUnits']! as List).where((u) => (u as Map)['workId'] == id).map(GuideUnit.fromJson).nonNulls.toList(),
+  bbxTops: () async => _list<BbxTop>('bbxTops', BbxTop.fromJson),
+  announcements: (ids) async =>
+      _list<Announcement>('announcements', Announcement.fromJson).where((a) => ids.contains(a.franchiseId)).toList()
+        ..sort((a, b) => b.date.compareTo(a.date)),
+  profile: () async => Profile.fromJson(db['profile'])!,
+  notifications: () async => _list<AppNotice>('notifications', AppNotice.fromJson)..sort((a, b) => b.at.compareTo(a.at)),
+);
+
+/// 작은 폰 · 보통 폰 · 가로 폰 · 태블릿 세로 · 넓은 창
+const sizes = <String, Size>{
+  '작은 폰 320×568': Size(320, 568),
+  '보통 폰 390×844': Size(390, 844),
+  '가로 폰 844×390': Size(844, 390),
+  '태블릿 768×1024': Size(768, 1024),
+  '넓은 창 1280×800': Size(1280, 800),
+};
+
+Future<void> _show(WidgetTester tester, Size size, Widget home) async {
+  tester.view.physicalSize = size;
+  tester.view.devicePixelRatio = 1;
+  addTearDown(tester.view.reset);
+  await tester.pumpWidget(MaterialApp(theme: buildGpTheme(), home: home));
+  // 끝없는 애니메이션(색 고리 · 배너 자동 넘김)이 있어 pumpAndSettle 대신 몇 번 나눠 그린다
+  for (var i = 0; i < 6; i++) {
+    await tester.pump(const Duration(milliseconds: 300));
+  }
+}
+
+void main() {
+  final kit = _list<Kit>('kits', Kit.fromJson).firstWhere((k) => k.id == 'gu02');
+  final friend = Profile.fromJson(db['profile'])!.friends.first;
+  final seed = _list<GuideWork>('guideWorks', GuideWork.fromJson).firstWhere((w) => w.id == 'w3000');
+
+  final screens = <String, Widget Function()>{
+    '앱 셸 · 홈': () => AppShell(loaders: fakeLoaders),
+    '상품 상세': () => KitDetailScreen(kit: kit, loaders: fakeLoaders),
+    '내 정보': () => ProfileScreen(loaders: fakeLoaders, onJump: (_) {}),
+    '친구 컬렉션': () => FriendCollectionScreen(friend: friend, initial: CollectionJump.guide, loaders: fakeLoaders),
+    '알림': () => NotificationsScreen(myChannels: const ['gundam', 'beyblade', 'pokemon'], loaders: fakeLoaders),
+    '작품 도감': () => WorkGuideScreen(work: seed, loaders: fakeLoaders),
+  };
+
+  for (final s in sizes.entries) {
+    group(s.key, () {
+      for (final e in screens.entries) {
+        testWidgets(e.key, (tester) async {
+          await _show(tester, s.value, e.value());
+          expect(tester.takeException(), isNull);
+        });
+      }
+
+      testWidgets('앱 셸 · 탭 4개 돌기', (tester) async {
+        await _show(tester, s.value, AppShell(loaders: fakeLoaders));
+        for (final icon in [Icons.search, Icons.calendar_today_outlined, Icons.bookmark_border]) {
+          await tester.tap(find.byIcon(icon).last);
+          for (var i = 0; i < 5; i++) {
+            await tester.pump(const Duration(milliseconds: 300));
+          }
+          expect(tester.takeException(), isNull);
+        }
+      });
+    });
+  }
+}

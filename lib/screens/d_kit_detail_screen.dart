@@ -34,7 +34,9 @@ import '../widgets.dart';
 /// 상품 상세 열기 — 어느 화면에서든 같은 방식(오른쪽에서 밀려 들어옴)
 void openKitDetail(BuildContext context, Kit kit, {Loaders loaders = const Loaders()}) {
   Navigator.of(context, rootNavigator: true).push(
-    CupertinoPageRoute<void>(builder: (_) => KitDetailScreen(kit: kit, loaders: loaders)),
+    CupertinoPageRoute<void>(
+      builder: (_) => KitDetailScreen(kit: kit, loaders: loaders),
+    ),
   );
 }
 
@@ -105,8 +107,7 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
               decoration: const InputDecoration(hintText: '예: 38000', suffixText: '원'),
             ),
             const SizedBox(height: 6),
-            Text('정가 ${yen(k.priceJpy)} · 컬렉션 지출 합계에 들어가요',
-                style: const TextStyle(fontSize: 12.5, color: Gp.muted)),
+            Text('정가 ${yen(k.priceJpy)} · 컬렉션 지출 합계에 들어가요', style: const TextStyle(fontSize: 12.5, color: Gp.muted)),
             const SizedBox(height: 14),
             FilledButton(
               onPressed: () {
@@ -114,8 +115,11 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
                 Navigator.pop(sheet);
                 final before = _paid;
                 setState(() => _paid = v); // STATE: 구매가 → 줄 금액
-                showToast(context, v == null ? '구매가를 지웠어요' : '구매가 ${won(v)}을 적었어요',
-                    onUndo: () => setState(() => _paid = before));
+                showToast(
+                  context,
+                  v == null ? '구매가를 지웠어요' : '구매가 ${won(v)}을 적었어요',
+                  onUndo: () => setState(() => _paid = before),
+                );
               },
               style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(46)),
               child: const Text('적기'),
@@ -129,15 +133,13 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
   void _toggleWanted() {
     final before = _wanted;
     setState(() => _wanted = !before); // STATE: 좋아요 → 하트 채움
-    showToast(context, before ? '좋아요를 취소했어요' : '좋아요를 눌렀어요',
-        onUndo: () => setState(() => _wanted = before));
+    showToast(context, before ? '좋아요를 취소했어요' : '좋아요를 눌렀어요', onUndo: () => setState(() => _wanted = before));
   }
 
   void _toggleOwned() {
     final before = _owned;
     setState(() => _owned = !before); // STATE: 구매함 → 버튼
-    showToast(context, before ? '구매함에서 뺐어요' : '구매함에 넣었어요',
-        onUndo: () => setState(() => _owned = before));
+    showToast(context, before ? '구매함에서 뺐어요' : '구매함에 넣었어요', onUndo: () => setState(() => _owned = before));
   }
 
   void _copy(String text, String what) {
@@ -148,12 +150,15 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
   void _external(String where) => showToast(context, '$where 은(는) 프로토타입에서 열지 않아요');
 
   Future<void> _report() async {
-    final ok = await showDialog<bool>( // D-12 P05
+    final ok = await showDialog<bool>(
+      // D-12 P05
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('정보 오류 제보'),
-        content: Text('「${k.name}」의 이름 · 가격 · 발매일 중 틀린 곳을 운영자에게 알릴까요?\n'
-            '보낸 뒤에는 운영자가 확인할 때까지 그대로 보여요.'),
+        content: Text(
+          '「${k.name}」의 이름 · 가격 · 발매일 중 틀린 곳을 운영자에게 알릴까요?\n'
+          '보낸 뒤에는 운영자가 확인할 때까지 그대로 보여요.',
+        ),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('취소')),
           FilledButton(onPressed: () => Navigator.pop(context, true), child: const Text('제보하기')),
@@ -176,7 +181,8 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
   ].where((e) => e.$2.isNotEmpty).toList();
 
   void _openSpecs() {
-    showModalBottomSheet<void>( // D-8 덮기
+    showModalBottomSheet<void>(
+      // D-8 덮기
       context: context,
       isScrollControlled: true,
       builder: (context) => _SpecSheet(specs: _specs),
@@ -188,7 +194,8 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: _BottomActions( // D-6 · D-14
+      bottomNavigationBar: _BottomActions(
+        // D-6 · D-14
         wanted: _wanted,
         owned: _owned,
         onWanted: _toggleWanted,
@@ -208,7 +215,10 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
-                      child: ColoredBox(color: Gp.panel, child: SafeArea(child: Center(child: gallery))),
+                      child: ColoredBox(
+                        color: Gp.panel,
+                        child: SafeArea(child: Center(child: gallery)),
+                      ),
                     ),
                     SizedBox(
                       width: (box.maxWidth * 0.46).clamp(360.0, 560.0),
@@ -220,14 +230,18 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
                 ListView(
                   padding: EdgeInsets.zero,
                   children: [
-                    ColoredBox(color: Gp.panel, child: SafeArea(bottom: false, child: gallery)),
+                    ColoredBox(
+                      color: Gp.panel,
+                      child: SafeArea(bottom: false, child: gallery),
+                    ),
                     ...info,
                   ],
                 ),
               SafeArea(
                 child: Padding(
                   padding: const EdgeInsets.all(12),
-                  child: RaisedCircleButton( // D-1 P03
+                  child: RaisedCircleButton(
+                    // D-1 P03
                     tooltip: '뒤로',
                     size: 40,
                     onTap: () => Navigator.of(context).maybePop(),
@@ -258,22 +272,22 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
               Text(k.nameJa, style: const TextStyle(fontSize: 12.5, color: Gp.faint)),
             ],
             const SizedBox(height: 14),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
+            // 좁은 화면에서는 다음 줄로 넘어가게 (Wrap)
+            Wrap(
+              crossAxisAlignment: WrapCrossAlignment.end,
+              spacing: 10,
+              runSpacing: 6,
               children: [
                 Text(
                   yen(k.priceJpy), // D-5 P02
                   style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
                 ),
-                const SizedBox(width: 10),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 3),
                   child: Text('발매 ${k.date}', style: const TextStyle(color: Gp.muted, fontSize: 13)),
                 ),
-                const Spacer(),
-                if (k.limited)
-                  const Padding(padding: EdgeInsets.only(left: 6), child: TagPill('한정', strong: true)),
-                if (k.pb) const Padding(padding: EdgeInsets.only(left: 6), child: TagPill('PB', strong: true)),
+                if (k.limited) const TagPill('한정', strong: true),
+                if (k.pb) const TagPill('PB', strong: true),
               ],
             ),
             const SizedBox(height: 10),
@@ -283,10 +297,7 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
               borderRadius: BorderRadius.circular(Gp.radius),
               child: Container(
                 padding: const EdgeInsets.fromLTRB(12, 10, 6, 10),
-                decoration: BoxDecoration(
-                  color: Gp.bg,
-                  borderRadius: BorderRadius.circular(Gp.radius),
-                ),
+                decoration: BoxDecoration(color: Gp.bg, borderRadius: BorderRadius.circular(Gp.radius)),
                 child: Row(
                   children: [
                     const Text('국내 시세', style: TextStyle(fontSize: 13, color: Gp.muted)),
@@ -337,8 +348,10 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
                           ),
                         ),
                       ),
-                      Text(_paid == null ? '적기' : '수정',
-                          style: const TextStyle(fontSize: 13, color: Gp.accent, fontWeight: FontWeight.w600)),
+                      Text(
+                        _paid == null ? '적기' : '수정',
+                        style: const TextStyle(fontSize: 13, color: Gp.accent, fontWeight: FontWeight.w600),
+                      ),
                     ],
                   ),
                 ),
@@ -386,7 +399,11 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
                       title: rest[i].name,
                       imageWidth: 148,
                       onTap: () => openKitDetail(context, rest[i], loaders: widget.loaders),
-                      marks: QuickMarks(name: rest[i].name, liked: rest[i].status == CollectStatus.wanted, owned: rest[i].status == CollectStatus.owned),
+                      marks: QuickMarks(
+                        name: rest[i].name,
+                        liked: rest[i].status == CollectStatus.wanted,
+                        owned: rest[i].status == CollectStatus.owned,
+                      ),
                     ),
                   ),
                 ),
@@ -575,7 +592,9 @@ class _SpecSheet extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 child: Row(
                   children: [
-                    Expanded(child: Text(e.$1, style: const TextStyle(color: Gp.muted))),
+                    Expanded(
+                      child: Text(e.$1, style: const TextStyle(color: Gp.muted)),
+                    ),
                     Expanded(child: Text(e.$2, style: const TextStyle(fontSize: 15))),
                   ],
                 ),
@@ -697,7 +716,8 @@ class _BottomActions extends StatelessWidget {
                 small(Icons.north_east, '공식', onOfficial), // P10 출처
                 const SizedBox(width: 6),
                 Expanded(
-                  child: TogglePill( // P03
+                  child: TogglePill(
+                    // P03
                     label: '좋아요',
                     icon: Icons.favorite_border,
                     activeIcon: Icons.favorite,

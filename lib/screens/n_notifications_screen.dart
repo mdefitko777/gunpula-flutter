@@ -244,8 +244,12 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     );
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 2, 8, 4),
-      child: Row(
-        children: [tab('전체', _Tab.all), tab('상품', _Tab.goods), tab('예고', _Tab.announce), tab('친구', _Tab.friends)],
+      child: SingleChildScrollView(
+        // 좁은 화면에서는 옆으로 밀기
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [tab('전체', _Tab.all), tab('상품', _Tab.goods), tab('예고', _Tab.announce), tab('친구', _Tab.friends)],
+        ),
       ),
     );
   }

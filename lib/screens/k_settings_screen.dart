@@ -17,9 +17,7 @@ import '../theme.dart';
 import '../widgets.dart';
 
 void openSettings(BuildContext context) {
-  Navigator.of(context, rootNavigator: true).push(
-    CupertinoPageRoute<void>(builder: (_) => const SettingsScreen()),
-  );
+  Navigator.of(context, rootNavigator: true).push(CupertinoPageRoute<void>(builder: (_) => const SettingsScreen()));
 }
 
 class SettingsScreen extends StatefulWidget {
@@ -36,31 +34,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   void _fake(String what) => showToast(context, '$what은(는) 프로토타입이라 실제로 하지 않아요');
 
-  void _pickLanguage() {
-    showModalBottomSheet<void>( // K-2 덮기
-      context: context,
-      builder: (sheet) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            for (final l in const ['한국어', '中文', 'English', '日本語'])
-              ListTile(
-                title: Text(l),
-                trailing: l == _language ? const Icon(Icons.check, color: Gp.accent) : null,
-                onTap: () {
-                  Navigator.pop(sheet);
-                  setState(() => _language = l); // STATE: 언어 → 설정 줄 글자 (화면 번역은 없음)
-                },
-              ),
-            const SizedBox(height: 8),
-          ],
-        ),
-      ),
+  Future<void> _pickLanguage() async {
+    final l = await showPickSheet(
+      // K-2 덮기 (정렬과 같은 시트)
+      context,
+      title: '언어',
+      values: const ['한국어', '中文', 'English', '日本語'],
+      current: _language,
+      label: (l) => l,
     );
+    if (l != null) setState(() => _language = l); // STATE: 언어 → 설정 줄 글자 (화면 번역은 없음)
   }
 
   Future<void> _signOut() async {
-    final ok = await showDialog<bool>( // K-5 P05
+    final ok = await showDialog<bool>(
+      // K-5 P05
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('로그아웃할까요?'),
@@ -77,7 +65,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('설정', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600))),
+      appBar: AppBar(
+        title: const Text('설정', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+      ),
       body: ListView(
         padding: const EdgeInsets.only(bottom: 40),
         children: [
@@ -87,7 +77,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SectionHeader('알림'),
-                SwitchListTile( // K-1 P03
+                SwitchListTile(
+                  // K-1 P03
                   secondary: const Icon(Icons.notifications_none),
                   title: const Text('새 소식 알림'),
                   subtitle: const Text('새 상품 · 예고 · 친구 소식'),
@@ -124,11 +115,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   subtitle: const Text('컬렉션 · 채널 설정을 파일로 내보내기'),
                   onTap: () => _fake('데이터 백업'), // K-3 P10
                 ),
-                ListTile(
-                  leading: const Icon(Icons.restore),
-                  title: const Text('백업에서 복원'),
-                  onTap: () => _fake('복원'),
-                ),
+                ListTile(leading: const Icon(Icons.restore), title: const Text('백업에서 복원'), onTap: () => _fake('복원')),
                 ListTile(
                   leading: const Icon(Icons.help_outline),
                   title: const Text('도움말'),

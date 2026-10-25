@@ -370,7 +370,9 @@ class _HeroBannerState extends State<_HeroBanner> {
     return LayoutBuilder(
       builder: (context, box) {
         // 넓은 창에서는 너무 커지지 않게 높이 제한 (적응형)
-        final imageHeight = (box.maxWidth * 9 / 16).clamp(180.0, 420.0);
+        // 넓은 창 · 가로 폰에서는 화면 높이의 절반을 넘지 않게 (적응형)
+        final maxH = (MediaQuery.sizeOf(context).height * 0.5).clamp(160.0, 420.0);
+        final imageHeight = (box.maxWidth * 9 / 16).clamp(160.0, maxH);
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

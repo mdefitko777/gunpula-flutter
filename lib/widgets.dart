@@ -753,6 +753,51 @@ class VerifiedBadge extends StatelessWidget {
   }
 }
 
+/// 하나 고르기 바텀 시트 — 제목 + 줄마다 이름, 고른 줄은 브랜드 색 글자 + ✓ (정렬 · 언어 공통)
+Future<T?> showPickSheet<T>(
+  BuildContext context, {
+  required String title,
+  required List<T> values,
+  required T current,
+  required String Function(T) label,
+}) {
+  return showModalBottomSheet<T>(
+    context: context,
+    builder: (sheet) => SafeArea(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SectionHeader(title, padding: const EdgeInsets.fromLTRB(20, 0, 20, 6)),
+          for (final v in values)
+            InkWell(
+              onTap: () => Navigator.pop(sheet, v),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 14, 20, 14),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        label(v),
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: v == current ? Gp.accent : Gp.ink,
+                          fontWeight: v == current ? FontWeight.w600 : FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                    if (v == current) const Icon(Icons.check, size: 20, color: Gp.accent),
+                  ],
+                ),
+              ),
+            ),
+          const SizedBox(height: 8),
+        ],
+      ),
+    ),
+  );
+}
+
 /// 작은 돌아가는 원 — 불러오기 · 확인 중 (LoadingView · 시트 · 대화 상자 공통)
 class MiniSpinner extends StatelessWidget {
   const MiniSpinner({super.key, this.size = 22, this.color = Gp.ink});
@@ -1082,7 +1127,14 @@ class TogglePill extends StatelessWidget {
             children: [
               Icon(active ? activeIcon : icon, size: 18, color: active ? Gp.accent : Gp.ink),
               const SizedBox(width: 5),
-              Text(label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+              Flexible( // 좁은 화면에서는 말줄임
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                ),
+              ),
             ],
           ),
         ),
@@ -1124,7 +1176,8 @@ class SectionPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 10),
-      child: ColoredBox(
+      // Material: 안의 ListTile · InkWell 누름 물결이 흰 바탕 위에 보이게
+      child: Material(
         color: Gp.panel,
         child: SizedBox(
           width: double.infinity,

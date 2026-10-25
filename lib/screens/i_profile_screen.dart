@@ -100,9 +100,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void _load() {
     // STATE: GET /profile · /kits?status_ne=none · /guideWorks → 프로필 · 숫자 · 게시물
-    _future = Future.wait([widget.loaders.profile(), widget.loaders.collection(), widget.loaders.guideWorks()]).then(
-      (r) => _ProfileData(r[0] as Profile, r[1] as List<Kit>, litCount(r[2] as List<GuideWork>)),
-    );
+    _future = Future.wait([
+      widget.loaders.profile(),
+      widget.loaders.collection(),
+      widget.loaders.guideWorks(),
+    ]).then((r) => _ProfileData(r[0] as Profile, r[1] as List<Kit>, litCount(r[2] as List<GuideWork>)));
   }
 
   void _fake(String what) => showToast(context, '$what은(는) 프로토타입이라 실제로 바뀌지 않아요');
@@ -145,7 +147,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       subtitle: Text('@${f.handle}', style: const TextStyle(fontSize: 12, color: Gp.muted)),
                       value: _postsPublic && !_hiddenFrom.contains(f.handle),
                       activeColor: Gp.accent,
-                      onChanged: _postsPublic // 전체를 끄면 친구별 선택도 잠김 P05
+                      onChanged:
+                          _postsPublic // 전체를 끄면 친구별 선택도 잠김 P05
                           ? (v) => change(() => v == true ? _hiddenFrom.remove(f.handle) : _hiddenFrom.add(f.handle))
                           : null,
                     ),
@@ -251,7 +254,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           subtitle: _postsSubtitle(),
           photos: photos,
           hidden: _postsPublic ? _hiddenPhotos : {for (final ph in photos) ph.id},
-          trailing: IconButton( // I-9
+          trailing: IconButton(
+            // I-9
             tooltip: '공개 범위',
             onPressed: () => _openPrivacy(p),
             icon: Icon(_postsPublic ? Icons.group_outlined : Icons.lock_outline, color: Gp.muted, size: 21),
@@ -435,12 +439,16 @@ class _Stats extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 4),
         child: Column(
           children: [
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(value, style: const TextStyle(fontSize: 19, fontWeight: FontWeight.w700)),
-                ?extra,
-              ],
+            FittedBox(
+              // 좁은 화면에서는 줄여서 한 줄
+              fit: BoxFit.scaleDown,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(value, style: const TextStyle(fontSize: 19, fontWeight: FontWeight.w700)),
+                  ?extra,
+                ],
+              ),
             ),
             const SizedBox(height: 3),
             Row(
@@ -653,7 +661,8 @@ class _PhotoViewScreenState extends State<PhotoViewScreen> {
           ),
           const SizedBox(height: 8),
           if (widget.mine)
-            SwitchListTile( // I-10 P05
+            SwitchListTile(
+              // I-10 P05
               contentPadding: EdgeInsets.zero,
               title: const Text('게시물에 보이기'),
               subtitle: Text(_shown ? '친구가 볼 수 있어요' : '나만 볼 수 있어요 (게시물에서 흐리게 보여요)'),
