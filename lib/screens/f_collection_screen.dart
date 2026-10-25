@@ -216,52 +216,29 @@ class _CollectionScreenState extends State<CollectionScreen> with ChannelScope {
               ),
             ),
             for (final k in kits)
-              InkWell(
+              ThumbRow( // F-5 P08 — 검색·캘린더와 같은 줄
+                image: k.image,
+                title: k.name,
+                titleLines: 2,
+                size: 68,
+                subtitle: joinDot([channelOf(k.franchiseId).label, k.line, k.series]),
+                leading: _editing
+                    ? Icon(
+                        _selected.contains(k.id) ? Icons.check_circle : Icons.radio_button_unchecked,
+                        color: _selected.contains(k.id) ? Gp.accent : Gp.faint,
+                      )
+                    : null,
                 onTap: _editing
                     ? () => setState(() => _selected.contains(k.id) ? _selected.remove(k.id) : _selected.add(k.id))
                     : () => openKitDetail(context, k, loaders: widget.loaders),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                  child: Row(
-                    children: [
-                      if (_editing)
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8),
-                          child: Icon(
-                            _selected.contains(k.id) ? Icons.check_circle : Icons.radio_button_unchecked,
-                            color: _selected.contains(k.id) ? Gp.accent : Gp.faint,
-                          ),
-                        ),
-                      SizedBox.square(dimension: 68, child: PhotoThumb(k.image, radius: 12)),
-                      const SizedBox(width: 14),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(k.name, maxLines: 2, overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(fontSize: 14.5, fontWeight: FontWeight.w500)),
-                            const SizedBox(height: 4),
-                            Text(
-                              [channelOf(k.franchiseId).label, k.line, k.series]
-                                  .where((s) => s.isNotEmpty)
-                                  .join(' · '),
-                              style: const TextStyle(fontSize: 12.5, color: Gp.muted),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(yen(k.priceJpy), style: const TextStyle(fontSize: 13)),
-                          if (!_ownedTab && k.wantedQty > 1)
-                            Text('×${k.wantedQty}',
-                                style: const TextStyle(fontSize: 12.5, color: Gp.accent, fontWeight: FontWeight.w600)),
-                        ],
-                      ),
-                    ],
-                  ),
+                trailing: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(yen(k.priceJpy), style: const TextStyle(fontSize: 13)),
+                    if (!_ownedTab && k.wantedQty > 1)
+                      Text('×${k.wantedQty}',
+                          style: const TextStyle(fontSize: 12.5, color: Gp.accent, fontWeight: FontWeight.w600)),
+                  ],
                 ),
               ),
           ],
@@ -321,40 +298,17 @@ class _TopRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget tab(String label, int n, bool owned) {
-      final on = !guide && ownedTab == owned;
-      return GestureDetector(
-        onTap: () {
-          onGuide(false);
-          onTab(owned);
-        },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-          child: Column(
-            children: [
-              Text.rich(
-                TextSpan(children: [
-                  TextSpan(text: label),
-                  TextSpan(text: ' $n', style: TextStyle(color: on ? Gp.accent : Gp.faint)),
-                ]),
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: on ? FontWeight.w700 : FontWeight.w400,
-                  color: on ? Gp.ink : Gp.muted,
-                ),
-              ),
-              const SizedBox(height: 4),
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 150),
-                height: 2,
-                width: on ? 16 : 0,
-                color: Gp.accent,
-              ),
-            ],
-          ),
-        ),
-      );
-    }
+    Widget tab(String label, int n, bool owned) => UnderlineTab( // 채널 바와 같은 밑줄 탭
+      label: label,
+      count: n,
+      fontSize: 16,
+      selected: !guide && ownedTab == owned,
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      onTap: () {
+        onGuide(false);
+        onTab(owned);
+      },
+    );
 
     Widget icon(IconData i, String tip, bool on, VoidCallback onTap) => IconButton(
       tooltip: tip,

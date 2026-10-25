@@ -278,13 +278,13 @@ class _CameraScreenState extends State<CameraScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _ModeTab( // E-2 P07
+                      UnderlineTab( // E-2 P07
                         label: '사진',
                         selected: !barcode,
                         onTap: () => setState(() => _mode = CameraMode.photo),
                       ),
-                      const SizedBox(width: 18),
-                      _ModeTab(
+                      const SizedBox(width: 10),
+                      UnderlineTab(
                         label: '바코드',
                         selected: barcode,
                         onTap: () => setState(() => _mode = CameraMode.barcode), // STATE: 모드 → 틀 모양
@@ -327,38 +327,6 @@ class _CameraScreenState extends State<CameraScreen> {
                 ],
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ModeTab extends StatelessWidget {
-  const _ModeTab({required this.label, required this.selected, required this.onTap});
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
-              color: selected ? Gp.ink : Gp.faint,
-            ),
-          ),
-          const SizedBox(height: 4),
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            width: selected ? 14 : 0,
-            height: 2,
-            color: Gp.accent, // 브랜드 포인트 색
           ),
         ],
       ),
@@ -557,9 +525,7 @@ class _CameraResultScreenState extends State<CameraResultScreen> {
                     Text(best.name, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
                     const SizedBox(height: 3),
                     Text(
-                      [best.line, best.series, if (best.date.length >= 4) best.date.substring(0, 4)]
-                          .where((s) => s.isNotEmpty)
-                          .join(' · '),
+                      joinDot([best.line, best.series, if (best.date.length >= 4) best.date.substring(0, 4)]),
                       style: const TextStyle(color: Gp.muted, fontSize: 13),
                     ),
                     const SizedBox(height: 14),
@@ -586,7 +552,13 @@ class _CameraResultScreenState extends State<CameraResultScreen> {
                         ),
                         const SizedBox(width: 10),
                         Expanded(
-                          child: _WantButton(active: _wanted, onTap: _toggleWant), // E-7 P03
+                          child: TogglePill( // E-7 P03 — 상세의 원함 버튼과 같은 부품
+                            label: _wanted ? '원함에 담김' : '원함에 담기',
+                            icon: Icons.bookmark_border,
+                            activeIcon: Icons.bookmark,
+                            active: _wanted,
+                            onTap: _toggleWant,
+                          ),
                         ),
                       ],
                     ),
@@ -596,31 +568,12 @@ class _CameraResultScreenState extends State<CameraResultScreen> {
               if (others.isNotEmpty) ...[
                 const SectionHeader('다른 후보', padding: EdgeInsets.fromLTRB(16, 24, 12, 8)), // E-8
                 for (final (k, s, w) in others)
-                  InkWell(
+                  ThumbRow(
+                    image: k.image,
+                    title: k.name,
+                    subtitle: w,
                     onTap: () => openKitDetail(context, k, loaders: widget.loaders),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      child: Row(
-                        children: [
-                          SizedBox.square(dimension: 56, child: PhotoThumb(k.image, radius: 10)),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(k.name, maxLines: 1, overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(fontWeight: FontWeight.w500)),
-                                const SizedBox(height: 2),
-                                Text(w, maxLines: 1, overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(fontSize: 12.5, color: Gp.muted)),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Text('$s%', style: const TextStyle(fontWeight: FontWeight.w700, color: Gp.muted)),
-                        ],
-                      ),
-                    ),
+                    trailing: Text('$s%', style: const TextStyle(fontWeight: FontWeight.w700, color: Gp.muted)),
                   ),
               ],
               // E-9 못 찾았을 때
@@ -668,53 +621,10 @@ class _MatchBar extends StatelessWidget {
       children: [
         const Text('일치도', style: TextStyle(fontSize: 12.5, color: Gp.muted)),
         const SizedBox(width: 10),
-        Expanded(
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(99),
-            child: LinearProgressIndicator(
-              value: score / 100,
-              minHeight: 6,
-              backgroundColor: Gp.soft,
-              color: Gp.accent,
-            ),
-          ),
-        ),
+        Expanded(child: AccentBar(value: score / 100, height: 6)),
         const SizedBox(width: 10),
         Text('$score%', style: const TextStyle(fontWeight: FontWeight.w700, color: Gp.accent)),
       ],
-    );
-  }
-}
-
-/// 원함에 담기 — 켜지면 옅은 하늘색 바탕 + 브랜드 색 (상세의 원함 버튼과 같은 표현)
-class _WantButton extends StatelessWidget {
-  const _WantButton({required this.active, required this.onTap});
-  final bool active;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
-        height: 44,
-        decoration: BoxDecoration(
-          color: active ? Gp.accent.withValues(alpha: 0.07) : Gp.panel,
-          borderRadius: BorderRadius.circular(Gp.radius),
-          border: Border.all(color: active ? Gp.accent : Gp.line, width: active ? 1.3 : 1),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(active ? Icons.bookmark : Icons.bookmark_border, size: 18,
-                color: active ? Gp.accent : Gp.ink),
-            const SizedBox(width: 5),
-            Text(active ? '원함에 담김' : '원함에 담기',
-                style: const TextStyle(fontWeight: FontWeight.w600)),
-          ],
-        ),
-      ),
     );
   }
 }

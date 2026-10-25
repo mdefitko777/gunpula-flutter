@@ -131,7 +131,7 @@ class ChannelBar extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 children: [
                   for (final id in ids)
-                    _ChannelTab(
+                    UnderlineTab(
                       label: id == allChannelId ? '전체' : channelOf(id).label,
                       selected: id == selected,
                       onTap: () => onSelect(id), // STATE: 선택 채널 → 아래 목록 다시 거름
@@ -154,47 +154,6 @@ class ChannelBar extends StatelessWidget {
           ),
           const SizedBox(width: 6),
         ],
-      ),
-    );
-  }
-}
-
-class _ChannelTab extends StatelessWidget {
-  const _ChannelTab({required this.label, required this.selected, required this.onTap});
-
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      hoverColor: Colors.transparent, // 마우스를 올려도 회색 상자가 생기지 않게
-      highlightColor: Colors.transparent,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 15,
-                letterSpacing: 0.2,
-                fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
-                color: selected ? Gp.ink : Gp.faint,
-              ),
-            ),
-            const SizedBox(height: 4),
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 150),
-              height: 2,
-              width: selected ? 14 : 0,
-              color: Gp.accent, // 브랜드 포인트 색
-            ),
-          ],
-        ),
       ),
     );
   }

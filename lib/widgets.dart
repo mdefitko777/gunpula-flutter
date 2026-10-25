@@ -2,7 +2,11 @@
 //   LoadingView  불러오는 중          P01 시스템 상태의 가시성
 //   ErrorView    오류 안내·다시 시도   P09 오류 인식·진단·복구
 //   EmptyView    빈 목록 안내(+ 할 일) P01 · P09
-// 그리고 여러 화면이 같은 모양으로 쓰는 조각 (P04 일관성): AppImage · SectionTitle · 가격 표기
+// 그리고 여러 화면이 같은 모양으로 쓰는 조각 (P04 일관성):
+//   GpSearchBar 검색창 · SectionHeader 색 막대 제목 · ProductTile 상품 카드 · PhotoThumb 둥근 사진 · AddSlot
+//   UnderlineTab 밑줄 탭 · PageDots 넘김 점 · ThumbRow 사진 줄 · TagPill 알약 글자 · TogglePill 켜고 끄는 버튼
+//   AccentBar 진행 막대 · SectionPanel 흰 띠 섹션 · joinDot
+//   AppImage · CircleThumb · RaisedCircleButton · ChannelGlyph · showSoon · showToast · navClearance · 가격 표기
 import 'package:flutter/material.dart';
 
 import 'theme.dart';
@@ -604,6 +608,292 @@ class AddSlot extends StatelessWidget {
 /// 원함 담기 자리를 눌렀을 때 (컬렉션 화면과 연결 전)
 void showAddSoon(BuildContext context) =>
     showToast(context, '원함 담기는 컬렉션 화면과 함께 연결할 예정이에요');
+
+/// "a · b · c" — 빈 칸은 빼고 가운뎃점으로 잇는다
+String joinDot(Iterable<String> parts) => parts.where((s) => s.isNotEmpty).join(' · ');
+
+/// 글자 + 브랜드 색 밑줄 탭 (채널 바 · 원함/구매함 · 사진/바코드)
+class UnderlineTab extends StatelessWidget {
+  const UnderlineTab({
+    super.key,
+    required this.label,
+    required this.selected,
+    required this.onTap,
+    this.count,
+    this.fontSize = 15,
+    this.padding = const EdgeInsets.symmetric(horizontal: 8),
+  });
+
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  /// 있으면 글자 뒤에 개수 (선택되면 브랜드 색)
+  final int? count;
+  final double fontSize;
+  final EdgeInsets padding;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      selected: selected,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: Padding(
+          padding: padding,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text.rich(
+                TextSpan(children: [
+                  TextSpan(text: label),
+                  if (count != null)
+                    TextSpan(text: ' $count', style: TextStyle(color: selected ? Gp.accent : Gp.faint)),
+                ]),
+                style: TextStyle(
+                  fontSize: fontSize,
+                  letterSpacing: 0.2,
+                  fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
+                  color: selected ? Gp.ink : Gp.faint,
+                ),
+              ),
+              const SizedBox(height: 4),
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 150),
+                height: 2,
+                width: selected ? 14 : 0,
+                color: Gp.accent, // 브랜드 포인트 색
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// 넘김 위치 점 — 지금 쪽은 브랜드 색 긴 막대
+class PageDots extends StatelessWidget {
+  const PageDots({super.key, required this.count, required this.index, this.center = true});
+  final int count;
+  final int index;
+  final bool center;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: center ? MainAxisAlignment.center : MainAxisAlignment.start,
+      children: [
+        for (var i = 0; i < count; i++)
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            margin: const EdgeInsets.symmetric(horizontal: 2.5),
+            width: i == index ? 16 : 5,
+            height: 4,
+            decoration: BoxDecoration(
+              color: i == index ? Gp.accent : Gp.line,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+/// 목록 한 줄: (앞 위젯) 사진 · 제목(+앞 태그) · 보조 줄 · 오른쪽
+class ThumbRow extends StatelessWidget {
+  const ThumbRow({
+    super.key,
+    required this.image,
+    required this.title,
+    required this.onTap,
+    this.subtitle = '',
+    this.trailing,
+    this.leading,
+    this.tag = '',
+    this.size = 56,
+    this.titleLines = 1,
+    this.padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 7),
+  });
+
+  final String image;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+  final Widget? trailing;
+
+  /// 사진 앞 (예: 편집 모드 체크)
+  final Widget? leading;
+
+  /// 제목 앞 작은 알약 (예: 예고)
+  final String tag;
+  final double size;
+  final int titleLines;
+  final EdgeInsets padding;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: padding,
+        child: Row(
+          children: [
+            if (leading != null) Padding(padding: const EdgeInsets.only(right: 8), child: leading),
+            SizedBox.square(dimension: size, child: PhotoThumb(image, radius: size > 60 ? 12 : 10)),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      if (tag.isNotEmpty) Padding(padding: const EdgeInsets.only(right: 6), child: TagPill(tag)),
+                      Expanded(
+                        child: Text(title, maxLines: titleLines, overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(fontSize: 14.5, fontWeight: FontWeight.w500)),
+                      ),
+                    ],
+                  ),
+                  if (subtitle.isNotEmpty) ...[
+                    const SizedBox(height: 3),
+                    Text(subtitle, maxLines: 1, overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontSize: 12.5, color: Gp.muted)),
+                  ],
+                ],
+              ),
+            ),
+            if (trailing != null) ...[const SizedBox(width: 8), trailing!],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// 테두리 알약 글자 (한정 · PB · 예고 · 3/3). [strong] = 검정 테두리 · 굵게
+class TagPill extends StatelessWidget {
+  const TagPill(this.text, {super.key, this.strong = false, this.filled = false});
+  final String text;
+  final bool strong;
+
+  /// 사진 위에 올릴 때 흰 반투명 바탕
+  final bool filled;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+      decoration: BoxDecoration(
+        color: filled ? const Color(0xE6FFFFFF) : null,
+        borderRadius: BorderRadius.circular(99),
+        border: Border.all(color: strong ? Gp.ink : Gp.line),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 11,
+          fontWeight: strong ? FontWeight.w600 : FontWeight.w500,
+          color: strong ? Gp.ink : Gp.muted,
+        ),
+      ),
+    );
+  }
+}
+
+/// 켜고 끄는 버튼 (원함 · 구매함) — 켜지면 옅은 하늘색 바탕 + 브랜드 색 테두리·아이콘
+class TogglePill extends StatelessWidget {
+  const TogglePill({
+    super.key,
+    required this.label,
+    required this.icon,
+    required this.activeIcon,
+    required this.active,
+    required this.onTap,
+    this.height = 44,
+  });
+
+  final String label;
+  final IconData icon;
+  final IconData activeIcon;
+  final bool active;
+  final VoidCallback onTap;
+  final double height;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      selected: active,
+      child: GestureDetector(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          height: height,
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          decoration: BoxDecoration(
+            color: active ? Gp.accent.withValues(alpha: 0.07) : Gp.panel,
+            borderRadius: BorderRadius.circular(99),
+            border: Border.all(color: active ? Gp.accent : Gp.line, width: active ? 1.3 : 1),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(active ? activeIcon : icon, size: 18, color: active ? Gp.accent : Gp.ink),
+              const SizedBox(width: 5),
+              Text(label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// 브랜드 색 진행 막대 (도감 수집 · 일치도)
+class AccentBar extends StatelessWidget {
+  const AccentBar({super.key, required this.value, this.height = 4});
+  final double value;
+  final double height;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(99),
+      child: LinearProgressIndicator(
+        value: value.clamp(0, 1),
+        minHeight: height,
+        backgroundColor: Gp.soft,
+        color: Gp.accent,
+      ),
+    );
+  }
+}
+
+/// 흰 띠 섹션 — 위에 회백색 틈 10을 두어 섹션마다 층이 보이게 (홈 · 상세)
+class SectionPanel extends StatelessWidget {
+  const SectionPanel({
+    super.key,
+    required this.child,
+    this.padding = const EdgeInsets.fromLTRB(16, 18, 16, 18),
+  });
+  final Widget child;
+  final EdgeInsets padding;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 10),
+      child: ColoredBox(
+        color: Gp.panel,
+        child: SizedBox(width: double.infinity, child: Padding(padding: padding, child: child)),
+      ),
+    );
+  }
+}
 
 String _comma(int v) => v.toString().replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (_) => ',');
 

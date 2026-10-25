@@ -141,17 +141,7 @@ class _Progress extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(99),
-            child: LinearProgressIndicator(
-              value: total == 0 ? 0 : owned / total,
-              minHeight: 4,
-              backgroundColor: Gp.soft,
-              color: Gp.accent,
-            ),
-          ),
-        ),
+        Expanded(child: AccentBar(value: total == 0 ? 0 : owned / total)),
         const SizedBox(width: 8),
         Text('$owned/$total', style: const TextStyle(fontSize: 11.5, color: Gp.muted)),
       ],
@@ -434,19 +424,7 @@ class _LitCell extends StatelessWidget {
                     child: AppImage(image, fit: BoxFit.contain, grayscale: !lit),
                   ),
                   if (badge.isNotEmpty)
-                    Positioned(
-                      right: 5,
-                      top: 5,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: const Color(0xE6FFFFFF),
-                          borderRadius: BorderRadius.circular(99),
-                          border: Border.all(color: Gp.line),
-                        ),
-                        child: Text(badge, style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.w600)),
-                      ),
-                    ),
+                    Positioned(right: 5, top: 5, child: TagPill(badge, filled: true)),
                 ],
               ),
             ),

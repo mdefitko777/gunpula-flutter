@@ -106,7 +106,7 @@ class _CalendarScreenState extends State<CalendarScreen> with ChannelScope {
           _Event(
             title: k.name,
             image: k.image,
-            sub: [channelOf(k.franchiseId).label, k.line, yen(k.priceJpy)].where((s) => s.isNotEmpty).join(' · '),
+            sub: joinDot([channelOf(k.franchiseId).label, k.line, yen(k.priceJpy)]),
             kit: k,
             day: dayOf(k.date),
           ),
@@ -387,51 +387,18 @@ class _EventRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final kit = event.kit;
-    return InkWell(
+    return ThumbRow( // H-5 — 컬렉션·검색과 같은 줄
+      image: event.image,
+      title: event.title,
+      subtitle: event.sub,
+      tag: kit == null ? '예고' : '',
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       onTap: kit == null
           ? () => showSoon(context, '공식 예고 상세')
           : () => openKitDetail(context, kit, loaders: loaders),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 6, 16, 6),
-        child: Row(
-          children: [
-            SizedBox.square(dimension: 56, child: PhotoThumb(event.image, radius: 10)),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      if (kit == null)
-                        Container(
-                          margin: const EdgeInsets.only(right: 6),
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(99),
-                            border: Border.all(color: Gp.line),
-                          ),
-                          child: const Text('예고', style: TextStyle(fontSize: 11, color: Gp.muted)),
-                        ),
-                      Expanded(
-                        child: Text(event.title, maxLines: 1, overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(fontWeight: FontWeight.w500)),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 3),
-                  Text(event.sub, maxLines: 1, overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontSize: 12.5, color: Gp.muted)),
-                ],
-              ),
-            ),
-            if (dday.isNotEmpty) ...[
-              const SizedBox(width: 8),
-              Text(dday, style: const TextStyle(fontWeight: FontWeight.w700, color: Gp.accent, fontSize: 13)),
-            ],
-          ],
-        ),
-      ),
+      trailing: dday.isEmpty
+          ? null
+          : Text(dday, style: const TextStyle(fontWeight: FontWeight.w700, color: Gp.accent, fontSize: 13)),
     );
   }
 }

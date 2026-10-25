@@ -194,24 +194,18 @@ class _HomeScreenState extends State<HomeScreen> with ChannelScope {
           ),
         for (final row in rows)
           if (row.items.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.only(top: 10), // A-8 회백색 틈 = 층 구분
-              child: ColoredBox(
-                color: Gp.panel,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 18),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SectionHeader( // A-5 P06
-                        row.title,
-                        subtitle: row.subtitle,
-                        onMore: () => showSoon(context, '${row.title} 전체 목록'),
-                      ),
-                      _HorizontalRow(row: row, loaders: widget.loaders), // A-6 P08
-                    ],
+            SectionPanel( // A-8 흰 띠 + 회백색 틈 = 층 구분 (상세와 같은 부품)
+              padding: const EdgeInsets.only(bottom: 18),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SectionHeader( // A-5 P06
+                    row.title,
+                    subtitle: row.subtitle,
+                    onMore: () => showSoon(context, '${row.title} 전체 목록'),
                   ),
-                ),
+                  _HorizontalRow(row: row, loaders: widget.loaders), // A-6 P08
+                ],
               ),
             ),
       ],
@@ -297,22 +291,8 @@ class _HeroBannerState extends State<_HeroBanner> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 4, 20, 18),
-              child: Row(
-                children: [
-                  for (var i = 0; i < widget.items.length; i++)
-                    AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      margin: const EdgeInsets.only(right: 5),
-                      width: i == _page ? 16 : 5,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: i == _page ? Gp.accent : Gp.line, // 브랜드 포인트 색
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                ],
-              ),
+              padding: const EdgeInsets.fromLTRB(18, 4, 20, 18),
+              child: PageDots(count: widget.items.length, index: _page, center: false),
             ),
           ],
         );

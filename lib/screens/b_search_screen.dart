@@ -353,7 +353,7 @@ class _SearchScreenState extends State<SearchScreen> with ChannelScope {
                     image: k.image,
                     title: k.name,
                     titleLines: 2,
-                    subtitle: [k.line, k.series, year].where((s) => s.isNotEmpty).join(' · '),
+                    subtitle: joinDot([k.line, k.series, year]),
                     onTap: () => openKitDetail(context, k, loaders: widget.loaders),
                     onAdd: () => showAddSoon(context),
                   );
@@ -397,35 +397,17 @@ class _AiCandidates extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           for (final (k, score, why) in items)
-            InkWell(
+            ThumbRow( // 카메라 결과의 다른 후보와 같은 줄
+              image: k.image,
+              title: k.name,
+              subtitle: why,
+              padding: const EdgeInsets.symmetric(vertical: 6),
               onTap: () => onTap(k),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 6),
-                child: Row(
-                  children: [
-                    SizedBox.square(dimension: 56, child: PhotoThumb(k.image, radius: 10)),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(k.name, maxLines: 1, overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(fontWeight: FontWeight.w600)),
-                          const SizedBox(height: 2),
-                          Text(why, maxLines: 1, overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(color: Gp.muted, fontSize: 12.5)),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      '$score%', // 일치도 P01
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        color: score >= 85 ? Gp.accent : Gp.muted,
-                      ),
-                    ),
-                  ],
+              trailing: Text(
+                '$score%', // 일치도 P01
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  color: score >= 85 ? Gp.accent : Gp.muted,
                 ),
               ),
             ),

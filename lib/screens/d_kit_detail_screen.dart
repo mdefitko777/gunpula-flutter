@@ -239,7 +239,7 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
   List<Widget> _info(BuildContext context) {
     return [
       // 기본 정보: 이름 → 정가 → 시세 한 줄
-      _Panel(
+      SectionPanel(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -265,8 +265,9 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
                   child: Text('발매 ${k.date}', style: const TextStyle(color: Gp.muted, fontSize: 13)),
                 ),
                 const Spacer(),
-                if (k.limited) const _Badge('한정'),
-                if (k.pb) const _Badge('PB'),
+                if (k.limited)
+                  const Padding(padding: EdgeInsets.only(left: 6), child: TagPill('한정', strong: true)),
+                if (k.pb) const Padding(padding: EdgeInsets.only(left: 6), child: TagPill('PB', strong: true)),
               ],
             ),
             const SizedBox(height: 10),
@@ -306,12 +307,12 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
         ),
       ),
       // 공식 정보: 가로 요약 줄 → 누르면 전체 표
-      _Panel(
+      SectionPanel(
         padding: EdgeInsets.zero,
         child: _SpecStrip(specs: _specs, onTap: _openSpecs), // D-8 P08
       ),
       // 시장가: 한 덩어리 (가격 범위 → 플랫폼 3칸), 겹 상자 없이
-      _Panel(
+      SectionPanel(
         key: _marketKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -322,7 +323,7 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
         ),
       ),
       // 같은 작품의 다른 상품
-      _Panel(
+      SectionPanel(
         padding: const EdgeInsets.only(bottom: 18),
         child: FutureBuilder<List<Kit>>(
           future: _related,
@@ -365,7 +366,7 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
         ),
       ),
       // 상품 상세: 공식 사진을 세로로 전부
-      _Panel(
+      SectionPanel(
         padding: const EdgeInsets.only(bottom: 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -393,28 +394,6 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
         ),
       ),
     ];
-  }
-}
-
-/// 흰 띠 섹션 (홈과 같은 층 구분: 위 회백색 틈 10)
-class _Panel extends StatelessWidget {
-  const _Panel({
-    super.key,
-    required this.child,
-    this.padding = const EdgeInsets.fromLTRB(16, 18, 16, 18),
-  });
-  final Widget child;
-  final EdgeInsets padding;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 10),
-      child: ColoredBox(
-        color: Gp.panel,
-        child: SizedBox(width: double.infinity, child: Padding(padding: padding, child: child)),
-      ),
-    );
   }
 }
 
@@ -450,22 +429,7 @@ class _GalleryState extends State<_Gallery> {
               left: 0,
               right: 0,
               bottom: 12,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  for (var i = 0; i < widget.images.length; i++)
-                    AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      margin: const EdgeInsets.symmetric(horizontal: 2.5),
-                      width: i == _page ? 16 : 5,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: i == _page ? Gp.accent : Gp.line, // 브랜드 포인트 색
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                ],
-              ),
+              child: PageDots(count: widget.images.length, index: _page),
             ),
         ],
       ),
@@ -587,71 +551,6 @@ class _SpecSheet extends StatelessWidget {
                 ),
               ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _Badge extends StatelessWidget {
-  const _Badge(this.text);
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(left: 6),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(99),
-        border: Border.all(color: Gp.ink),
-      ),
-      child: Text(text, style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600)),
-    );
-  }
-}
-
-/// 원함 · 구매함 버튼 — 켜지면 옅은 하늘색 바탕 + 브랜드 색 테두리·아이콘 (검정 채움 대신)
-class _StatusButton extends StatelessWidget {
-  const _StatusButton({
-    required this.label,
-    required this.icon,
-    required this.activeIcon,
-    required this.active,
-    required this.onTap,
-  });
-
-  final String label;
-  final IconData icon;
-  final IconData activeIcon;
-  final bool active;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      button: true,
-      selected: active,
-      child: GestureDetector(
-        onTap: onTap,
-        // 하단 고정 바의 알약 버튼
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
-          height: 44,
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          decoration: BoxDecoration(
-            color: active ? Gp.accent.withValues(alpha: 0.07) : Gp.panel,
-            borderRadius: BorderRadius.circular(99),
-            border: Border.all(color: active ? Gp.accent : Gp.line, width: active ? 1.3 : 1),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(active ? activeIcon : icon, size: 18, color: active ? Gp.accent : Gp.ink),
-              const SizedBox(width: 5),
-              Text(label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-            ],
-          ),
         ),
       ),
     );
@@ -800,7 +699,7 @@ class _BottomActions extends StatelessWidget {
                 small(Icons.north_east, '공식', onOfficial), // P10 출처
                 const SizedBox(width: 6),
                 Expanded(
-                  child: _StatusButton( // P03
+                  child: TogglePill( // P03
                     label: wanted ? '원함 ×$qty' : '원함',
                     icon: Icons.bookmark_border,
                     activeIcon: Icons.bookmark,
@@ -810,7 +709,7 @@ class _BottomActions extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Expanded(
-                  child: _StatusButton(
+                  child: TogglePill(
                     label: '구매함',
                     icon: Icons.check_circle_outline,
                     activeIcon: Icons.check_circle,
