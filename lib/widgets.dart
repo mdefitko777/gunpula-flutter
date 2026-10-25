@@ -60,7 +60,11 @@ class ErrorView extends StatelessWidget {
             Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
             if (message.isNotEmpty) ...[
               const SizedBox(height: 6),
-              Text(message, textAlign: TextAlign.center, style: const TextStyle(color: Gp.muted)),
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Gp.muted),
+              ),
             ],
             const SizedBox(height: 16),
             FilledButton.icon(
@@ -102,10 +106,18 @@ class EmptyView extends StatelessWidget {
           children: [
             Icon(icon, size: 40, color: Gp.faint),
             const SizedBox(height: 12),
-            Text(message, textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.w700)),
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontWeight: FontWeight.w700),
+            ),
             if (detail.isNotEmpty) ...[
               const SizedBox(height: 4),
-              Text(detail, textAlign: TextAlign.center, style: const TextStyle(color: Gp.muted)),
+              Text(
+                detail,
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Gp.muted),
+              ),
             ],
             if (action != null) ...[const SizedBox(height: 14), action!],
           ],
@@ -143,10 +155,26 @@ class AppImage extends StatelessWidget {
       opacity: 0.55,
       child: ColorFiltered(
         colorFilter: const ColorFilter.matrix([
-          0.2126, 0.7152, 0.0722, 0, 0,
-          0.2126, 0.7152, 0.0722, 0, 0,
-          0.2126, 0.7152, 0.0722, 0, 0,
-          0, 0, 0, 1, 0,
+          0.2126,
+          0.7152,
+          0.0722,
+          0,
+          0,
+          0.2126,
+          0.7152,
+          0.0722,
+          0,
+          0,
+          0.2126,
+          0.7152,
+          0.0722,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
         ]),
         child: img,
       ),
@@ -266,9 +294,17 @@ class _ChannelGlyphPainter extends CustomPainter {
       ..strokeWidth = s.width * 0.085
       ..strokeCap = StrokeCap.round;
     canvas
-      ..drawLine(Offset(s.width * 0.12, s.height * 0.26), Offset(s.width * 0.52, s.height * 0.26), p)
+      ..drawLine(
+        Offset(s.width * 0.12, s.height * 0.26),
+        Offset(s.width * 0.52, s.height * 0.26),
+        p,
+      )
       ..drawLine(Offset(s.width * 0.12, s.height * 0.5), Offset(s.width * 0.88, s.height * 0.5), p)
-      ..drawLine(Offset(s.width * 0.48, s.height * 0.74), Offset(s.width * 0.88, s.height * 0.74), p);
+      ..drawLine(
+        Offset(s.width * 0.48, s.height * 0.74),
+        Offset(s.width * 0.88, s.height * 0.74),
+        p,
+      );
   }
 
   @override
@@ -304,24 +340,27 @@ class GpSearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = controller;
-    final Widget field = onTap != null || c == null
-        ? const Text(hint, maxLines: 1, overflow: TextOverflow.ellipsis, style: _hintStyle)
-        : TextField(
-            controller: c,
-            focusNode: focusNode,
-            onChanged: onChanged,
-            onSubmitted: onSubmitted,
-            textInputAction: TextInputAction.search,
-            style: _textStyle,
-            decoration: const InputDecoration(
-              hintText: hint,
-              hintStyle: _hintStyle,
-              filled: false,
-              isDense: true,
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.zero,
-            ),
-          );
+    // 홈 입구도 같은 TextField로 그린다(읽기 전용) — 안내 문구의 위치·간격이 두 화면에서 똑같게
+    final Widget field = TextField(
+      controller: c,
+      focusNode: focusNode,
+      readOnly: onTap != null,
+      showCursor: onTap == null,
+      enableInteractiveSelection: onTap == null,
+      onTap: onTap,
+      onChanged: onChanged,
+      onSubmitted: onSubmitted,
+      textInputAction: TextInputAction.search,
+      style: _textStyle,
+      decoration: const InputDecoration(
+        hintText: hint,
+        hintStyle: _hintStyle,
+        filled: false,
+        isDense: true,
+        border: InputBorder.none,
+        contentPadding: EdgeInsets.zero,
+      ),
+    );
     return Semantics(
       button: onTap != null,
       label: onTap != null ? '검색 열기' : null,
@@ -366,9 +405,7 @@ class GpSearchBar extends StatelessWidget {
 
 /// 아직 만들지 않은 화면으로 가는 자리 — 같은 안내 문구로 통일
 void showSoon(BuildContext context, [String what = '상품 상세']) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text('$what 화면은 다음 단계에서 만들어요')),
-  );
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$what 화면은 다음 단계에서 만들어요')));
 }
 
 /// 목록 맨 아래 여백 — 하단 탭 바 · 카메라 버튼에 가려지지 않게
@@ -553,9 +590,9 @@ class AddSlot extends StatelessWidget {
 
 /// 원함 담기 자리를 눌렀을 때 (컬렉션 화면과 연결 전)
 void showAddSoon(BuildContext context) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(content: Text('원함 담기는 컬렉션 화면과 함께 연결할 예정이에요')),
-  );
+  ScaffoldMessenger.of(
+    context,
+  ).showSnackBar(const SnackBar(content: Text('원함 담기는 컬렉션 화면과 함께 연결할 예정이에요')));
 }
 
 String _comma(int v) => v.toString().replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (_) => ',');
