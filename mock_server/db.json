@@ -1,1158 +1,3782 @@
 {
-  "series": [
+  "franchises": [
     {
-      "id": 1,
-      "name": "기동전사 건담 수성의 마녀",
-      "nameEn": "The Witch from Mercury",
-      "owned": 5,
-      "wanted": 2,
-      "total": 12
+      "id": "gundam",
+      "label": "건담",
+      "icon": "gundam",
+      "total": 4446,
+      "meta": "프라모델, 완성품, 식완, 가샤폰",
+      "searchHint": "기체 / 작품 / HG·MG·MB 검색",
+      "worldTitle": "우주 항로",
+      "seriesTabs": [
+        "전체 시리즈",
+        "삼국",
+        "SEED",
+        "00",
+        "W",
+        "철혈",
+        "수성",
+        "GQuuuuuuX",
+        "초대",
+        "Z",
+        "ZZ",
+        "역샤아",
+        "UC",
+        "섬하사"
+      ],
+      "filters": {
+        "grade": [
+          [
+            "전체 제품 라인",
+            4446
+          ],
+          [
+            "HG",
+            969
+          ],
+          [
+            "MG",
+            410
+          ],
+          [
+            "RG",
+            100
+          ],
+          [
+            "PG",
+            31
+          ],
+          [
+            "EG",
+            20
+          ],
+          [
+            "FM",
+            7
+          ],
+          [
+            "MGEX",
+            4
+          ],
+          [
+            "MGSD",
+            7
+          ],
+          [
+            "SD",
+            234
+          ],
+          [
+            "굿즈",
+            656
+          ]
+        ],
+        "type": [
+          [
+            "전체 유형",
+            4446
+          ],
+          [
+            "프라모델",
+            2321
+          ],
+          [
+            "완성품",
+            822
+          ],
+          [
+            "가샤폰",
+            993
+          ],
+          [
+            "식완",
+            310
+          ]
+        ],
+        "year": [
+          [
+            "전체 연도",
+            4446
+          ],
+          [
+            "2027",
+            97
+          ],
+          [
+            "2026",
+            652
+          ],
+          [
+            "2025",
+            168
+          ],
+          [
+            "2024",
+            200
+          ],
+          [
+            "2023",
+            188
+          ]
+        ],
+        "limited": [
+          [
+            "전체",
+            4446
+          ],
+          [
+            "한정",
+            1230
+          ],
+          [
+            "일반",
+            3216
+          ]
+        ]
+      }
     },
     {
-      "id": 2,
-      "name": "기동전사 건담 SEED 시리즈",
-      "nameEn": "Gundam SEED / SEED DESTINY",
-      "owned": 4,
-      "wanted": 3,
-      "total": 12
-    }
-  ],
-  "units": [
-    {
-      "id": 1,
-      "seriesId": 1,
-      "name": "건담 에어리얼",
-      "nameEn": "Gundam Aerial",
-      "icon": "assets/units/g5010u00100.webp",
-      "status": "owned"
+      "id": "armored_core",
+      "label": "AC",
+      "icon": "ac",
+      "total": 62,
+      "meta": "프라모델, V.I., 30MM",
+      "searchHint": "기체 / 기업 / V.I. 검색",
+      "worldTitle": "게임 세대",
+      "seriesTabs": [
+        "전체 시리즈",
+        "AC1",
+        "AC2",
+        "AC3",
+        "AC4",
+        "ACfA",
+        "AC6"
+      ],
+      "filters": {
+        "grade": [
+          [
+            "전체 제품 라인",
+            62
+          ],
+          [
+            "V.I.",
+            41
+          ],
+          [
+            "30MM",
+            17
+          ],
+          [
+            "SMP",
+            2
+          ],
+          [
+            "식완",
+            2
+          ]
+        ],
+        "type": [
+          [
+            "전체 유형",
+            62
+          ],
+          [
+            "프라모델",
+            58
+          ],
+          [
+            "식완",
+            4
+          ]
+        ],
+        "year": [
+          [
+            "전체 연도",
+            62
+          ],
+          [
+            "2027",
+            6
+          ],
+          [
+            "2026",
+            9
+          ]
+        ],
+        "limited": [
+          [
+            "전체",
+            62
+          ],
+          [
+            "한정",
+            5
+          ],
+          [
+            "일반",
+            57
+          ]
+        ]
+      }
     },
     {
-      "id": 2,
-      "seriesId": 1,
-      "name": "건담 에어리얼(개수형)",
-      "nameEn": "Gundam Aerial Rebuild",
-      "icon": "assets/units/g5010u01600.webp",
-      "status": "none"
+      "id": "pokemon",
+      "label": "포켓몬",
+      "icon": "pokemon",
+      "total": 1842,
+      "meta": "프라모델, 가샤폰, 인형, 굿즈",
+      "searchHint": "포켓몬 / 도감번호 / 라인 검색",
+      "worldTitle": "세대",
+      "seriesTabs": [
+        "전체 시리즈",
+        "포켓프라",
+        "몬콜레",
+        "봉제인형",
+        "가샤폰",
+        "제일복권"
+      ],
+      "filters": {
+        "grade": [
+          [
+            "전체 제품 라인",
+            1842
+          ],
+          [
+            "봉제인형",
+            1107
+          ],
+          [
+            "가샤폰",
+            215
+          ],
+          [
+            "굿즈",
+            204
+          ],
+          [
+            "몬콜레",
+            164
+          ],
+          [
+            "포켓프라",
+            46
+          ]
+        ],
+        "type": [
+          [
+            "전체 유형",
+            1842
+          ],
+          [
+            "인형",
+            1107
+          ],
+          [
+            "피규어",
+            217
+          ],
+          [
+            "프라모델",
+            46
+          ],
+          [
+            "굿즈",
+            472
+          ]
+        ],
+        "year": [
+          [
+            "전체 연도",
+            1842
+          ],
+          [
+            "2027",
+            21
+          ],
+          [
+            "2026",
+            388
+          ]
+        ],
+        "limited": [
+          [
+            "전체",
+            1842
+          ],
+          [
+            "한정",
+            96
+          ],
+          [
+            "일반",
+            1746
+          ]
+        ]
+      }
     },
     {
-      "id": 3,
-      "seriesId": 1,
-      "name": "건담 캘리번",
-      "nameEn": "Gundam Calibarn",
-      "icon": "assets/units/g5010u02000.webp",
-      "status": "owned"
+      "id": "fate",
+      "label": "Fate",
+      "icon": "fate",
+      "total": 2332,
+      "meta": "피규어, 액션, 넨도로이드, 이치방쿠지",
+      "searchHint": "서번트 / 작품 / 라인 검색",
+      "worldTitle": "작품",
+      "seriesTabs": [
+        "전체 시리즈",
+        "FGO",
+        "Fate/stay night",
+        "Fate/Zero",
+        "프리즈마 이리야",
+        "Apocrypha"
+      ],
+      "filters": {
+        "grade": [
+          [
+            "전체 제품 라인",
+            2332
+          ],
+          [
+            "굿즈",
+            1777
+          ],
+          [
+            "스케일",
+            273
+          ],
+          [
+            "넨도로이드",
+            162
+          ],
+          [
+            "figma",
+            67
+          ],
+          [
+            "경품",
+            53
+          ]
+        ],
+        "type": [
+          [
+            "전체 유형",
+            2332
+          ],
+          [
+            "피규어",
+            435
+          ],
+          [
+            "액션",
+            67
+          ],
+          [
+            "굿즈",
+            1830
+          ]
+        ],
+        "year": [
+          [
+            "전체 연도",
+            2332
+          ],
+          [
+            "2027",
+            34
+          ],
+          [
+            "2026",
+            402
+          ]
+        ],
+        "limited": [
+          [
+            "전체",
+            2332
+          ],
+          [
+            "한정",
+            310
+          ],
+          [
+            "일반",
+            2022
+          ]
+        ]
+      }
     },
     {
-      "id": 4,
-      "seriesId": 1,
-      "name": "건담 루브리스",
-      "nameEn": "Gundam Lfrith",
-      "icon": "assets/units/g5000u00100.webp",
-      "status": "owned"
-    },
-    {
-      "id": 5,
-      "seriesId": 1,
-      "name": "건담 루브리스 울",
-      "nameEn": "Gundam Lfrith Ur",
-      "icon": "assets/units/g5010u01400.webp",
-      "status": "none"
-    },
-    {
-      "id": 6,
-      "seriesId": 1,
-      "name": "건담 루브리스 소른",
-      "nameEn": "Gundam Lfrith Thorn",
-      "icon": "assets/units/g5010u01500.webp",
-      "status": "none"
-    },
-    {
-      "id": 7,
-      "seriesId": 1,
-      "name": "건담 파락트",
-      "nameEn": "Gundam Pharact",
-      "icon": "assets/units/g5010u00400.webp",
-      "status": "wanted"
-    },
-    {
-      "id": 8,
-      "seriesId": 1,
-      "name": "건담 슈바르제테",
-      "nameEn": "Gundam Schwarzette",
-      "icon": "assets/units/g5010u01900.webp",
-      "status": "wanted"
-    },
-    {
-      "id": 9,
-      "seriesId": 1,
-      "name": "다릴발데",
-      "nameEn": "Darilbalde",
-      "icon": "assets/units/g5010u01200.webp",
-      "status": "owned"
-    },
-    {
-      "id": 10,
-      "seriesId": 1,
-      "name": "딜란자(굴 전용기)",
-      "nameEn": "Guel's Dilanza",
-      "icon": "assets/units/g5010u00300.webp",
-      "status": "owned"
-    },
-    {
-      "id": 11,
-      "seriesId": 1,
-      "name": "미카엘리스",
-      "nameEn": "Michaelis",
-      "icon": "assets/units/g5010u00500.webp",
-      "status": "none"
-    },
-    {
-      "id": 12,
-      "seriesId": 1,
-      "name": "데미 트레이너",
-      "nameEn": "Demi Trainer",
-      "icon": "assets/units/g5010u01000.webp",
-      "status": "none"
-    },
-    {
-      "id": 13,
-      "seriesId": 2,
-      "name": "스트라이크 건담",
-      "nameEn": "Strike Gundam",
-      "icon": "assets/units/g3000u00100.webp",
-      "status": "owned"
-    },
-    {
-      "id": 14,
-      "seriesId": 2,
-      "name": "이지스 건담",
-      "nameEn": "Aegis Gundam",
-      "icon": "assets/units/g3000u00600.webp",
-      "status": "none"
-    },
-    {
-      "id": 15,
-      "seriesId": 2,
-      "name": "스트라이크 루주",
-      "nameEn": "Strike Rouge",
-      "icon": "assets/units/g3000u01800.webp",
-      "status": "none"
-    },
-    {
-      "id": 16,
-      "seriesId": 2,
-      "name": "카라미티 건담",
-      "nameEn": "Calamity Gundam",
-      "icon": "assets/units/g3000u01200.webp",
-      "status": "wanted"
-    },
-    {
-      "id": 17,
-      "seriesId": 2,
-      "name": "포비든 건담",
-      "nameEn": "Forbidden Gundam",
-      "icon": "assets/units/g3000u01300.webp",
-      "status": "none"
-    },
-    {
-      "id": 18,
-      "seriesId": 2,
-      "name": "레이더 건담",
-      "nameEn": "Raider Gundam",
-      "icon": "assets/units/g3000u01400.webp",
-      "status": "none"
-    },
-    {
-      "id": 19,
-      "seriesId": 2,
-      "name": "진",
-      "nameEn": "GINN",
-      "icon": "assets/units/g3000u02200.webp",
-      "status": "owned"
-    },
-    {
-      "id": 20,
-      "seriesId": 2,
-      "name": "스트라이크 프리덤 건담",
-      "nameEn": "Strike Freedom Gundam",
-      "icon": "assets/units/g3300u00100.webp",
-      "status": "owned"
-    },
-    {
-      "id": 21,
-      "seriesId": 2,
-      "name": "데스티니 건담",
-      "nameEn": "Destiny Gundam",
-      "icon": "assets/units/g3300u00700.webp",
-      "status": "owned"
-    },
-    {
-      "id": 22,
-      "seriesId": 2,
-      "name": "레전드 건담",
-      "nameEn": "Legend Gundam",
-      "icon": "assets/units/g3300u05200.webp",
-      "status": "wanted"
-    },
-    {
-      "id": 23,
-      "seriesId": 2,
-      "name": "구프 이그나이티드(하이네 전용기)",
-      "nameEn": "GOUF Ignited (Heine Westenfluss)",
-      "icon": "assets/units/g3300u05300.webp",
-      "status": "wanted"
-    },
-    {
-      "id": 24,
-      "seriesId": 2,
-      "name": "라이징 프리덤 건담",
-      "nameEn": "Rising Freedom Gundam",
-      "icon": "assets/units/g3500u00100.webp",
-      "status": "none"
+      "id": "beyblade",
+      "label": "BBX",
+      "icon": "bbx",
+      "total": 160,
+      "meta": "BX / UX / CX / 한정",
+      "searchHint": "베이 / 번호 / 라인 검색",
+      "worldTitle": "라인",
+      "seriesTabs": [
+        "전체 시리즈",
+        "BX",
+        "UX",
+        "CX",
+        "한정"
+      ],
+      "filters": {
+        "grade": [
+          [
+            "전체 제품 라인",
+            160
+          ],
+          [
+            "Starter",
+            58
+          ],
+          [
+            "Booster",
+            61
+          ],
+          [
+            "Set",
+            22
+          ],
+          [
+            "Tool",
+            19
+          ]
+        ],
+        "type": [
+          [
+            "전체 유형",
+            160
+          ],
+          [
+            "배틀 토이",
+            141
+          ],
+          [
+            "툴",
+            19
+          ]
+        ],
+        "year": [
+          [
+            "전체 연도",
+            160
+          ],
+          [
+            "2026",
+            48
+          ],
+          [
+            "2025",
+            61
+          ]
+        ],
+        "limited": [
+          [
+            "전체",
+            160
+          ],
+          [
+            "한정",
+            27
+          ],
+          [
+            "일반",
+            133
+          ]
+        ]
+      }
     }
   ],
   "kits": [
     {
-      "id": 1,
-      "unitId": 1,
-      "name": "HG 1/144 건담 에어리얼",
-      "nameJa": "HG 1 / 144 ガンダムエアリアル",
-      "grade": "HG",
+      "id": "gu01",
+      "franchiseId": "gundam",
+      "name": "RG 1/144 RX-78-2 건담 Ver.2.0",
+      "nameJa": "RG 1 / 144 RX-78-2 ガンダム Ver.2.0",
+      "series": "초대",
+      "line": "RG",
+      "type": "프라모델",
       "scale": "1/144",
-      "priceJpy": 1760,
-      "releaseDate": "2022-10-01",
-      "image": "assets/kits/k1.jpg",
-      "barcode": "4573102630308"
+      "universe": "UC",
+      "date": "2024-08-10",
+      "priceJpy": 3850,
+      "image": "assets/gp/kits/gu01.jpg",
+      "gallery": [
+        "assets/gp/kits/gu01.jpg"
+      ],
+      "limited": false,
+      "pb": false,
+      "status": "owned",
+      "wantedQty": 0,
+      "recent": true,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "RG 1/144 RX-78-2 건담 Ver.2.0",
+        "RG 건담 Ver.2.0",
+        "RG 1 / 144 RX-78-2 ガンダム Ver.2.0"
+      ]
     },
     {
-      "id": 2,
-      "unitId": 1,
-      "name": "FM 1/100 건담 에어리얼",
-      "nameJa": "FULL MECHANICS 1 / 100 ガンダムエアリアル",
-      "grade": "FM",
-      "scale": "1/100",
-      "priceJpy": 4180,
-      "releaseDate": "2023-04-22",
-      "image": "assets/kits/k2.jpg",
-      "barcode": "4573102650900"
-    },
-    {
-      "id": 3,
-      "unitId": 2,
-      "name": "HG 1/144 건담 에어리얼(개수형)",
-      "nameJa": "HG 1 / 144 ガンダムエアリアル(改修型)",
-      "grade": "HG",
-      "scale": "1/144",
-      "priceJpy": 1870,
-      "releaseDate": "2023-03-18",
-      "image": "assets/kits/k3.jpg",
-      "barcode": "4573102650962"
-    },
-    {
-      "id": 4,
-      "unitId": 3,
-      "name": "HG 1/144 건담 캘리번",
-      "nameJa": "HG 1 / 144 ガンダムキャリバーン",
-      "grade": "HG",
-      "scale": "1/144",
-      "priceJpy": 2200,
-      "releaseDate": "2023-07-15",
-      "image": "assets/kits/k4.jpg",
-      "barcode": "4573102653222"
-    },
-    {
-      "id": 5,
-      "unitId": 4,
-      "name": "HG 1/144 건담 루브리스",
-      "nameJa": "HG 1 / 144 ガンダムルブリス",
-      "grade": "HG",
-      "scale": "1/144",
-      "priceJpy": 1760,
-      "releaseDate": "2022-08-06",
-      "image": "assets/kits/k5.jpg",
-      "barcode": "4573102629449"
-    },
-    {
-      "id": 6,
-      "unitId": 5,
-      "name": "HG 1/144 건담 루브리스 울",
-      "nameJa": "HG 1 / 144 ガンダムルブリスウル",
-      "grade": "HG",
-      "scale": "1/144",
-      "priceJpy": 2090,
-      "releaseDate": "2023-03-04",
-      "image": "assets/kits/k6.jpg",
-      "barcode": "4573102650887"
-    },
-    {
-      "id": 7,
-      "unitId": 6,
-      "name": "HG 1/144 건담 루브리스 소른",
-      "nameJa": "HG 1 / 144 ガンダムルブリスソーン",
-      "grade": "HG",
-      "scale": "1/144",
-      "priceJpy": 1760,
-      "releaseDate": "2023-03-18",
-      "image": "assets/kits/k7.jpg",
-      "barcode": "4573102650979"
-    },
-    {
-      "id": 8,
-      "unitId": 7,
-      "name": "HG 1/144 건담 파락트",
-      "nameJa": "HG 1 / 144 ガンダムファラクト",
-      "grade": "HG",
-      "scale": "1/144",
-      "priceJpy": 2090,
-      "releaseDate": "2022-12-17",
-      "image": "assets/kits/k8.jpg",
-      "barcode": "4573102633545"
-    },
-    {
-      "id": 9,
-      "unitId": 8,
-      "name": "HG 1/144 건담 슈바르제테",
-      "nameJa": "HG 1 / 144 ガンダムシュバルゼッテ",
-      "grade": "HG",
-      "scale": "1/144",
-      "priceJpy": 2090,
-      "releaseDate": "2023-07-08",
-      "image": "assets/kits/k9.jpg",
-      "barcode": "4573102650245"
-    },
-    {
-      "id": 10,
-      "unitId": 9,
-      "name": "HG 1/144 다릴발데",
-      "nameJa": "HG 1 / 144 ダリルバルデ",
-      "grade": "HG",
-      "scale": "1/144",
-      "priceJpy": 2090,
-      "releaseDate": "2022-12-03",
-      "image": "assets/kits/k10.jpg",
-      "barcode": "4573102633552"
-    },
-    {
-      "id": 11,
-      "unitId": 10,
-      "name": "HG 1/144 딜란자(굴 전용기)",
-      "nameJa": "HG 1 / 144 ディランザ (グエル専用機)",
-      "grade": "HG",
-      "scale": "1/144",
-      "priceJpy": 1760,
-      "releaseDate": "2022-10-08",
-      "image": "assets/kits/k11.jpg",
-      "barcode": "4573102633415"
-    },
-    {
-      "id": 12,
-      "unitId": 11,
-      "name": "HG 1/144 미카엘리스",
-      "nameJa": "HG 1 / 144 ミカエリス",
-      "grade": "HG",
-      "scale": "1/144",
-      "priceJpy": 1760,
-      "releaseDate": "2023-01-14",
-      "image": "assets/kits/k12.jpg",
-      "barcode": "4573102642523"
-    },
-    {
-      "id": 13,
-      "unitId": 12,
-      "name": "HG 1/144 데미 트레이너",
-      "nameJa": "HG 1 / 144 デミトレーナー",
-      "grade": "HG",
-      "scale": "1/144",
-      "priceJpy": 1320,
-      "releaseDate": "2022-12-10",
-      "image": "assets/kits/k13.jpg",
-      "barcode": "4573102633569"
-    },
-    {
-      "id": 14,
-      "unitId": 13,
-      "name": "EG 1/144 스트라이크 건담",
-      "nameJa": "ENTRY GRADE 1 / 144 ストライクガンダム",
-      "grade": "EG",
-      "scale": "1/144",
-      "priceJpy": 770,
-      "releaseDate": "2022-01-15",
-      "image": "assets/kits/k14.jpg",
-      "barcode": "4573102621689"
-    },
-    {
-      "id": 15,
-      "unitId": 15,
-      "name": "EG 1/144 스트라이크 루주",
-      "nameJa": "ENTRY GRADE 1 / 144 ストライクルージュ",
-      "grade": "EG",
-      "scale": "1/144",
-      "priceJpy": 880,
-      "releaseDate": "2025-01-17",
-      "image": "assets/kits/k15.jpg",
-      "barcode": "4573102683212"
-    },
-    {
-      "id": 16,
-      "unitId": 16,
-      "name": "FM 1/100 카라미티 건담",
-      "nameJa": "FULL MECHANICS 1 / 100 カラミティガンダム",
-      "grade": "FM",
-      "scale": "1/100",
-      "priceJpy": 5500,
-      "releaseDate": "2021-06-26",
-      "image": "assets/kits/k16.jpg",
-      "barcode": "4573102616623"
-    },
-    {
-      "id": 17,
-      "unitId": 17,
-      "name": "FM 1/100 포비든 건담",
-      "nameJa": "FULL MECHANICS 1 / 100 フォビドゥンガンダム",
-      "grade": "FM",
-      "scale": "1/100",
-      "priceJpy": 6380,
-      "releaseDate": "2023-08-11",
-      "image": "assets/kits/k17.jpg",
-      "barcode": "4573102654298"
-    },
-    {
-      "id": 18,
-      "unitId": 18,
-      "name": "FM 1/100 레이더 건담",
-      "nameJa": "FULL MECHANICS 1 / 100 レイダーガンダム",
-      "grade": "FM",
-      "scale": "1/100",
-      "priceJpy": 5500,
-      "releaseDate": "2022-05-21",
-      "image": "assets/kits/k18.jpg",
-      "barcode": "4573102633491"
-    },
-    {
-      "id": 19,
-      "unitId": 19,
-      "name": "MG 1/100 모빌 진",
-      "nameJa": "MG 1 / 100 モビルジン",
-      "grade": "MG",
-      "scale": "1/100",
-      "priceJpy": 4730,
-      "releaseDate": "2021-04-17",
-      "image": "assets/kits/k19.jpg",
-      "barcode": "4573102615473"
-    },
-    {
-      "id": 20,
-      "unitId": 20,
+      "id": "gu02",
+      "franchiseId": "gundam",
       "name": "MGEX 1/100 스트라이크 프리덤 건담",
       "nameJa": "MGEX 1 / 100 ストライクフリーダムガンダム",
-      "grade": "MG",
+      "series": "SEED",
+      "line": "MGEX",
+      "type": "프라모델",
       "scale": "1/100",
+      "universe": "CE",
+      "date": "2022-11-19",
       "priceJpy": 17050,
-      "releaseDate": "2022-11-19",
-      "image": "assets/kits/k20.jpg",
-      "barcode": "4573102633682"
+      "image": "assets/gp/kits/gu02.jpg",
+      "gallery": [
+        "assets/gp/kits/gu02.jpg"
+      ],
+      "limited": false,
+      "pb": false,
+      "status": "owned",
+      "wantedQty": 0,
+      "recent": false,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "MGEX 1/100 스트라이크 프리덤 건담",
+        "MGEX 프리덤 건담",
+        "MGEX 1 / 100 ストライクフリーダムガンダム"
+      ]
     },
     {
-      "id": 21,
-      "unitId": 21,
-      "name": "HGCE 1/144 데스티니 건담(하이네 전용기)",
-      "nameJa": "HGCE 1 / 144 デスティニーガンダム(ハイネ専用機)",
-      "grade": "HG",
-      "scale": "1/144",
-      "priceJpy": 2640,
-      "releaseDate": "2019-07-06",
-      "image": "assets/kits/k21.jpg",
-      "barcode": "4573102577931"
-    },
-    {
-      "id": 22,
-      "unitId": 22,
+      "id": "gu03",
+      "franchiseId": "gundam",
       "name": "HG 1/144 레전드 건담",
       "nameJa": "HG 1 / 144 レジェンドガンダム",
-      "grade": "HG",
+      "series": "SEED",
+      "line": "HG",
+      "type": "프라모델",
       "scale": "1/144",
+      "universe": "CE",
+      "date": "2026-01-31",
       "priceJpy": 3080,
-      "releaseDate": "2026-01-31",
-      "image": "assets/kits/k22.jpg",
-      "barcode": "4573102720030"
+      "image": "assets/gp/kits/gu03.jpg",
+      "gallery": [
+        "assets/gp/kits/gu03.jpg"
+      ],
+      "limited": false,
+      "pb": false,
+      "status": "wanted",
+      "wantedQty": 1,
+      "recent": true,
+      "month": false,
+      "market": {
+        "normalKrw": 41000,
+        "conservativeKrw": 47500,
+        "samples": 6
+      },
+      "keywords": [
+        "HG 1/144 레전드 건담",
+        "HG 레전드 건담",
+        "HG 1 / 144 レジェンドガンダム"
+      ]
     },
     {
-      "id": 23,
-      "unitId": 23,
-      "name": "HG 1/144 구프 이그나이티드(하이네 전용기)",
-      "nameJa": "HG 1 / 144 グフイグナイテッド(ハイネ・ヴェステンフルス専用機)",
-      "grade": "HG",
+      "id": "gu04",
+      "franchiseId": "gundam",
+      "name": "FULL MECHANICS 1/100 건담 에어리얼",
+      "nameJa": "FULL MECHANICS 1 / 100 ガンダムエアリアル",
+      "series": "수성",
+      "line": "FM",
+      "type": "프라모델",
+      "scale": "1/100",
+      "universe": "Ad Stella",
+      "date": "2023-04-22",
+      "priceJpy": 4180,
+      "image": "assets/gp/kits/gu04.jpg",
+      "gallery": [
+        "assets/gp/kits/gu04.jpg"
+      ],
+      "limited": false,
+      "pb": false,
+      "status": "wanted",
+      "wantedQty": 2,
+      "recent": false,
+      "month": false,
+      "market": {
+        "normalKrw": 52000,
+        "conservativeKrw": 59000,
+        "samples": 9
+      },
+      "keywords": [
+        "FULL MECHANICS 1/100 건담 에어리얼",
+        "FM 건담 에어리얼",
+        "FULL MECHANICS 1 / 100 ガンダムエアリアル"
+      ]
+    },
+    {
+      "id": "gu05",
+      "franchiseId": "gundam",
+      "name": "HG 1/144 건담 캘리번",
+      "nameJa": "HG 1 / 144 ガンダムキャリバーン",
+      "series": "수성",
+      "line": "HG",
+      "type": "프라모델",
       "scale": "1/144",
+      "universe": "Ad Stella",
+      "date": "2023-07-15",
+      "priceJpy": 2200,
+      "image": "assets/gp/kits/gu05.jpg",
+      "gallery": [
+        "assets/gp/kits/gu05.jpg"
+      ],
+      "limited": false,
+      "pb": false,
+      "status": "owned",
+      "wantedQty": 0,
+      "recent": false,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "HG 1/144 건담 캘리번",
+        "HG 건담 캘리번",
+        "HG 1 / 144 ガンダムキャリバーン"
+      ]
+    },
+    {
+      "id": "gu06",
+      "franchiseId": "gundam",
+      "name": "MGSD 프리덤 건담",
+      "nameJa": "MGSD フリーダムガンダム",
+      "series": "SEED",
+      "line": "MGSD",
+      "type": "프라모델",
+      "scale": "non-scale",
+      "universe": "CE",
+      "date": "2023-01-21",
+      "priceJpy": 4290,
+      "image": "assets/gp/kits/gu06.jpg",
+      "gallery": [
+        "assets/gp/kits/gu06.jpg"
+      ],
+      "limited": false,
+      "pb": false,
+      "status": "none",
+      "wantedQty": 0,
+      "recent": false,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "MGSD 프리덤 건담",
+        "MGSD 프리덤 건담",
+        "MGSD フリーダムガンダム"
+      ]
+    },
+    {
+      "id": "gu07",
+      "franchiseId": "gundam",
+      "name": "MG 1/100 건담 버체",
+      "nameJa": "MG 1 / 100 ガンダムヴァーチェ",
+      "series": "00",
+      "line": "MG",
+      "type": "프라모델",
+      "scale": "1/100",
+      "universe": "AD",
+      "date": "2021-11-27",
+      "priceJpy": 8800,
+      "image": "assets/gp/kits/gu07.jpg",
+      "gallery": [
+        "assets/gp/kits/gu07.jpg"
+      ],
+      "limited": false,
+      "pb": false,
+      "status": "none",
+      "wantedQty": 0,
+      "recent": false,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "MG 1/100 건담 버체",
+        "MG 건담 버체",
+        "MG 1 / 100 ガンダムヴァーチェ"
+      ]
+    },
+    {
+      "id": "gu08",
+      "franchiseId": "gundam",
+      "name": "RG 1/144 Hi-ν 건담",
+      "nameJa": "RG 1 / 144 Hi-νガンダム",
+      "series": "역샤아",
+      "line": "RG",
+      "type": "프라모델",
+      "scale": "1/144",
+      "universe": "UC",
+      "date": "2021-09-11",
+      "priceJpy": 4950,
+      "image": "assets/gp/kits/gu08.jpg",
+      "gallery": [
+        "assets/gp/kits/gu08.jpg"
+      ],
+      "limited": false,
+      "pb": false,
+      "status": "wanted",
+      "wantedQty": 1,
+      "recent": false,
+      "month": false,
+      "market": {
+        "normalKrw": 68000,
+        "conservativeKrw": 76000,
+        "samples": 12
+      },
+      "keywords": [
+        "RG 1/144 Hi-ν 건담",
+        "RG Hi-ν 건담",
+        "RG 1 / 144 Hi-νガンダム"
+      ]
+    },
+    {
+      "id": "gu09",
+      "franchiseId": "gundam",
+      "name": "MG 1/100 제타 건담 Ver.Ka",
+      "nameJa": "MG 1 / 100 ゼータガンダム Ver.Ka",
+      "series": "Z",
+      "line": "MG",
+      "type": "프라모델",
+      "scale": "1/100",
+      "universe": "UC",
+      "date": "2023-04-29",
+      "priceJpy": 7150,
+      "image": "assets/gp/kits/gu09.jpg",
+      "gallery": [
+        "assets/gp/kits/gu09.jpg"
+      ],
+      "limited": false,
+      "pb": false,
+      "status": "none",
+      "wantedQty": 0,
+      "recent": false,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "MG 1/100 제타 건담 Ver.Ka",
+        "MG 건담 Ver.Ka",
+        "MG 1 / 100 ゼータガンダム Ver.Ka"
+      ]
+    },
+    {
+      "id": "gu10",
+      "franchiseId": "gundam",
+      "name": "RG 1/144 윙 건담 제로",
+      "nameJa": "RG 1 / 144 ウイングガンダムゼロ",
+      "series": "W",
+      "line": "RG",
+      "type": "프라모델",
+      "scale": "1/144",
+      "universe": "AC",
+      "date": "2025-09-27",
+      "priceJpy": 4620,
+      "image": "assets/gp/kits/gu10.jpg",
+      "gallery": [
+        "assets/gp/kits/gu10.jpg"
+      ],
+      "limited": false,
+      "pb": false,
+      "status": "none",
+      "wantedQty": 0,
+      "recent": true,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "RG 1/144 윙 건담 제로",
+        "RG 건담 제로",
+        "RG 1 / 144 ウイングガンダムゼロ"
+      ]
+    },
+    {
+      "id": "gu11",
+      "franchiseId": "gundam",
+      "name": "MG 1/100 건담 발바토스 루프스",
+      "nameJa": "MG 1 / 100 ガンダムバルバトスルプス",
+      "series": "철혈",
+      "line": "MG",
+      "type": "프라모델",
+      "scale": "1/100",
+      "universe": "Post Disaster",
+      "date": "2025-11-22",
+      "priceJpy": 7150,
+      "image": "assets/gp/kits/gu11.jpg",
+      "gallery": [
+        "assets/gp/kits/gu11.jpg"
+      ],
+      "limited": false,
+      "pb": false,
+      "status": "wanted",
+      "wantedQty": 1,
+      "recent": false,
+      "month": false,
+      "market": {
+        "normalKrw": 89000,
+        "conservativeKrw": 99000,
+        "samples": 4
+      },
+      "keywords": [
+        "MG 1/100 건담 발바토스 루프스",
+        "MG 발바토스 루프스",
+        "MG 1 / 100 ガンダムバルバトスルプス"
+      ]
+    },
+    {
+      "id": "gu12",
+      "franchiseId": "gundam",
+      "name": "ENTRY GRADE 1/144 스트라이크 건담",
+      "nameJa": "ENTRY GRADE 1 / 144 ストライクガンダム",
+      "series": "SEED",
+      "line": "EG",
+      "type": "프라모델",
+      "scale": "1/144",
+      "universe": "CE",
+      "date": "2022-01-15",
+      "priceJpy": 770,
+      "image": "assets/gp/kits/gu12.jpg",
+      "gallery": [
+        "assets/gp/kits/gu12.jpg"
+      ],
+      "limited": false,
+      "pb": false,
+      "status": "owned",
+      "wantedQty": 0,
+      "recent": false,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "ENTRY GRADE 1/144 스트라이크 건담",
+        "EG 스트라이크 건담",
+        "ENTRY GRADE 1 / 144 ストライクガンダム"
+      ]
+    },
+    {
+      "id": "gu13",
+      "franchiseId": "gundam",
+      "name": "HG 1/144 GQuuuuuuX",
+      "nameJa": "HG 1 / 144 GQuuuuuuX(エンディミオン・ユニット覚醒時)",
+      "series": "GQuuuuuuX",
+      "line": "HG",
+      "type": "프라모델",
+      "scale": "1/144",
+      "universe": "unknown",
+      "date": "2026-01-10",
       "priceJpy": 2860,
-      "releaseDate": "2026-07-11",
-      "image": "assets/kits/k23.jpg",
-      "barcode": "4573102742490"
+      "image": "assets/gp/kits/gu13.jpg",
+      "gallery": [
+        "assets/gp/kits/gu13.jpg"
+      ],
+      "limited": false,
+      "pb": false,
+      "status": "none",
+      "wantedQty": 0,
+      "recent": true,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "HG 1/144 GQuuuuuuX",
+        "HG 1/144 GQuuuuuuX",
+        "HG 1 / 144 GQuuuuuuX(エンディミオン・ユニット覚醒時)"
+      ]
     },
     {
-      "id": 24,
-      "unitId": 24,
-      "name": "HG 1/144 라이징 프리덤 건담",
-      "nameJa": "HG 1 / 144 ライジングフリーダムガンダム",
-      "grade": "HG",
+      "id": "gu14",
+      "franchiseId": "gundam",
+      "name": "RG 1/144 아카츠키 건담 (오오와시 장비)",
+      "nameJa": "RG 1 / 144 アカツキガンダム(オオワシ装備)",
+      "series": "SEED",
+      "line": "RG",
+      "type": "프라모델",
       "scale": "1/144",
-      "priceJpy": 2640,
-      "releaseDate": "2024-01-26",
-      "image": "assets/kits/k24.jpg",
-      "barcode": "4573102662842"
+      "universe": "CE",
+      "date": "2024-12-14",
+      "priceJpy": 8800,
+      "image": "assets/gp/kits/gu14.jpg",
+      "gallery": [
+        "assets/gp/kits/gu14.jpg"
+      ],
+      "limited": false,
+      "pb": false,
+      "status": "none",
+      "wantedQty": 0,
+      "recent": false,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "RG 1/144 아카츠키 건담 (오오와시 장비)",
+        "RG (오오와시 장비)",
+        "RG 1 / 144 アカツキガンダム(オオワシ装備)"
+      ]
+    },
+    {
+      "id": "gu15",
+      "franchiseId": "gundam",
+      "name": "MG 1/100 블레이즈 자쿠 팬텀 (하이네 기)",
+      "nameJa": "MG 1 / 100 ブレイズザクファントム(ハイネ・ヴェステンフルス専用機)",
+      "series": "SEED",
+      "line": "MG",
+      "type": "프라모델",
+      "scale": "1/100",
+      "universe": "CE",
+      "date": "2026-09",
+      "priceJpy": 5390,
+      "image": "assets/gp/kits/gu15.jpg",
+      "gallery": [
+        "assets/gp/kits/gu15.jpg"
+      ],
+      "limited": false,
+      "pb": false,
+      "status": "none",
+      "wantedQty": 0,
+      "recent": true,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "MG 1/100 블레이즈 자쿠 팬텀 (하이네 기)",
+        "MG (하이네 기)",
+        "MG 1 / 100 ブレイズザクファントム(ハイネ・ヴェステンフルス専用機)"
+      ]
+    },
+    {
+      "id": "gu16",
+      "franchiseId": "gundam",
+      "name": "HG 1/144 Ξ건담",
+      "nameJa": "HG 1 / 144 Ξガンダム (機動戦士ガンダム 閃光のハサウェイ キルケーの魔女)",
+      "series": "섬하사",
+      "line": "HG",
+      "type": "프라모델",
+      "scale": "1/144",
+      "universe": "UC",
+      "date": "2026-04-25",
+      "priceJpy": 7700,
+      "image": "assets/gp/kits/gu16.jpg",
+      "gallery": [
+        "assets/gp/kits/gu16.jpg"
+      ],
+      "limited": false,
+      "pb": false,
+      "status": "none",
+      "wantedQty": 0,
+      "recent": true,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "HG 1/144 Ξ건담",
+        "HG 1/144 Ξ건담",
+        "HG 1 / 144 Ξガンダム (機動戦士ガンダム 閃光のハサウェイ キルケーの魔女)"
+      ]
+    },
+    {
+      "id": "gu17",
+      "franchiseId": "gundam",
+      "name": "BB전사 ZGMF 자쿠 시리즈 세트",
+      "nameJa": "BB戦士 ＺＧＭＦザクシリーズセット",
+      "series": "SEED",
+      "line": "굿즈",
+      "type": "프라모델",
+      "scale": "non-scale",
+      "universe": "UC",
+      "date": "2027-07",
+      "priceJpy": 3520,
+      "image": "assets/gp/kits/gu17.jpg",
+      "gallery": [
+        "assets/gp/kits/gu17.jpg"
+      ],
+      "limited": true,
+      "pb": true,
+      "status": "none",
+      "wantedQty": 0,
+      "recent": true,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "BB전사 ZGMF 자쿠 시리즈 세트",
+        "굿즈 시리즈 세트",
+        "BB戦士 ＺＧＭＦザクシリーズセット"
+      ]
+    },
+    {
+      "id": "gu18",
+      "franchiseId": "gundam",
+      "name": "FULL MECHANICS 1/100 포비든 건담",
+      "nameJa": "FULL MECHANICS 1 / 100 フォビドゥンガンダム",
+      "series": "SEED",
+      "line": "FM",
+      "type": "프라모델",
+      "scale": "1/100",
+      "universe": "CE",
+      "date": "2023-08-11",
+      "priceJpy": 6380,
+      "image": "assets/gp/kits/gu18.jpg",
+      "gallery": [
+        "assets/gp/kits/gu18.jpg"
+      ],
+      "limited": false,
+      "pb": false,
+      "status": "none",
+      "wantedQty": 0,
+      "recent": false,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "FULL MECHANICS 1/100 포비든 건담",
+        "FM 포비든 건담",
+        "FULL MECHANICS 1 / 100 フォビドゥンガンダム"
+      ]
+    },
+    {
+      "id": "po19",
+      "franchiseId": "pokemon",
+      "name": "포켓프라 BIG 02 이브이",
+      "nameJa": "ポケモン プラモデル BIG 02 EEVEE",
+      "series": "포켓몬",
+      "line": "포켓프라",
+      "type": "프라모델",
+      "scale": "non-scale",
+      "universe": "Pokemon",
+      "date": "2021-09",
+      "priceJpy": 3200,
+      "image": "assets/gp/kits/po19.png",
+      "gallery": [
+        "assets/gp/kits/po19.png"
+      ],
+      "limited": false,
+      "pb": false,
+      "status": "owned",
+      "wantedQty": 0,
+      "recent": false,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "포켓프라 BIG 02 이브이",
+        "포켓프라 02 이브이",
+        "ポケモン プラモデル BIG 02 EEVEE"
+      ]
+    },
+    {
+      "id": "po20",
+      "franchiseId": "pokemon",
+      "name": "포켓프라 한카리아스",
+      "nameJa": "ポケモン プラモデル GARCHOMP",
+      "series": "포켓몬",
+      "line": "포켓프라",
+      "type": "프라모델",
+      "scale": "non-scale",
+      "universe": "Pokemon",
+      "date": "2021-08",
+      "priceJpy": 1200,
+      "image": "assets/gp/kits/po20.png",
+      "gallery": [
+        "assets/gp/kits/po20.png"
+      ],
+      "limited": false,
+      "pb": false,
+      "status": "none",
+      "wantedQty": 0,
+      "recent": false,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "포켓프라 한카리아스",
+        "포켓프라 포켓프라 한카리아스",
+        "ポケモン プラモデル GARCHOMP"
+      ]
+    },
+    {
+      "id": "po21",
+      "franchiseId": "pokemon",
+      "name": "포켓프라 Quick!! 05 염버니",
+      "nameJa": "ポケモン プラモデル クイック!! 05 SCORBUNNY",
+      "series": "포켓몬",
+      "line": "포켓프라",
+      "type": "프라모델",
+      "scale": "non-scale",
+      "universe": "Pokemon",
+      "date": "2021-04",
+      "priceJpy": 650,
+      "image": "assets/gp/kits/po21.png",
+      "gallery": [
+        "assets/gp/kits/po21.png"
+      ],
+      "limited": false,
+      "pb": false,
+      "status": "wanted",
+      "wantedQty": 1,
+      "recent": false,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "포켓프라 Quick!! 05 염버니",
+        "포켓프라 05 염버니",
+        "ポケモン プラモデル クイック!! 05 SCORBUNNY"
+      ]
+    },
+    {
+      "id": "po22",
+      "franchiseId": "pokemon",
+      "name": "피카츄 셀렉션 잠자는 피카츄",
+      "nameJa": "ピカチュウセレクション ねむるピカチュウ",
+      "series": "포켓몬",
+      "line": "몬콜레",
+      "type": "피규어",
+      "scale": "non-scale",
+      "universe": "Pokemon",
+      "date": "2027-09",
+      "priceJpy": null,
+      "image": "assets/gp/kits/po22.png",
+      "gallery": [
+        "assets/gp/kits/po22.png",
+        "assets/gp/kits/po22_1.png"
+      ],
+      "limited": false,
+      "pb": false,
+      "status": "none",
+      "wantedQty": 0,
+      "recent": true,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "피카츄 셀렉션 잠자는 피카츄",
+        "몬콜레 잠자는 피카츄",
+        "ピカチュウセレクション ねむるピカチュウ"
+      ]
+    },
+    {
+      "id": "po23",
+      "franchiseId": "pokemon",
+      "name": "포켓몬센터 봉제인형 시작의 피카츄",
+      "nameJa": "포켓몬센터 봉제인형 시작의 피카츄",
+      "series": "포켓몬",
+      "line": "봉제인형",
+      "type": "인형",
+      "scale": "non-scale",
+      "universe": "Pokemon",
+      "date": "2026-08-18",
+      "priceJpy": null,
+      "image": "assets/gp/kits/po23.jpg",
+      "gallery": [
+        "assets/gp/kits/po23.jpg",
+        "assets/gp/kits/po23_1.jpg"
+      ],
+      "limited": false,
+      "pb": false,
+      "status": "wanted",
+      "wantedQty": 1,
+      "recent": true,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "포켓몬센터 봉제인형 시작의 피카츄",
+        "봉제인형 시작의 피카츄",
+        "포켓몬센터 봉제인형 시작의 피카츄"
+      ]
+    },
+    {
+      "id": "po24",
+      "franchiseId": "pokemon",
+      "name": "포켓몬 스토어 「빗속의 고라파덕」 피카츄 대형 피규어",
+      "nameJa": "포켓몬 스토어 「빗속의 고라파덕」 피카츄 대형 피규어",
+      "series": "포켓몬",
+      "line": "스토어 오리지널",
+      "type": "굿즈",
+      "scale": "non-scale",
+      "universe": "Pokemon",
+      "date": "2026-10-05",
+      "priceJpy": null,
+      "image": "assets/gp/kits/po24.png",
+      "gallery": [
+        "assets/gp/kits/po24.png",
+        "assets/gp/kits/po24_1.png"
+      ],
+      "limited": true,
+      "pb": false,
+      "status": "none",
+      "wantedQty": 0,
+      "recent": true,
+      "month": true,
+      "market": null,
+      "keywords": [
+        "포켓몬 스토어 「빗속의 고라파덕」 피카츄 대형 피규어",
+        "스토어 오리지널 대형 피규어",
+        "포켓몬 스토어 「빗속의 고라파덕」 피카츄 대형 피규어"
+      ]
+    },
+    {
+      "id": "po25",
+      "franchiseId": "pokemon",
+      "name": "제일복권 포켓몬 30th ANNIVERSARY vol.2",
+      "nameJa": "一番くじ ポケモン 30th ANNIVERSARY vol.2",
+      "series": "포켓몬",
+      "line": "제일복권",
+      "type": "굿즈",
+      "scale": "non-scale",
+      "universe": "Pokemon",
+      "date": "2026-07-18",
+      "priceJpy": null,
+      "image": "assets/gp/kits/po25.webp",
+      "gallery": [
+        "assets/gp/kits/po25.webp",
+        "assets/gp/kits/po25_1.webp"
+      ],
+      "limited": true,
+      "pb": false,
+      "status": "none",
+      "wantedQty": 0,
+      "recent": false,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "제일복권 포켓몬 30th ANNIVERSARY vol.2",
+        "제일복권 ANNIVERSARY vol.2",
+        "一番くじ ポケモン 30th ANNIVERSARY vol.2"
+      ]
+    },
+    {
+      "id": "po26",
+      "franchiseId": "pokemon",
+      "name": "포켓몬 스케일 월드 신오 지방 불꽃숭이",
+      "nameJa": "【定番単品販売】20 ポケモンスケールワールド シンオウ地方 ヒコザル＆モウカザル",
+      "series": "포켓몬",
+      "line": "PB",
+      "type": "피규어",
+      "scale": "non-scale",
+      "universe": "Pokemon",
+      "date": "2026-08",
+      "priceJpy": 748,
+      "image": "assets/gp/kits/po26.jpg",
+      "gallery": [
+        "assets/gp/kits/po26.jpg"
+      ],
+      "limited": true,
+      "pb": true,
+      "status": "none",
+      "wantedQty": 0,
+      "recent": false,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "포켓몬 스케일 월드 신오 지방 불꽃숭이",
+        "PB 지방 불꽃숭이",
+        "【定番単品販売】20 ポケモンスケールワールド シンオウ地方 ヒコザル＆モウカザル"
+      ]
+    },
+    {
+      "id": "fa27",
+      "franchiseId": "fate",
+      "name": "FGO 문캔서 / 옥토 1/7",
+      "nameJa": "Fate / Grand Order ムーンキャンサー / 玉兎 1 / 7スケールフィギュア",
+      "series": "FGO",
+      "line": "스케일",
+      "type": "피규어",
+      "scale": "1/7",
+      "universe": "Fate",
+      "date": "2027-07",
+      "priceJpy": 26400,
+      "image": "assets/gp/kits/fa27.jpg",
+      "gallery": [
+        "assets/gp/kits/fa27.jpg",
+        "assets/gp/kits/fa27_1.jpg",
+        "assets/gp/kits/fa27_2.jpg"
+      ],
+      "limited": true,
+      "pb": false,
+      "status": "wanted",
+      "wantedQty": 1,
+      "recent": true,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "FGO 문캔서 / 옥토 1/7",
+        "스케일 옥토 1/7",
+        "Fate / Grand Order ムーンキャンサー / 玉兎 1 / 7スケールフィギュア"
+      ]
+    },
+    {
+      "id": "fa28",
+      "franchiseId": "fate",
+      "name": "PLAMATEA 실더 / 마슈 키리에라이트",
+      "nameJa": "PLAMATEA Shielder / Mash Kyrielight (Ortinax)",
+      "series": "FGO",
+      "line": "PLAMATEA",
+      "type": "프라모델",
+      "scale": "non-scale",
+      "universe": "Fate",
+      "date": "2027-04",
+      "priceJpy": 8800,
+      "image": "assets/gp/kits/fa28.jpg",
+      "gallery": [
+        "assets/gp/kits/fa28.jpg"
+      ],
+      "limited": false,
+      "pb": false,
+      "status": "none",
+      "wantedQty": 0,
+      "recent": false,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "PLAMATEA 실더 / 마슈 키리에라이트",
+        "PLAMATEA 마슈 키리에라이트",
+        "PLAMATEA Shielder / Mash Kyrielight (Ortinax)"
+      ]
+    },
+    {
+      "id": "fa29",
+      "franchiseId": "fate",
+      "name": "넨도로이드 세이버 캐주얼 Ver.",
+      "nameJa": "Nendoroid Saber: Casual Outfit Ver.",
+      "series": "Fate/stay night",
+      "line": "넨도로이드",
+      "type": "피규어",
+      "scale": "non-scale",
+      "universe": "Fate",
+      "date": "2026-10",
+      "priceJpy": 6600,
+      "image": "assets/gp/kits/fa29.jpg",
+      "gallery": [
+        "assets/gp/kits/fa29.jpg"
+      ],
+      "limited": false,
+      "pb": false,
+      "status": "none",
+      "wantedQty": 0,
+      "recent": true,
+      "month": true,
+      "market": null,
+      "keywords": [
+        "넨도로이드 세이버 캐주얼 Ver.",
+        "넨도로이드 캐주얼 Ver.",
+        "Nendoroid Saber: Casual Outfit Ver."
+      ]
+    },
+    {
+      "id": "fa30",
+      "franchiseId": "fate",
+      "name": "figma 세이버 얼터 2.0 (재판)",
+      "nameJa": "Rerelease [figma Saber Alter 2.0]",
+      "series": "Fate/stay night",
+      "line": "figma",
+      "type": "액션",
+      "scale": "non-scale",
+      "universe": "Fate",
+      "date": "2026-08",
+      "priceJpy": 10800,
+      "image": "assets/gp/kits/fa30.jpg",
+      "gallery": [
+        "assets/gp/kits/fa30.jpg"
+      ],
+      "limited": false,
+      "pb": false,
+      "status": "owned",
+      "wantedQty": 0,
+      "recent": false,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "figma 세이버 얼터 2.0 (재판)",
+        "figma 2.0 (재판)",
+        "Rerelease [figma Saber Alter 2.0]"
+      ]
+    },
+    {
+      "id": "fa31",
+      "franchiseId": "fate",
+      "name": "figma 일리야스필 폰 아인츠베른",
+      "nameJa": "figma Illyasviel von Einzbern",
+      "series": "프리즈마 이리야",
+      "line": "figma",
+      "type": "액션",
+      "scale": "non-scale",
+      "universe": "Fate",
+      "date": "2026-07",
+      "priceJpy": 9800,
+      "image": "assets/gp/kits/fa31.jpg",
+      "gallery": [
+        "assets/gp/kits/fa31.jpg"
+      ],
+      "limited": false,
+      "pb": false,
+      "status": "none",
+      "wantedQty": 0,
+      "recent": false,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "figma 일리야스필 폰 아인츠베른",
+        "figma 폰 아인츠베른",
+        "figma Illyasviel von Einzbern"
+      ]
+    },
+    {
+      "id": "fa32",
+      "franchiseId": "fate",
+      "name": "figma 버서커 / 모르간",
+      "nameJa": "figma Berserker / Morgan",
+      "series": "FGO",
+      "line": "figma",
+      "type": "액션",
+      "scale": "non-scale",
+      "universe": "Fate",
+      "date": "2027-01",
+      "priceJpy": 13800,
+      "image": "assets/gp/kits/fa32.jpg",
+      "gallery": [
+        "assets/gp/kits/fa32.jpg"
+      ],
+      "limited": false,
+      "pb": false,
+      "status": "none",
+      "wantedQty": 0,
+      "recent": false,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "figma 버서커 / 모르간",
+        "figma / 모르간",
+        "figma Berserker / Morgan"
+      ]
+    },
+    {
+      "id": "fa33",
+      "franchiseId": "fate",
+      "name": "초코푸니 플러시 랜서 / 카르나",
+      "nameJa": "Chocopuni Plushie Lancer / Karna / Archer / Arjuna / Lancer / Indra:Chocopuni Plushie Lancer / Indra",
+      "series": "FGO",
+      "line": "플러시",
+      "type": "굿즈",
+      "scale": "non-scale",
+      "universe": "Fate",
+      "date": "2027-03",
+      "priceJpy": 4400,
+      "image": "assets/gp/kits/fa33.jpg",
+      "gallery": [
+        "assets/gp/kits/fa33.jpg"
+      ],
+      "limited": false,
+      "pb": false,
+      "status": "none",
+      "wantedQty": 0,
+      "recent": false,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "초코푸니 플러시 랜서 / 카르나",
+        "플러시 / 카르나",
+        "Chocopuni Plushie Lancer / Karna / Archer / Arjuna / Lancer / Indra:Chocopuni Plushie Lancer / Indra"
+      ]
+    },
+    {
+      "id": "fa34",
+      "franchiseId": "fate",
+      "name": "제일복권 FGO 칼데아 픽업",
+      "nameJa": "一番くじ Fate / Grand Order 〜カルデアピックアップメモリー〜",
+      "series": "FGO",
+      "line": "제일복권",
+      "type": "굿즈",
+      "scale": "non-scale",
+      "universe": "Fate",
+      "date": "2026-10-31",
+      "priceJpy": null,
+      "image": "assets/gp/kits/fa34.webp",
+      "gallery": [
+        "assets/gp/kits/fa34.webp",
+        "assets/gp/kits/fa34_1.webp"
+      ],
+      "limited": true,
+      "pb": false,
+      "status": "none",
+      "wantedQty": 0,
+      "recent": true,
+      "month": true,
+      "market": null,
+      "keywords": [
+        "제일복권 FGO 칼데아 픽업",
+        "제일복권 칼데아 픽업",
+        "一番くじ Fate / Grand Order 〜カルデアピックアップメモリー〜"
+      ]
+    },
+    {
+      "id": "ar35",
+      "franchiseId": "armored_core",
+      "name": "SMP AC6 발테우스",
+      "nameJa": "SMP [SHOKUGAN MODELING PROJECT] ARMORED CORE VI FIRES OF RUBICON AAP07: BALTEUS【プレミアムバンダイ限定】",
+      "series": "AC6",
+      "line": "SMP",
+      "type": "식완",
+      "scale": "non-scale",
+      "universe": "Armored Core",
+      "date": "2027-04",
+      "priceJpy": 49940,
+      "image": "assets/gp/kits/ar35.jpg",
+      "gallery": [
+        "assets/gp/kits/ar35.jpg",
+        "assets/gp/kits/ar35_1.jpg",
+        "assets/gp/kits/ar35_2.jpg"
+      ],
+      "limited": true,
+      "pb": true,
+      "status": "wanted",
+      "wantedQty": 1,
+      "recent": true,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "SMP AC6 발테우스",
+        "SMP AC6 발테우스",
+        "SMP [SHOKUGAN MODELING PROJECT] ARMORED CORE VI FIRES OF RUBICON AAP07: BALTEUS【プレミアムバンダイ限定】"
+      ]
+    },
+    {
+      "id": "ar36",
+      "franchiseId": "armored_core",
+      "name": "V.I. 미라주 C02-URANUS",
+      "nameJa": "ミラージュ C02-URANUS ウラヌス （ミラージュ C02-URANUS ウラヌス）",
+      "series": "AC3",
+      "line": "V.I.",
+      "type": "프라모델",
+      "scale": "1/72",
+      "universe": "Armored Core",
+      "date": "2027-03",
+      "priceJpy": 9900,
+      "image": "assets/gp/kits/ar36.jpg",
+      "gallery": [
+        "assets/gp/kits/ar36.jpg",
+        "assets/gp/kits/ar36_1.jpg",
+        "assets/gp/kits/ar36_2.jpg"
+      ],
+      "limited": true,
+      "pb": false,
+      "status": "none",
+      "wantedQty": 0,
+      "recent": false,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "V.I. 미라주 C02-URANUS",
+        "V.I. 미라주 C02-URANUS",
+        "ミラージュ C02-URANUS ウラヌス （ミラージュ C02-URANUS ウラヌス）"
+      ]
+    },
+    {
+      "id": "ar37",
+      "franchiseId": "armored_core",
+      "name": "V.I. 라인아크 화이트 글린트 & V.O.B 세트",
+      "nameJa": "ラインアーク ホワイト・グリント＆V.O.Bセット",
+      "series": "ACfA",
+      "line": "V.I.",
+      "type": "프라모델",
+      "scale": "1/72",
+      "universe": "Armored Core",
+      "date": "2027-01",
+      "priceJpy": 12100,
+      "image": "assets/gp/kits/ar37.jpg",
+      "gallery": [
+        "assets/gp/kits/ar37.jpg",
+        "assets/gp/kits/ar37_1.jpg",
+        "assets/gp/kits/ar37_2.jpg"
+      ],
+      "limited": false,
+      "pb": false,
+      "status": "owned",
+      "wantedQty": 0,
+      "recent": false,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "V.I. 라인아크 화이트 글린트 & V.O.B 세트",
+        "V.I. V.O.B 세트",
+        "ラインアーク ホワイト・グリント＆V.O.Bセット"
+      ]
+    },
+    {
+      "id": "ar38",
+      "franchiseId": "armored_core",
+      "name": "V.I. 크레스트 CR-C75U2 델타 Ver.",
+      "nameJa": "クレスト CR-C75U2 デルタVer. （クレスト CR-C75U2 デルタVer.）",
+      "series": "AC3",
+      "line": "V.I.",
+      "type": "프라모델",
+      "scale": "1/72",
+      "universe": "Armored Core",
+      "date": "2027-02",
+      "priceJpy": 9900,
+      "image": "assets/gp/kits/ar38.jpg",
+      "gallery": [
+        "assets/gp/kits/ar38.jpg",
+        "assets/gp/kits/ar38_1.jpg",
+        "assets/gp/kits/ar38_2.jpg"
+      ],
+      "limited": true,
+      "pb": false,
+      "status": "none",
+      "wantedQty": 0,
+      "recent": false,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "V.I. 크레스트 CR-C75U2 델타 Ver.",
+        "V.I. 델타 Ver.",
+        "クレスト CR-C75U2 デルタVer. （クレスト CR-C75U2 デルタVer.）"
+      ]
+    },
+    {
+      "id": "ar39",
+      "franchiseId": "armored_core",
+      "name": "AC6 어셈블 컬렉션 Vol.1",
+      "nameJa": "ARMORED CORE VI FIRES OF RUBICON アセンブルコレクション Vol.01",
+      "series": "AC6",
+      "line": "식완",
+      "type": "식완",
+      "scale": "non-scale",
+      "universe": "Armored Core",
+      "date": "2026-09",
+      "priceJpy": 1650,
+      "image": "assets/gp/kits/ar39.jpg",
+      "gallery": [
+        "assets/gp/kits/ar39.jpg",
+        "assets/gp/kits/ar39_1.jpg",
+        "assets/gp/kits/ar39_2.jpg"
+      ],
+      "limited": false,
+      "pb": false,
+      "status": "none",
+      "wantedQty": 0,
+      "recent": true,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "AC6 어셈블 컬렉션 Vol.1",
+        "식완 컬렉션 Vol.1",
+        "ARMORED CORE VI FIRES OF RUBICON アセンブルコレクション Vol.01"
+      ]
+    },
+    {
+      "id": "ar40",
+      "franchiseId": "armored_core",
+      "name": "V.I. 나인볼",
+      "nameJa": "ナインボール ARMORED CORE Ver.",
+      "series": "AC1",
+      "line": "V.I.",
+      "type": "프라모델",
+      "scale": "1/72",
+      "universe": "Armored Core",
+      "date": "2025-06-24",
+      "priceJpy": 6600,
+      "image": "assets/gp/kits/ar40.jpg",
+      "gallery": [
+        "assets/gp/kits/ar40.jpg",
+        "assets/gp/kits/ar40_1.jpg",
+        "assets/gp/kits/ar40_2.jpg"
+      ],
+      "limited": false,
+      "pb": false,
+      "status": "none",
+      "wantedQty": 0,
+      "recent": false,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "V.I. 나인볼",
+        "V.I. V.I. 나인볼",
+        "ナインボール ARMORED CORE Ver."
+      ]
+    },
+    {
+      "id": "be41",
+      "franchiseId": "beyblade",
+      "name": "CX-00 티가 레이지 FT3-60T",
+      "nameJa": "CX-00 ティガレイジFT3-60T",
+      "series": "CX",
+      "line": "Starter",
+      "type": "배틀 토이",
+      "scale": "non-scale",
+      "universe": "BEYBLADE X",
+      "date": "2026-09-12",
+      "priceJpy": 2750,
+      "image": "assets/gp/kits/be41.png",
+      "gallery": [
+        "assets/gp/kits/be41.png",
+        "assets/gp/kits/be41_1.png"
+      ],
+      "limited": false,
+      "pb": false,
+      "status": "none",
+      "wantedQty": 0,
+      "recent": true,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "CX-00 티가 레이지 FT3-60T",
+        "Starter 레이지 FT3-60T",
+        "CX-00 ティガレイジFT3-60T"
+      ]
+    },
+    {
+      "id": "be42",
+      "franchiseId": "beyblade",
+      "name": "UX-00 글로리 발키리 LF 메탈 코트:블루 (이벤트 한정)",
+      "nameJa": "UX-00 【イベント限定】 グローリーワルキューレLF メタルコート:ブルー",
+      "series": "한정",
+      "line": "Starter",
+      "type": "배틀 토이",
+      "scale": "non-scale",
+      "universe": "BEYBLADE X",
+      "date": "2026-08-29",
+      "priceJpy": 2800,
+      "image": "assets/gp/kits/be42.png",
+      "gallery": [
+        "assets/gp/kits/be42.png",
+        "assets/gp/kits/be42_1.png"
+      ],
+      "limited": true,
+      "pb": false,
+      "status": "none",
+      "wantedQty": 0,
+      "recent": true,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "UX-00 글로리 발키리 LF 메탈 코트:블루 (이벤트 한정)",
+        "Starter (이벤트 한정)",
+        "UX-00 【イベント限定】 グローリーワルキューレLF メタルコート:ブルー"
+      ]
+    },
+    {
+      "id": "be43",
+      "franchiseId": "beyblade",
+      "name": "BX-00 드랜 소드 3-60F 버전 2.0 (B4 스토어 한정)",
+      "nameJa": "BX-00 【B4ストア限定】 ドランソード3-60F バージョン2.0",
+      "series": "한정",
+      "line": "Booster",
+      "type": "배틀 토이",
+      "scale": "non-scale",
+      "universe": "BEYBLADE X",
+      "date": "2026-08-08",
+      "priceJpy": 1600,
+      "image": "assets/gp/kits/be43.png",
+      "gallery": [
+        "assets/gp/kits/be43.png",
+        "assets/gp/kits/be43_1.png"
+      ],
+      "limited": true,
+      "pb": false,
+      "status": "owned",
+      "wantedQty": 0,
+      "recent": true,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "BX-00 드랜 소드 3-60F 버전 2.0 (B4 스토어 한정)",
+        "Booster 스토어 한정)",
+        "BX-00 【B4ストア限定】 ドランソード3-60F バージョン2.0"
+      ]
+    },
+    {
+      "id": "be44",
+      "franchiseId": "beyblade",
+      "name": "BX-57 3on3 덱 케이스 블랙 Ver.",
+      "nameJa": "BX-57 3on3デッキケース ブラックVer.",
+      "series": "한정",
+      "line": "Booster",
+      "type": "툴",
+      "scale": "non-scale",
+      "universe": "BEYBLADE X",
+      "date": "2026-08-08",
+      "priceJpy": 1100,
+      "image": "assets/gp/kits/be44.png",
+      "gallery": [
+        "assets/gp/kits/be44.png",
+        "assets/gp/kits/be44_1.png",
+        "assets/gp/kits/be44_2.png"
+      ],
+      "limited": true,
+      "pb": false,
+      "status": "none",
+      "wantedQty": 0,
+      "recent": true,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "BX-57 3on3 덱 케이스 블랙 Ver.",
+        "Booster 블랙 Ver.",
+        "BX-57 3on3デッキケース ブラックVer."
+      ]
+    },
+    {
+      "id": "be45",
+      "franchiseId": "beyblade",
+      "name": "UX-21 헬즈 네더 덱 세트",
+      "nameJa": "UX-21 ヘルズネザーデッキセット",
+      "series": "UX",
+      "line": "Starter",
+      "type": "배틀 토이",
+      "scale": "non-scale",
+      "universe": "BEYBLADE X",
+      "date": "2026-08-08",
+      "priceJpy": 4500,
+      "image": "assets/gp/kits/be45.png",
+      "gallery": [
+        "assets/gp/kits/be45.png",
+        "assets/gp/kits/be45_1.png",
+        "assets/gp/kits/be45_2.png"
+      ],
+      "limited": false,
+      "pb": false,
+      "status": "wanted",
+      "wantedQty": 1,
+      "recent": true,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "UX-21 헬즈 네더 덱 세트",
+        "Starter 덱 세트",
+        "UX-21 ヘルズネザーデッキセット"
+      ]
+    },
+    {
+      "id": "be46",
+      "franchiseId": "beyblade",
+      "name": "UX-00 사무라이 세이버 5-60K 축구 일본 대표 Ver.",
+      "nameJa": "UX-00 サムライセイバー5-60K メタルコート:サムライブルー サッカー日本代表Ver.",
+      "series": "한정",
+      "line": "Starter",
+      "type": "배틀 토이",
+      "scale": "non-scale",
+      "universe": "BEYBLADE X",
+      "date": "2026-06-13",
+      "priceJpy": 2500,
+      "image": "assets/gp/kits/be46.png",
+      "gallery": [
+        "assets/gp/kits/be46.png",
+        "assets/gp/kits/be46_1.png"
+      ],
+      "limited": true,
+      "pb": false,
+      "status": "none",
+      "wantedQty": 0,
+      "recent": true,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "UX-00 사무라이 세이버 5-60K 축구 일본 대표 Ver.",
+        "Starter 대표 Ver.",
+        "UX-00 サムライセイバー5-60K メタルコート:サムライブルー サッカー日本代表Ver."
+      ]
+    },
+    {
+      "id": "be47",
+      "franchiseId": "beyblade",
+      "name": "BX-00 코발트 드라군 9-60F 메탈 코트:화이트 J리그 Ver.",
+      "nameJa": "BX-00 コバルトドラグーン9-60F メタルコート:ホワイト JリーグVer.",
+      "series": "한정",
+      "line": "Booster",
+      "type": "배틀 토이",
+      "scale": "non-scale",
+      "universe": "BEYBLADE X",
+      "date": "2026-03-14",
+      "priceJpy": 2500,
+      "image": "assets/gp/kits/be47.png",
+      "gallery": [
+        "assets/gp/kits/be47.png",
+        "assets/gp/kits/be47_1.png"
+      ],
+      "limited": true,
+      "pb": false,
+      "status": "none",
+      "wantedQty": 0,
+      "recent": true,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "BX-00 코발트 드라군 9-60F 메탈 코트:화이트 J리그 Ver.",
+        "Booster J리그 Ver.",
+        "BX-00 コバルトドラグーン9-60F メタルコート:ホワイト JリーグVer."
+      ]
+    },
+    {
+      "id": "be48",
+      "franchiseId": "beyblade",
+      "name": "BX-00 드랜 소드 1-60V 메탈 코트:블랙 J리그 Ver.",
+      "nameJa": "BX-00 ドランソード1-60V メタルコート:ブラック JリーグVer.",
+      "series": "한정",
+      "line": "Booster",
+      "type": "배틀 토이",
+      "scale": "non-scale",
+      "universe": "BEYBLADE X",
+      "date": "2026-03-14",
+      "priceJpy": 2500,
+      "image": "assets/gp/kits/be48.png",
+      "gallery": [
+        "assets/gp/kits/be48.png",
+        "assets/gp/kits/be48_1.png"
+      ],
+      "limited": true,
+      "pb": false,
+      "status": "none",
+      "wantedQty": 0,
+      "recent": true,
+      "month": false,
+      "market": null,
+      "keywords": [
+        "BX-00 드랜 소드 1-60V 메탈 코트:블랙 J리그 Ver.",
+        "Booster J리그 Ver.",
+        "BX-00 ドランソード1-60V メタルコート:ブラック JリーグVer."
+      ]
     }
   ],
-  "prices": [
+  "worlds": [
+    {
+      "id": "gundam-uc",
+      "franchiseId": "gundam",
+      "order": 1,
+      "label": "우주세기 UC",
+      "subtitle": "56개 작품",
+      "image": "assets/gp/worlds/gu_uc.webp",
+      "total": 56,
+      "owned": 2
+    },
+    {
+      "id": "gundam-seed",
+      "franchiseId": "gundam",
+      "order": 2,
+      "label": "SEED 우주",
+      "subtitle": "13개 작품",
+      "image": "assets/gp/worlds/gu_seed.webp",
+      "total": 13,
+      "owned": 5
+    },
+    {
+      "id": "gundam-double_o",
+      "franchiseId": "gundam",
+      "order": 3,
+      "label": "00 우주",
+      "subtitle": "8개 작품",
+      "image": "assets/gp/worlds/gu_double_o.webp",
+      "total": 8,
+      "owned": 1
+    },
+    {
+      "id": "gundam-wing",
+      "franchiseId": "gundam",
+      "order": 4,
+      "label": "W 우주",
+      "subtitle": "5개 작품",
+      "image": "assets/gp/worlds/gu_wing.webp",
+      "total": 5,
+      "owned": 0
+    },
+    {
+      "id": "gundam-iron_blooded",
+      "franchiseId": "gundam",
+      "order": 5,
+      "label": "철혈 우주",
+      "subtitle": "4개 작품",
+      "image": "assets/gp/worlds/gu_iron_blooded.webp",
+      "total": 4,
+      "owned": 0
+    },
+    {
+      "id": "gundam-witch",
+      "franchiseId": "gundam",
+      "order": 6,
+      "label": "수성 우주",
+      "subtitle": "2개 작품",
+      "image": "assets/gp/worlds/gu_witch.webp",
+      "total": 2,
+      "owned": 1
+    },
+    {
+      "id": "gundam-gquuuuuux",
+      "franchiseId": "gundam",
+      "order": 7,
+      "label": "GQuuuuuuX",
+      "subtitle": "1개 작품",
+      "image": "assets/gp/worlds/gu_gquuuuuux.webp",
+      "total": 1,
+      "owned": 0
+    },
+    {
+      "id": "gundam-age",
+      "franchiseId": "gundam",
+      "order": 8,
+      "label": "AGE 우주",
+      "subtitle": "4개 작품",
+      "image": "assets/gp/worlds/gu_age.webp",
+      "total": 4,
+      "owned": 0
+    },
+    {
+      "id": "gundam-build",
+      "franchiseId": "gundam",
+      "order": 9,
+      "label": "빌드",
+      "subtitle": "2개 작품",
+      "image": "assets/gp/worlds/gu_build.webp",
+      "total": 2,
+      "owned": 0
+    },
+    {
+      "id": "gundam-g",
+      "franchiseId": "gundam",
+      "order": 10,
+      "label": "G 건담",
+      "subtitle": "1개 작품",
+      "image": "assets/gp/worlds/gu_g.webp",
+      "total": 1,
+      "owned": 0
+    },
     {
-      "id": 1,
-      "kitId": 1,
-      "date": "2026-07-12",
-      "priceKrw": 15900,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 2,
-      "kitId": 1,
-      "date": "2026-08-09",
-      "priceKrw": 18300,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 3,
-      "kitId": 1,
-      "date": "2026-09-06",
-      "priceKrw": 16100,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 4,
-      "kitId": 1,
-      "date": "2026-10-11",
-      "priceKrw": 18400,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 5,
-      "kitId": 2,
-      "date": "2026-07-12",
-      "priceKrw": 38900,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 6,
-      "kitId": 2,
-      "date": "2026-08-09",
-      "priceKrw": 44500,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 7,
-      "kitId": 2,
-      "date": "2026-09-06",
-      "priceKrw": 39300,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 8,
-      "kitId": 2,
-      "date": "2026-10-11",
-      "priceKrw": 44900,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 9,
-      "kitId": 3,
-      "date": "2026-07-12",
-      "priceKrw": 18000,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 10,
-      "kitId": 3,
-      "date": "2026-08-09",
-      "priceKrw": 20500,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 11,
-      "kitId": 3,
-      "date": "2026-09-06",
-      "priceKrw": 18200,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 12,
-      "kitId": 3,
-      "date": "2026-10-11",
-      "priceKrw": 20700,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 13,
-      "kitId": 4,
-      "date": "2026-07-12",
-      "priceKrw": 21700,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 14,
-      "kitId": 4,
-      "date": "2026-08-09",
-      "priceKrw": 24700,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 15,
-      "kitId": 4,
-      "date": "2026-09-06",
-      "priceKrw": 21900,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 16,
-      "kitId": 4,
-      "date": "2026-10-11",
-      "priceKrw": 24900,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 17,
-      "kitId": 5,
-      "date": "2026-07-12",
-      "priceKrw": 17900,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 18,
-      "kitId": 5,
-      "date": "2026-08-09",
-      "priceKrw": 15700,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 19,
-      "kitId": 5,
-      "date": "2026-09-06",
-      "priceKrw": 18100,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 20,
-      "kitId": 5,
-      "date": "2026-10-11",
-      "priceKrw": 20400,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 21,
-      "kitId": 7,
-      "date": "2026-07-12",
-      "priceKrw": 18900,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 22,
-      "kitId": 7,
-      "date": "2026-08-09",
-      "priceKrw": 16700,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 23,
-      "kitId": 7,
-      "date": "2026-09-06",
-      "priceKrw": 19100,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 24,
-      "kitId": 7,
-      "date": "2026-10-11",
-      "priceKrw": 16900,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 25,
-      "kitId": 8,
-      "date": "2026-07-12",
-      "priceKrw": 23100,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 26,
-      "kitId": 8,
-      "date": "2026-08-09",
-      "priceKrw": 20500,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 27,
-      "kitId": 8,
-      "date": "2026-09-06",
-      "priceKrw": 23300,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 28,
-      "kitId": 8,
-      "date": "2026-10-11",
-      "priceKrw": 20700,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 29,
-      "kitId": 9,
-      "date": "2026-07-12",
-      "priceKrw": 18300,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 30,
-      "kitId": 9,
-      "date": "2026-08-09",
-      "priceKrw": 21100,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 31,
-      "kitId": 9,
-      "date": "2026-09-06",
-      "priceKrw": 23900,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 32,
-      "kitId": 9,
-      "date": "2026-10-11",
-      "priceKrw": 21300,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 33,
-      "kitId": 10,
-      "date": "2026-07-12",
-      "priceKrw": 18900,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 34,
-      "kitId": 10,
-      "date": "2026-08-09",
-      "priceKrw": 21700,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 35,
-      "kitId": 10,
-      "date": "2026-09-06",
-      "priceKrw": 19100,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 36,
-      "kitId": 10,
-      "date": "2026-10-11",
-      "priceKrw": 21900,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 37,
-      "kitId": 11,
-      "date": "2026-07-12",
-      "priceKrw": 16400,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 38,
-      "kitId": 11,
-      "date": "2026-08-09",
-      "priceKrw": 18800,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 39,
-      "kitId": 11,
-      "date": "2026-09-06",
-      "priceKrw": 16600,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 40,
-      "kitId": 11,
-      "date": "2026-10-11",
-      "priceKrw": 18900,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 41,
-      "kitId": 13,
-      "date": "2026-07-12",
-      "priceKrw": 13100,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 42,
-      "kitId": 13,
-      "date": "2026-08-09",
-      "priceKrw": 14900,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 43,
-      "kitId": 13,
-      "date": "2026-09-06",
-      "priceKrw": 13200,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 44,
-      "kitId": 13,
-      "date": "2026-10-11",
-      "priceKrw": 15000,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 45,
-      "kitId": 14,
-      "date": "2026-07-12",
-      "priceKrw": 7800,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 46,
-      "kitId": 14,
-      "date": "2026-08-09",
-      "priceKrw": 6900,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 47,
-      "kitId": 14,
-      "date": "2026-09-06",
-      "priceKrw": 7900,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 48,
-      "kitId": 14,
-      "date": "2026-10-11",
-      "priceKrw": 9000,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 49,
-      "kitId": 15,
-      "date": "2026-07-12",
-      "priceKrw": 9200,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 50,
-      "kitId": 15,
-      "date": "2026-08-09",
-      "priceKrw": 8100,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 51,
-      "kitId": 15,
-      "date": "2026-09-06",
-      "priceKrw": 9200,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 52,
-      "kitId": 15,
-      "date": "2026-10-11",
-      "priceKrw": 8100,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 53,
-      "kitId": 16,
-      "date": "2026-07-12",
-      "priceKrw": 59100,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 54,
-      "kitId": 16,
-      "date": "2026-08-09",
-      "priceKrw": 52300,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 55,
-      "kitId": 16,
-      "date": "2026-09-06",
-      "priceKrw": 59700,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 56,
-      "kitId": 16,
-      "date": "2026-10-11",
-      "priceKrw": 52800,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 57,
-      "kitId": 17,
-      "date": "2026-07-12",
-      "priceKrw": 70400,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 58,
-      "kitId": 17,
-      "date": "2026-08-09",
-      "priceKrw": 62400,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 59,
-      "kitId": 17,
-      "date": "2026-09-06",
-      "priceKrw": 71000,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 60,
-      "kitId": 17,
-      "date": "2026-10-11",
-      "priceKrw": 63000,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 61,
-      "kitId": 19,
-      "date": "2026-07-12",
-      "priceKrw": 42700,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 62,
-      "kitId": 19,
-      "date": "2026-08-09",
-      "priceKrw": 49000,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 63,
-      "kitId": 19,
-      "date": "2026-09-06",
-      "priceKrw": 43100,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 64,
-      "kitId": 19,
-      "date": "2026-10-11",
-      "priceKrw": 49500,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 65,
-      "kitId": 20,
-      "date": "2026-07-12",
-      "priceKrw": 158800,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 66,
-      "kitId": 20,
-      "date": "2026-08-09",
-      "priceKrw": 181700,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 67,
-      "kitId": 20,
-      "date": "2026-09-06",
-      "priceKrw": 160400,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 68,
-      "kitId": 20,
-      "date": "2026-10-11",
-      "priceKrw": 183300,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 69,
-      "kitId": 21,
-      "date": "2026-07-12",
-      "priceKrw": 25300,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 70,
-      "kitId": 21,
-      "date": "2026-08-09",
-      "priceKrw": 28800,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 71,
-      "kitId": 21,
-      "date": "2026-09-06",
-      "priceKrw": 25600,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 72,
-      "kitId": 21,
-      "date": "2026-10-11",
-      "priceKrw": 29100,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 73,
-      "kitId": 22,
-      "date": "2026-07-12",
-      "priceKrw": 30500,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 74,
-      "kitId": 22,
-      "date": "2026-08-09",
-      "priceKrw": 34600,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 75,
-      "kitId": 22,
-      "date": "2026-09-06",
-      "priceKrw": 30800,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 76,
-      "kitId": 22,
-      "date": "2026-10-11",
-      "priceKrw": 34900,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 77,
-      "kitId": 23,
-      "date": "2026-07-12",
-      "priceKrw": 29200,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 78,
-      "kitId": 23,
-      "date": "2026-08-09",
-      "priceKrw": 25600,
-      "source": "중고 거래 (예시)"
-    },
-    {
-      "id": 79,
-      "kitId": 23,
-      "date": "2026-09-06",
-      "priceKrw": 29400,
-      "source": "매장 판매가 (예시)"
-    },
-    {
-      "id": 80,
-      "kitId": 23,
-      "date": "2026-10-11",
-      "priceKrw": 33300,
-      "source": "중고 거래 (예시)"
+      "id": "gundam-x",
+      "franchiseId": "gundam",
+      "order": 11,
+      "label": "X 우주",
+      "subtitle": "1개 작품",
+      "image": "assets/gp/worlds/gu_x.webp",
+      "total": 1,
+      "owned": 0
+    },
+    {
+      "id": "gundam-turn_a",
+      "franchiseId": "gundam",
+      "order": 12,
+      "label": "∀ 우주",
+      "subtitle": "1개 작품",
+      "image": "assets/gp/worlds/gu_turn_a.webp",
+      "total": 1,
+      "owned": 0
+    },
+    {
+      "id": "gundam-g_reco",
+      "franchiseId": "gundam",
+      "order": 13,
+      "label": "G 레코",
+      "subtitle": "1개 작품",
+      "image": "assets/gp/worlds/gu_g_reco.webp",
+      "total": 1,
+      "owned": 0
+    },
+    {
+      "id": "gundam-sd",
+      "franchiseId": "gundam",
+      "order": 14,
+      "label": "SD / 삼국",
+      "subtitle": "8개 작품",
+      "image": "assets/gp/worlds/gu_sd.webp",
+      "total": 8,
+      "owned": 0
+    },
+    {
+      "id": "pokemon-gen1",
+      "franchiseId": "pokemon",
+      "order": 1,
+      "label": "1세대",
+      "subtitle": "관동",
+      "image": "assets/gp/worlds/po_gen1.png",
+      "total": 151,
+      "owned": 2
+    },
+    {
+      "id": "pokemon-gen2",
+      "franchiseId": "pokemon",
+      "order": 2,
+      "label": "2세대",
+      "subtitle": "성도",
+      "image": "assets/gp/worlds/po_gen2.png",
+      "total": 100,
+      "owned": 0
+    },
+    {
+      "id": "pokemon-gen3",
+      "franchiseId": "pokemon",
+      "order": 3,
+      "label": "3세대",
+      "subtitle": "호연",
+      "image": "assets/gp/worlds/po_gen3.png",
+      "total": 135,
+      "owned": 0
+    },
+    {
+      "id": "pokemon-gen4",
+      "franchiseId": "pokemon",
+      "order": 4,
+      "label": "4세대",
+      "subtitle": "신오",
+      "image": "assets/gp/worlds/po_gen4.png",
+      "total": 107,
+      "owned": 0
+    },
+    {
+      "id": "pokemon-gen5",
+      "franchiseId": "pokemon",
+      "order": 5,
+      "label": "5세대",
+      "subtitle": "하나",
+      "image": "assets/gp/worlds/po_gen5.png",
+      "total": 156,
+      "owned": 0
+    },
+    {
+      "id": "pokemon-gen6",
+      "franchiseId": "pokemon",
+      "order": 6,
+      "label": "6세대",
+      "subtitle": "칼로스",
+      "image": "assets/gp/worlds/po_gen6.png",
+      "total": 72,
+      "owned": 0
+    },
+    {
+      "id": "pokemon-gen7",
+      "franchiseId": "pokemon",
+      "order": 7,
+      "label": "7세대",
+      "subtitle": "알로라",
+      "image": "assets/gp/worlds/po_gen7.png",
+      "total": 88,
+      "owned": 0
+    },
+    {
+      "id": "pokemon-gen8",
+      "franchiseId": "pokemon",
+      "order": 8,
+      "label": "8세대",
+      "subtitle": "가라르",
+      "image": "assets/gp/worlds/po_gen8.png",
+      "total": 96,
+      "owned": 0
+    },
+    {
+      "id": "pokemon-gen9",
+      "franchiseId": "pokemon",
+      "order": 9,
+      "label": "9세대",
+      "subtitle": "팔데아",
+      "image": "assets/gp/worlds/po_gen9.png",
+      "total": 120,
+      "owned": 0
+    },
+    {
+      "id": "pokemon-pokemon_general",
+      "franchiseId": "pokemon",
+      "order": 10,
+      "label": "전 세대 굿즈",
+      "subtitle": "특정 포켓몬/세대가 없는 상품",
+      "image": "assets/gp/worlds/po_pokemon_general.webp",
+      "total": 0,
+      "owned": 0
+    },
+    {
+      "id": "fate-stay_night",
+      "franchiseId": "fate",
+      "order": 1,
+      "label": "Fate/stay night",
+      "subtitle": "Fate 작품",
+      "image": "assets/gp/worlds/fa_stay_night.jpg",
+      "total": 177,
+      "owned": 2
+    },
+    {
+      "id": "fate-zero",
+      "franchiseId": "fate",
+      "order": 2,
+      "label": "Fate/Zero",
+      "subtitle": "Fate 작품",
+      "image": "assets/gp/worlds/fa_zero.jpg",
+      "total": 28,
+      "owned": 0
+    },
+    {
+      "id": "fate-prisma",
+      "franchiseId": "fate",
+      "order": 3,
+      "label": "프리즈마 이리야",
+      "subtitle": "Fate 작품",
+      "image": "assets/gp/worlds/fa_prisma.jpg",
+      "total": 19,
+      "owned": 0
+    },
+    {
+      "id": "fate-extra",
+      "franchiseId": "fate",
+      "order": 4,
+      "label": "Fate/EXTRA",
+      "subtitle": "Fate 작품",
+      "image": "",
+      "total": 89,
+      "owned": 0
+    },
+    {
+      "id": "fate-apocrypha",
+      "franchiseId": "fate",
+      "order": 5,
+      "label": "Fate/Apocrypha",
+      "subtitle": "Fate 작품",
+      "image": "",
+      "total": 20,
+      "owned": 0
+    },
+    {
+      "id": "fate-type_moon",
+      "franchiseId": "fate",
+      "order": 6,
+      "label": "타입문 기타",
+      "subtitle": "Fate 작품",
+      "image": "assets/gp/worlds/fa_type_moon.jpg",
+      "total": 19,
+      "owned": 0
+    },
+    {
+      "id": "fate-fgo_100",
+      "franchiseId": "fate",
+      "order": 7,
+      "label": "특이점 F 후유키",
+      "subtitle": "AD:2004",
+      "image": "assets/gp/worlds/fa_fgo_100.png",
+      "total": 6,
+      "owned": 0
+    },
+    {
+      "id": "fate-fgo_101",
+      "franchiseId": "fate",
+      "order": 8,
+      "label": "제1특이점 오를레앙",
+      "subtitle": "AD:1431",
+      "image": "assets/gp/worlds/fa_fgo_101.png",
+      "total": 21,
+      "owned": 0
+    },
+    {
+      "id": "armored_core-ac1",
+      "franchiseId": "armored_core",
+      "order": 1,
+      "label": "아머드 코어 초대계",
+      "subtitle": "게임 세대",
+      "image": "assets/gp/worlds/ar_ac1.jpg",
+      "total": 1,
+      "owned": 1
+    },
+    {
+      "id": "armored_core-ac2",
+      "franchiseId": "armored_core",
+      "order": 2,
+      "label": "아머드 코어 2 계열",
+      "subtitle": "게임 세대",
+      "image": "",
+      "total": 0,
+      "owned": 0
+    },
+    {
+      "id": "armored_core-ac3",
+      "franchiseId": "armored_core",
+      "order": 3,
+      "label": "아머드 코어 3 / NX / LR",
+      "subtitle": "게임 세대",
+      "image": "assets/gp/worlds/ar_ac3.jpg",
+      "total": 10,
+      "owned": 0
+    },
+    {
+      "id": "armored_core-ac4",
+      "franchiseId": "armored_core",
+      "order": 4,
+      "label": "아머드 코어 4 / fA",
+      "subtitle": "게임 세대",
+      "image": "assets/gp/worlds/ar_ac4.jpg",
+      "total": 14,
+      "owned": 0
+    },
+    {
+      "id": "armored_core-acv",
+      "franchiseId": "armored_core",
+      "order": 5,
+      "label": "아머드 코어 V / VD",
+      "subtitle": "게임 세대",
+      "image": "assets/gp/worlds/ar_acv.jpg",
+      "total": 13,
+      "owned": 0
+    },
+    {
+      "id": "armored_core-ac6",
+      "franchiseId": "armored_core",
+      "order": 6,
+      "label": "아머드 코어 VI",
+      "subtitle": "게임 세대",
+      "image": "assets/gp/worlds/ar_ac6.jpg",
+      "total": 22,
+      "owned": 0
+    },
+    {
+      "id": "armored_core-ac_general",
+      "franchiseId": "armored_core",
+      "order": 7,
+      "label": "크로스 타이틀 기체 / 굿즈",
+      "subtitle": "특정 게임 세대 없음",
+      "image": "",
+      "total": 2,
+      "owned": 0
+    },
+    {
+      "id": "beyblade-bx",
+      "franchiseId": "beyblade",
+      "order": 1,
+      "label": "BX 베이직 라인",
+      "subtitle": "BEYBLADE X",
+      "image": "assets/gp/worlds/bb_bx.jpg",
+      "total": 85,
+      "owned": 1
+    },
+    {
+      "id": "beyblade-ux",
+      "franchiseId": "beyblade",
+      "order": 2,
+      "label": "UX 유니크 라인",
+      "subtitle": "BEYBLADE X",
+      "image": "assets/gp/worlds/bb_ux.jpg",
+      "total": 64,
+      "owned": 0
+    },
+    {
+      "id": "beyblade-cx",
+      "franchiseId": "beyblade",
+      "order": 3,
+      "label": "CX 커스텀 라인",
+      "subtitle": "BEYBLADE X",
+      "image": "assets/gp/worlds/bb_cx.jpg",
+      "total": 42,
+      "owned": 0
+    },
+    {
+      "id": "beyblade-bxg",
+      "franchiseId": "beyblade",
+      "order": 4,
+      "label": "BXG 콜라보",
+      "subtitle": "BEYBLADE X",
+      "image": "assets/gp/worlds/bb_bxg.webp",
+      "total": 12,
+      "owned": 0
     }
   ],
-  "collection": [
+  "guideWorks": [
     {
-      "id": 1,
-      "kitId": 1,
-      "status": "owned",
-      "addedAt": "2026-08-05"
+      "id": "w10",
+      "franchiseId": "gundam",
+      "section": "UC",
+      "name": "기동전사 건담",
+      "image": "assets/gp/works/w10.webp",
+      "total": 245,
+      "owned": 1
     },
     {
-      "id": 2,
-      "kitId": 2,
-      "status": "wanted",
-      "addedAt": "2026-09-07"
+      "id": "w810",
+      "franchiseId": "gundam",
+      "section": "UC",
+      "name": "Z 건담 A New Translation",
+      "image": "assets/gp/works/w810.webp",
+      "total": 75,
+      "owned": 0
     },
     {
-      "id": 3,
-      "kitId": 4,
-      "status": "owned",
-      "addedAt": "2026-10-09"
+      "id": "w950",
+      "franchiseId": "gundam",
+      "section": "UC",
+      "name": "기동전사 건담 ZZ",
+      "image": "assets/gp/works/w950.webp",
+      "total": 77,
+      "owned": 0
     },
     {
-      "id": 4,
-      "kitId": 5,
-      "status": "owned",
-      "addedAt": "2026-07-11"
+      "id": "w1100",
+      "franchiseId": "gundam",
+      "section": "UC",
+      "name": "역습의 샤아",
+      "image": "assets/gp/works/w1100.webp",
+      "total": 42,
+      "owned": 0
     },
     {
-      "id": 5,
-      "kitId": 8,
-      "status": "wanted",
-      "addedAt": "2026-08-13"
+      "id": "w1250",
+      "franchiseId": "gundam",
+      "section": "UC",
+      "name": "건담 UC",
+      "image": "assets/gp/works/w1250.webp",
+      "total": 79,
+      "owned": 0
     },
     {
-      "id": 6,
-      "kitId": 9,
-      "status": "wanted",
-      "addedAt": "2026-09-15"
+      "id": "w1440",
+      "franchiseId": "gundam",
+      "section": "UC",
+      "name": "건담 NT",
+      "image": "assets/gp/works/w1440.webp",
+      "total": 22,
+      "owned": 0
     },
     {
-      "id": 7,
-      "kitId": 10,
-      "status": "owned",
-      "addedAt": "2026-10-17"
+      "id": "w1500",
+      "franchiseId": "gundam",
+      "section": "UC",
+      "name": "섬광의 하사웨이",
+      "image": "assets/gp/works/w1500.webp",
+      "total": 10,
+      "owned": 0
     },
     {
-      "id": 8,
-      "kitId": 11,
-      "status": "owned",
-      "addedAt": "2026-07-19"
+      "id": "w1620",
+      "franchiseId": "gundam",
+      "section": "UC",
+      "name": "건담 F91",
+      "image": "assets/gp/works/w1620.webp",
+      "total": 41,
+      "owned": 0
     },
     {
-      "id": 9,
-      "kitId": 14,
-      "status": "owned",
-      "addedAt": "2026-08-21"
+      "id": "w3000",
+      "franchiseId": "gundam",
+      "section": "SEED",
+      "name": "건담 SEED",
+      "image": "assets/gp/works/w3000.webp",
+      "total": 99,
+      "owned": 3
     },
     {
-      "id": 10,
-      "kitId": 16,
-      "status": "wanted",
-      "addedAt": "2026-09-23"
+      "id": "w3100",
+      "franchiseId": "gundam",
+      "section": "SEED",
+      "name": "SEED Recollection",
+      "image": "assets/gp/works/w3100.webp",
+      "total": 4,
+      "owned": 0
     },
     {
-      "id": 11,
-      "kitId": 19,
-      "status": "owned",
-      "addedAt": "2026-10-25"
+      "id": "w3300",
+      "franchiseId": "gundam",
+      "section": "SEED",
+      "name": "SEED DESTINY",
+      "image": "assets/gp/works/w3300.webp",
+      "total": 75,
+      "owned": 0
     },
     {
-      "id": 12,
-      "kitId": 20,
-      "status": "owned",
-      "addedAt": "2026-07-27"
+      "id": "w3700",
+      "franchiseId": "gundam",
+      "section": "00",
+      "name": "건담 00",
+      "image": "assets/gp/works/w3700.webp",
+      "total": 121,
+      "owned": 0
     },
     {
-      "id": 13,
-      "kitId": 21,
-      "status": "owned",
-      "addedAt": "2026-08-29"
+      "id": "w2100",
+      "franchiseId": "gundam",
+      "section": "W",
+      "name": "신기동전기 건담 W",
+      "image": "assets/gp/works/w2100.webp",
+      "total": 64,
+      "owned": 0
     },
     {
-      "id": 14,
-      "kitId": 22,
-      "status": "wanted",
-      "addedAt": "2026-09-31"
+      "id": "w2190",
+      "franchiseId": "gundam",
+      "section": "W",
+      "name": "W Endless Waltz",
+      "image": "assets/gp/works/w2190.webp",
+      "total": 27,
+      "owned": 0
     },
     {
-      "id": 15,
-      "kitId": 23,
-      "status": "wanted",
-      "addedAt": "2026-10-33"
+      "id": "w4300",
+      "franchiseId": "gundam",
+      "section": "철혈",
+      "name": "철혈의 오펀스",
+      "image": "assets/gp/works/w4300.webp",
+      "total": 101,
+      "owned": 0
+    },
+    {
+      "id": "w5010",
+      "franchiseId": "gundam",
+      "section": "수성",
+      "name": "수성의 마녀",
+      "image": "assets/gp/works/w5010.webp",
+      "total": 41,
+      "owned": 1
     }
-  ]
+  ],
+  "guideUnits": [
+    {
+      "id": "g3000u00100",
+      "workId": "w3000",
+      "name": "스트라이크 건담",
+      "nameEn": "Strike Gundam",
+      "image": "assets/gp/units/g3000u00100.webp",
+      "status": "owned",
+      "kitIds": [
+        "gu12"
+      ]
+    },
+    {
+      "id": "g3000u00200",
+      "workId": "w3000",
+      "name": "에일 스트라이크 건담",
+      "nameEn": "Aile Strike Gundam",
+      "image": "assets/gp/units/g3000u00200.webp",
+      "status": "none",
+      "kitIds": []
+    },
+    {
+      "id": "g3000u00300",
+      "workId": "w3000",
+      "name": "소드 스트라이크 건담",
+      "nameEn": "Sword Strike Gundam",
+      "image": "assets/gp/units/g3000u00300.webp",
+      "status": "none",
+      "kitIds": []
+    },
+    {
+      "id": "g3000u00400",
+      "workId": "w3000",
+      "name": "런처 스트라이크 건담",
+      "nameEn": "Launcher Strike Gundam",
+      "image": "assets/gp/units/g3000u00400.webp",
+      "status": "none",
+      "kitIds": []
+    },
+    {
+      "id": "g3000u00500",
+      "workId": "w3000",
+      "name": "퍼펙트 스트라이크 건담",
+      "nameEn": "Perfect Strike Gundam",
+      "image": "assets/gp/units/g3000u00500.webp",
+      "status": "none",
+      "kitIds": []
+    },
+    {
+      "id": "g3000u00600",
+      "workId": "w3000",
+      "name": "이지스 건담",
+      "nameEn": "Aegis Gundam",
+      "image": "assets/gp/units/g3000u00600.webp",
+      "status": "none",
+      "kitIds": []
+    },
+    {
+      "id": "g3000u00800",
+      "workId": "w3000",
+      "name": "듀얼 건담",
+      "nameEn": "Duel Gundam",
+      "image": "assets/gp/units/g3000u00800.webp",
+      "status": "none",
+      "kitIds": []
+    },
+    {
+      "id": "g3000u00900",
+      "workId": "w3000",
+      "name": "듀얼 건담 어설트 슈라우드",
+      "nameEn": "Duel Gundam Assault Shroud",
+      "image": "assets/gp/units/g3000u00900.webp",
+      "status": "none",
+      "kitIds": []
+    },
+    {
+      "id": "g3000u01000",
+      "workId": "w3000",
+      "name": "버스터 건담",
+      "nameEn": "Buster Gundam",
+      "image": "assets/gp/units/g3000u01000.webp",
+      "status": "none",
+      "kitIds": []
+    },
+    {
+      "id": "g3000u01100",
+      "workId": "w3000",
+      "name": "블리츠 건담",
+      "nameEn": "Blitz Gundam",
+      "image": "assets/gp/units/g3000u01100.webp",
+      "status": "none",
+      "kitIds": []
+    },
+    {
+      "id": "g3000u01200",
+      "workId": "w3000",
+      "name": "칼라미티 건담",
+      "nameEn": "Calamity Gundam",
+      "image": "assets/gp/units/g3000u01200.webp",
+      "status": "none",
+      "kitIds": []
+    },
+    {
+      "id": "g3000u01300",
+      "workId": "w3000",
+      "name": "포비든 건담",
+      "nameEn": "Forbidden Gundam",
+      "image": "assets/gp/units/g3000u01300.webp",
+      "status": "wanted",
+      "kitIds": [
+        "gu18"
+      ]
+    },
+    {
+      "id": "g3000u01400",
+      "workId": "w3000",
+      "name": "레이더 건담",
+      "nameEn": "Raider Gundam",
+      "image": "assets/gp/units/g3000u01400.webp",
+      "status": "none",
+      "kitIds": []
+    },
+    {
+      "id": "g3000u01600",
+      "workId": "w3000",
+      "name": "M1 어스트레이",
+      "nameEn": "M1 Astray",
+      "image": "assets/gp/units/g3000u01600.webp",
+      "status": "none",
+      "kitIds": []
+    },
+    {
+      "id": "g3000u04200",
+      "workId": "w3000",
+      "name": "프리덤 건담",
+      "nameEn": "Freedom Gundam",
+      "image": "assets/gp/units/g3000u04200.webp",
+      "status": "owned",
+      "kitIds": [
+        "gu06"
+      ]
+    }
+  ],
+  "bbxTops": [
+    {
+      "id": "BX-01",
+      "line": "BX",
+      "name": "BX-01 드랜 소드 3-60F",
+      "image": "assets/gp/bbx/bx-01.jpg",
+      "owned": 3,
+      "total": 3,
+      "parts": [
+        {
+          "id": "bx-01-blade",
+          "type": "blade",
+          "typeLabel": "블레이드",
+          "name": "BX-01 드랜 소드",
+          "image": "assets/gp/parts/bx-01-blade.png",
+          "have": true
+        },
+        {
+          "id": "bx-01-ratchet",
+          "type": "ratchet",
+          "typeLabel": "래칫",
+          "name": "BX-01 3-60",
+          "image": "assets/gp/parts/bx-01-ratchet.png",
+          "have": true
+        },
+        {
+          "id": "bx-01-bit",
+          "type": "bit",
+          "typeLabel": "비트",
+          "name": "BX-01 F",
+          "image": "assets/gp/parts/bx-01-bit.png",
+          "have": true
+        }
+      ],
+      "kitIds": [
+        "be43"
+      ]
+    },
+    {
+      "id": "BX-02",
+      "line": "BX",
+      "name": "BX-02 헬즈 사이드 4-60T",
+      "image": "assets/gp/bbx/bx-02.jpg",
+      "owned": 1,
+      "total": 3,
+      "parts": [
+        {
+          "id": "bx-02-blade",
+          "type": "blade",
+          "typeLabel": "블레이드",
+          "name": "BX-02 헬즈 사이드",
+          "image": "assets/gp/parts/bx-02-blade.png",
+          "have": true
+        },
+        {
+          "id": "bx-02-ratchet",
+          "type": "ratchet",
+          "typeLabel": "래칫",
+          "name": "BX-02 4-60",
+          "image": "assets/gp/parts/bx-02-ratchet.png",
+          "have": false
+        },
+        {
+          "id": "bx-02-bit",
+          "type": "bit",
+          "typeLabel": "비트",
+          "name": "BX-02 T",
+          "image": "assets/gp/parts/bx-02-bit.png",
+          "have": false
+        }
+      ],
+      "kitIds": []
+    },
+    {
+      "id": "BX-03",
+      "line": "BX",
+      "name": "BX-03 위저드 애로우 4-80B",
+      "image": "assets/gp/bbx/bx-03.jpg",
+      "owned": 0,
+      "total": 3,
+      "parts": [
+        {
+          "id": "bx-03-blade",
+          "type": "blade",
+          "typeLabel": "블레이드",
+          "name": "BX-03 위저드 애로우",
+          "image": "assets/gp/parts/bx-03-blade.png",
+          "have": false
+        },
+        {
+          "id": "bx-03-ratchet",
+          "type": "ratchet",
+          "typeLabel": "래칫",
+          "name": "BX-03 4-80",
+          "image": "assets/gp/parts/bx-03-ratchet.png",
+          "have": false
+        },
+        {
+          "id": "bx-03-bit",
+          "type": "bit",
+          "typeLabel": "비트",
+          "name": "BX-03 B",
+          "image": "assets/gp/parts/bx-03-bit.png",
+          "have": false
+        }
+      ],
+      "kitIds": []
+    },
+    {
+      "id": "BX-04",
+      "line": "BX",
+      "name": "BX-04 나이트 실드 3-80N",
+      "image": "assets/gp/bbx/bx-04.webp",
+      "owned": 0,
+      "total": 3,
+      "parts": [
+        {
+          "id": "bx-04-blade",
+          "type": "blade",
+          "typeLabel": "블레이드",
+          "name": "BX-04 나이트 실드",
+          "image": "assets/gp/parts/bx-04-blade.png",
+          "have": false
+        },
+        {
+          "id": "bx-04-ratchet",
+          "type": "ratchet",
+          "typeLabel": "래칫",
+          "name": "BX-04 3-80",
+          "image": "assets/gp/parts/bx-04-ratchet.png",
+          "have": false
+        },
+        {
+          "id": "bx-04-bit",
+          "type": "bit",
+          "typeLabel": "비트",
+          "name": "BX-04 N",
+          "image": "assets/gp/parts/bx-04-bit.png",
+          "have": false
+        }
+      ],
+      "kitIds": []
+    },
+    {
+      "id": "BX-05",
+      "line": "BX",
+      "name": "BX-05 위저드 애로우 4-80B",
+      "image": "assets/gp/bbx/bx-05.webp",
+      "owned": 0,
+      "total": 3,
+      "parts": [
+        {
+          "id": "bx-05-blade",
+          "type": "blade",
+          "typeLabel": "블레이드",
+          "name": "BX-05 위저드 애로우",
+          "image": "assets/gp/parts/bx-05-blade.png",
+          "have": false
+        },
+        {
+          "id": "bx-05-ratchet",
+          "type": "ratchet",
+          "typeLabel": "래칫",
+          "name": "BX-05 4-80",
+          "image": "assets/gp/parts/bx-05-ratchet.png",
+          "have": false
+        },
+        {
+          "id": "bx-05-bit",
+          "type": "bit",
+          "typeLabel": "비트",
+          "name": "BX-05 B",
+          "image": "assets/gp/parts/bx-05-bit.png",
+          "have": false
+        }
+      ],
+      "kitIds": []
+    },
+    {
+      "id": "BX-06",
+      "line": "BX",
+      "name": "BX-06 나이트 실드 3-80N",
+      "image": "assets/gp/bbx/bx-06.webp",
+      "owned": 0,
+      "total": 3,
+      "parts": [
+        {
+          "id": "bx-06-blade",
+          "type": "blade",
+          "typeLabel": "블레이드",
+          "name": "BX-06 나이트 실드",
+          "image": "assets/gp/parts/bx-06-blade.png",
+          "have": false
+        },
+        {
+          "id": "bx-06-ratchet",
+          "type": "ratchet",
+          "typeLabel": "래칫",
+          "name": "BX-06 3-80",
+          "image": "assets/gp/parts/bx-06-ratchet.png",
+          "have": false
+        },
+        {
+          "id": "bx-06-bit",
+          "type": "bit",
+          "typeLabel": "비트",
+          "name": "BX-06 N",
+          "image": "assets/gp/parts/bx-06-bit.png",
+          "have": false
+        }
+      ],
+      "kitIds": []
+    },
+    {
+      "id": "BXG-01",
+      "line": "BXG",
+      "name": "BXG-01 드란저 스파이럴 3-80T",
+      "image": "assets/gp/bbx/bxg-01.webp",
+      "owned": 0,
+      "total": 3,
+      "parts": [
+        {
+          "id": "bxg-01-blade",
+          "type": "blade",
+          "typeLabel": "블레이드",
+          "name": "BXG-01 드란저 스파이럴",
+          "image": "assets/gp/parts/bxg-01-blade.png",
+          "have": false
+        },
+        {
+          "id": "bxg-01-ratchet",
+          "type": "ratchet",
+          "typeLabel": "래칫",
+          "name": "BXG-01 3-80",
+          "image": "assets/gp/parts/bxg-01-ratchet.png",
+          "have": false
+        },
+        {
+          "id": "bxg-01-bit",
+          "type": "bit",
+          "typeLabel": "비트",
+          "name": "BXG-01 T",
+          "image": "assets/gp/parts/bxg-01-bit.png",
+          "have": false
+        }
+      ],
+      "kitIds": []
+    },
+    {
+      "id": "UX-01",
+      "line": "UX",
+      "name": "UX-01 드랜 버스터 1-60A",
+      "image": "assets/gp/bbx/ux-01.jpg",
+      "owned": 2,
+      "total": 3,
+      "parts": [
+        {
+          "id": "ux-01-blade",
+          "type": "blade",
+          "typeLabel": "블레이드",
+          "name": "UX-01 드랜 버스터",
+          "image": "assets/gp/parts/ux-01-blade.png",
+          "have": true
+        },
+        {
+          "id": "ux-01-ratchet",
+          "type": "ratchet",
+          "typeLabel": "래칫",
+          "name": "UX-01 1-60",
+          "image": "assets/gp/parts/ux-01-ratchet.png",
+          "have": true
+        },
+        {
+          "id": "ux-01-bit",
+          "type": "bit",
+          "typeLabel": "비트",
+          "name": "UX-01 A",
+          "image": "assets/gp/parts/ux-01-bit.png",
+          "have": false
+        }
+      ],
+      "kitIds": []
+    },
+    {
+      "id": "UX-02",
+      "line": "UX",
+      "name": "UX-02 헬즈 해머 3-70H",
+      "image": "assets/gp/bbx/ux-02.jpg",
+      "owned": 0,
+      "total": 3,
+      "parts": [
+        {
+          "id": "ux-02-blade",
+          "type": "blade",
+          "typeLabel": "블레이드",
+          "name": "UX-02 헬즈 해머",
+          "image": "assets/gp/parts/ux-02-blade.png",
+          "have": false
+        },
+        {
+          "id": "ux-02-ratchet",
+          "type": "ratchet",
+          "typeLabel": "래칫",
+          "name": "UX-02 3-70",
+          "image": "assets/gp/parts/ux-02-ratchet.png",
+          "have": false
+        },
+        {
+          "id": "ux-02-bit",
+          "type": "bit",
+          "typeLabel": "비트",
+          "name": "UX-02 H",
+          "image": "assets/gp/parts/ux-02-bit.png",
+          "have": false
+        }
+      ],
+      "kitIds": []
+    },
+    {
+      "id": "UX-03",
+      "line": "UX",
+      "name": "UX-03 위저드 로드 5-70DB",
+      "image": "assets/gp/bbx/ux-03.jpg",
+      "owned": 0,
+      "total": 3,
+      "parts": [
+        {
+          "id": "ux-03-blade",
+          "type": "blade",
+          "typeLabel": "블레이드",
+          "name": "UX-03 위저드 로드",
+          "image": "assets/gp/parts/ux-03-blade.png",
+          "have": false
+        },
+        {
+          "id": "ux-03-ratchet",
+          "type": "ratchet",
+          "typeLabel": "래칫",
+          "name": "UX-03 5-70",
+          "image": "assets/gp/parts/ux-03-ratchet.png",
+          "have": false
+        },
+        {
+          "id": "ux-03-bit",
+          "type": "bit",
+          "typeLabel": "비트",
+          "name": "UX-03 DB",
+          "image": "assets/gp/parts/ux-03-bit.png",
+          "have": false
+        }
+      ],
+      "kitIds": []
+    },
+    {
+      "id": "CX-01",
+      "line": "CX",
+      "name": "CX-01 드랜 브레이브 S6-60V",
+      "image": "assets/gp/bbx/cx-01.jpg",
+      "owned": 0,
+      "total": 3,
+      "parts": [
+        {
+          "id": "cx-01-blade",
+          "type": "blade",
+          "typeLabel": "블레이드",
+          "name": "CX-01 드랜 브레이브S",
+          "image": "assets/gp/parts/cx-01-blade.png",
+          "have": false
+        },
+        {
+          "id": "cx-01-ratchet",
+          "type": "ratchet",
+          "typeLabel": "래칫",
+          "name": "CX-01 6-60",
+          "image": "assets/gp/parts/cx-01-ratchet.png",
+          "have": false
+        },
+        {
+          "id": "cx-01-bit",
+          "type": "bit",
+          "typeLabel": "비트",
+          "name": "CX-01 V",
+          "image": "assets/gp/parts/cx-01-bit.png",
+          "have": false
+        }
+      ],
+      "kitIds": []
+    },
+    {
+      "id": "CX-02",
+      "line": "CX",
+      "name": "CX-02 위저드 아크 R4-55LO",
+      "image": "assets/gp/bbx/cx-02.jpg",
+      "owned": 0,
+      "total": 3,
+      "parts": [
+        {
+          "id": "cx-02-blade",
+          "type": "blade",
+          "typeLabel": "블레이드",
+          "name": "CX-02 위저드 아크R",
+          "image": "assets/gp/parts/cx-02-blade.png",
+          "have": false
+        },
+        {
+          "id": "cx-02-ratchet",
+          "type": "ratchet",
+          "typeLabel": "래칫",
+          "name": "CX-02 4-55",
+          "image": "assets/gp/parts/cx-02-ratchet.png",
+          "have": false
+        },
+        {
+          "id": "cx-02-bit",
+          "type": "bit",
+          "typeLabel": "비트",
+          "name": "CX-02 LO",
+          "image": "assets/gp/parts/cx-02-bit.png",
+          "have": false
+        }
+      ],
+      "kitIds": []
+    }
+  ],
+  "bbxParts": [
+    {
+      "id": "bx-01-blade",
+      "type": "blade",
+      "typeLabel": "블레이드",
+      "name": "BX-01 드랜 소드",
+      "image": "assets/gp/parts/bx-01-blade.png",
+      "count": 1,
+      "topId": "BX-01",
+      "stats": {
+        "attack": 55,
+        "defense": 25,
+        "stamina": 20,
+        "burst": 0,
+        "dash": 0
+      },
+      "weight": 34.8
+    },
+    {
+      "id": "bx-01-ratchet",
+      "type": "ratchet",
+      "typeLabel": "래칫",
+      "name": "BX-01 3-60",
+      "image": "assets/gp/parts/bx-01-ratchet.png",
+      "count": 1,
+      "topId": "BX-01",
+      "stats": {
+        "attack": 15,
+        "defense": 9,
+        "stamina": 6,
+        "burst": 0,
+        "dash": 0
+      },
+      "weight": 6.3
+    },
+    {
+      "id": "bx-01-bit",
+      "type": "bit",
+      "typeLabel": "비트",
+      "name": "BX-01 F",
+      "image": "assets/gp/parts/bx-01-bit.png",
+      "count": 1,
+      "topId": "BX-01",
+      "stats": {
+        "attack": 40,
+        "defense": 15,
+        "stamina": 10,
+        "burst": 80,
+        "dash": 35
+      },
+      "weight": 2.2
+    },
+    {
+      "id": "bx-02-blade",
+      "type": "blade",
+      "typeLabel": "블레이드",
+      "name": "BX-02 헬즈 사이드",
+      "image": "assets/gp/parts/bx-02-blade.png",
+      "count": 1,
+      "topId": "BX-02",
+      "stats": {
+        "attack": 30,
+        "defense": 35,
+        "stamina": 35,
+        "burst": 0,
+        "dash": 0
+      },
+      "weight": 32.7
+    },
+    {
+      "id": "bx-02-ratchet",
+      "type": "ratchet",
+      "typeLabel": "래칫",
+      "name": "BX-02 4-60",
+      "image": "assets/gp/parts/bx-02-ratchet.png",
+      "count": 1,
+      "topId": "BX-02",
+      "stats": {
+        "attack": 11,
+        "defense": 13,
+        "stamina": 6,
+        "burst": 0,
+        "dash": 0
+      },
+      "weight": 6.3
+    },
+    {
+      "id": "bx-02-bit",
+      "type": "bit",
+      "typeLabel": "비트",
+      "name": "BX-02 T",
+      "image": "assets/gp/parts/bx-02-bit.png",
+      "count": 1,
+      "topId": "BX-02",
+      "stats": {
+        "attack": 35,
+        "defense": 20,
+        "stamina": 20,
+        "burst": 80,
+        "dash": 25
+      },
+      "weight": 2.2
+    },
+    {
+      "id": "bx-03-blade",
+      "type": "blade",
+      "typeLabel": "블레이드",
+      "name": "BX-03 위저드 애로우",
+      "image": "assets/gp/parts/bx-03-blade.png",
+      "count": 1,
+      "topId": "BX-03",
+      "stats": {
+        "attack": 15,
+        "defense": 30,
+        "stamina": 55,
+        "burst": 0,
+        "dash": 0
+      },
+      "weight": 32
+    },
+    {
+      "id": "bx-03-ratchet",
+      "type": "ratchet",
+      "typeLabel": "래칫",
+      "name": "BX-03 4-80",
+      "image": "assets/gp/parts/bx-03-ratchet.png",
+      "count": 1,
+      "topId": "BX-03",
+      "stats": {
+        "attack": 11,
+        "defense": 11,
+        "stamina": 8,
+        "burst": 0,
+        "dash": 0
+      },
+      "weight": 6.9
+    },
+    {
+      "id": "bx-03-bit",
+      "type": "bit",
+      "typeLabel": "비트",
+      "name": "BX-03 B",
+      "image": "assets/gp/parts/bx-03-bit.png",
+      "count": 1,
+      "topId": "BX-03",
+      "stats": {
+        "attack": 15,
+        "defense": 25,
+        "stamina": 50,
+        "burst": 30,
+        "dash": 10
+      },
+      "weight": 2.1
+    },
+    {
+      "id": "bx-04-blade",
+      "type": "blade",
+      "typeLabel": "블레이드",
+      "name": "BX-04 나이트 실드",
+      "image": "assets/gp/parts/bx-04-blade.png",
+      "count": 1,
+      "topId": "BX-04",
+      "stats": {
+        "attack": 20,
+        "defense": 55,
+        "stamina": 25,
+        "burst": 0,
+        "dash": 0
+      },
+      "weight": 32.3
+    },
+    {
+      "id": "bx-04-ratchet",
+      "type": "ratchet",
+      "typeLabel": "래칫",
+      "name": "BX-04 3-80",
+      "image": "assets/gp/parts/bx-04-ratchet.png",
+      "count": 1,
+      "topId": "BX-04",
+      "stats": {
+        "attack": 15,
+        "defense": 7,
+        "stamina": 8,
+        "burst": 0,
+        "dash": 0
+      },
+      "weight": 6.9
+    },
+    {
+      "id": "bx-04-bit",
+      "type": "bit",
+      "typeLabel": "비트",
+      "name": "BX-04 N",
+      "image": "assets/gp/parts/bx-04-bit.png",
+      "count": 1,
+      "topId": "BX-04",
+      "stats": {
+        "attack": 10,
+        "defense": 50,
+        "stamina": 30,
+        "burst": 30,
+        "dash": 10
+      },
+      "weight": 2
+    },
+    {
+      "id": "bx-05-blade",
+      "type": "blade",
+      "typeLabel": "블레이드",
+      "name": "BX-05 위저드 애로우",
+      "image": "assets/gp/parts/bx-05-blade.png",
+      "count": 1,
+      "topId": "BX-05",
+      "stats": {
+        "attack": 15,
+        "defense": 30,
+        "stamina": 55,
+        "burst": 0,
+        "dash": 0
+      },
+      "weight": 32
+    },
+    {
+      "id": "bx-05-ratchet",
+      "type": "ratchet",
+      "typeLabel": "래칫",
+      "name": "BX-05 4-80",
+      "image": "assets/gp/parts/bx-05-ratchet.png",
+      "count": 1,
+      "topId": "BX-05",
+      "stats": {
+        "attack": 11,
+        "defense": 11,
+        "stamina": 8,
+        "burst": 0,
+        "dash": 0
+      },
+      "weight": 6.9
+    },
+    {
+      "id": "bx-05-bit",
+      "type": "bit",
+      "typeLabel": "비트",
+      "name": "BX-05 B",
+      "image": "assets/gp/parts/bx-05-bit.png",
+      "count": 1,
+      "topId": "BX-05",
+      "stats": {
+        "attack": 15,
+        "defense": 25,
+        "stamina": 50,
+        "burst": 30,
+        "dash": 10
+      },
+      "weight": 2.1
+    },
+    {
+      "id": "bx-06-blade",
+      "type": "blade",
+      "typeLabel": "블레이드",
+      "name": "BX-06 나이트 실드",
+      "image": "assets/gp/parts/bx-06-blade.png",
+      "count": 1,
+      "topId": "BX-06",
+      "stats": {
+        "attack": 20,
+        "defense": 55,
+        "stamina": 25,
+        "burst": 0,
+        "dash": 0
+      },
+      "weight": 32.3
+    },
+    {
+      "id": "bx-06-ratchet",
+      "type": "ratchet",
+      "typeLabel": "래칫",
+      "name": "BX-06 3-80",
+      "image": "assets/gp/parts/bx-06-ratchet.png",
+      "count": 1,
+      "topId": "BX-06",
+      "stats": {
+        "attack": 15,
+        "defense": 7,
+        "stamina": 8,
+        "burst": 0,
+        "dash": 0
+      },
+      "weight": 6.9
+    },
+    {
+      "id": "bx-06-bit",
+      "type": "bit",
+      "typeLabel": "비트",
+      "name": "BX-06 N",
+      "image": "assets/gp/parts/bx-06-bit.png",
+      "count": 1,
+      "topId": "BX-06",
+      "stats": {
+        "attack": 10,
+        "defense": 50,
+        "stamina": 30,
+        "burst": 30,
+        "dash": 10
+      },
+      "weight": 2
+    },
+    {
+      "id": "bxg-01-blade",
+      "type": "blade",
+      "typeLabel": "블레이드",
+      "name": "BXG-01 드란저 스파이럴",
+      "image": "assets/gp/parts/bxg-01-blade.png",
+      "count": 1,
+      "topId": "BXG-01",
+      "stats": {
+        "attack": 35,
+        "defense": 30,
+        "stamina": 35,
+        "burst": 0,
+        "dash": 0
+      },
+      "weight": 27.8
+    },
+    {
+      "id": "bxg-01-ratchet",
+      "type": "ratchet",
+      "typeLabel": "래칫",
+      "name": "BXG-01 3-80",
+      "image": "assets/gp/parts/bxg-01-ratchet.png",
+      "count": 1,
+      "topId": "BXG-01",
+      "stats": {
+        "attack": 15,
+        "defense": 7,
+        "stamina": 8,
+        "burst": 0,
+        "dash": 0
+      },
+      "weight": 6.9
+    },
+    {
+      "id": "bxg-01-bit",
+      "type": "bit",
+      "typeLabel": "비트",
+      "name": "BXG-01 T",
+      "image": "assets/gp/parts/bxg-01-bit.png",
+      "count": 1,
+      "topId": "BXG-01",
+      "stats": {
+        "attack": 35,
+        "defense": 20,
+        "stamina": 20,
+        "burst": 80,
+        "dash": 25
+      },
+      "weight": 2.2
+    },
+    {
+      "id": "ux-01-blade",
+      "type": "blade",
+      "typeLabel": "블레이드",
+      "name": "UX-01 드랜 버스터",
+      "image": "assets/gp/parts/ux-01-blade.png",
+      "count": 1,
+      "topId": "UX-01",
+      "stats": {
+        "attack": 70,
+        "defense": 20,
+        "stamina": 10,
+        "burst": 0,
+        "dash": 0
+      },
+      "weight": 36.5
+    },
+    {
+      "id": "ux-01-ratchet",
+      "type": "ratchet",
+      "typeLabel": "래칫",
+      "name": "UX-01 1-60",
+      "image": "assets/gp/parts/ux-01-ratchet.png",
+      "count": 1,
+      "topId": "UX-01",
+      "stats": {
+        "attack": 17,
+        "defense": 9,
+        "stamina": 4,
+        "burst": 0,
+        "dash": 0
+      },
+      "weight": 5.9
+    },
+    {
+      "id": "ux-01-bit",
+      "type": "bit",
+      "typeLabel": "비트",
+      "name": "UX-01 A",
+      "image": "assets/gp/parts/ux-01-bit.png",
+      "count": 1,
+      "topId": "UX-01",
+      "stats": {
+        "attack": 40,
+        "defense": 10,
+        "stamina": 10,
+        "burst": 80,
+        "dash": 40
+      },
+      "weight": 2.6
+    },
+    {
+      "id": "ux-02-blade",
+      "type": "blade",
+      "typeLabel": "블레이드",
+      "name": "UX-02 헬즈 해머",
+      "image": "assets/gp/parts/ux-02-blade.png",
+      "count": 1,
+      "topId": "UX-02",
+      "stats": {
+        "attack": 50,
+        "defense": 25,
+        "stamina": 25,
+        "burst": 0,
+        "dash": 0
+      },
+      "weight": 33.2
+    },
+    {
+      "id": "ux-02-ratchet",
+      "type": "ratchet",
+      "typeLabel": "래칫",
+      "name": "UX-02 3-70",
+      "image": "assets/gp/parts/ux-02-ratchet.png",
+      "count": 1,
+      "topId": "UX-02",
+      "stats": {
+        "attack": 15,
+        "defense": 8,
+        "stamina": 7,
+        "burst": 0,
+        "dash": 0
+      },
+      "weight": 6.4
+    },
+    {
+      "id": "ux-02-bit",
+      "type": "bit",
+      "typeLabel": "비트",
+      "name": "UX-02 H",
+      "image": "assets/gp/parts/ux-02-bit.png",
+      "count": 1,
+      "topId": "UX-02",
+      "stats": {
+        "attack": 30,
+        "defense": 35,
+        "stamina": 20,
+        "burst": 80,
+        "dash": 15
+      },
+      "weight": 2.6
+    },
+    {
+      "id": "ux-03-blade",
+      "type": "blade",
+      "typeLabel": "블레이드",
+      "name": "UX-03 위저드 로드",
+      "image": "assets/gp/parts/ux-03-blade.png",
+      "count": 1,
+      "topId": "UX-03",
+      "stats": {
+        "attack": 15,
+        "defense": 25,
+        "stamina": 60,
+        "burst": 0,
+        "dash": 0
+      },
+      "weight": 35.4
+    },
+    {
+      "id": "ux-03-ratchet",
+      "type": "ratchet",
+      "typeLabel": "래칫",
+      "name": "UX-03 5-70",
+      "image": "assets/gp/parts/ux-03-ratchet.png",
+      "count": 1,
+      "topId": "UX-03",
+      "stats": {
+        "attack": 12,
+        "defense": 8.5,
+        "stamina": 9.5,
+        "burst": 0,
+        "dash": 0
+      },
+      "weight": 6.7
+    },
+    {
+      "id": "ux-03-bit",
+      "type": "bit",
+      "typeLabel": "비트",
+      "name": "UX-03 DB",
+      "image": "assets/gp/parts/ux-03-bit.png",
+      "count": 1,
+      "topId": "UX-03",
+      "stats": {
+        "attack": 15,
+        "defense": 20,
+        "stamina": 55,
+        "burst": 30,
+        "dash": 10
+      },
+      "weight": 3.2
+    },
+    {
+      "id": "cx-01-blade",
+      "type": "blade",
+      "typeLabel": "블레이드",
+      "name": "CX-01 드랜 브레이브S",
+      "image": "assets/gp/parts/cx-01-blade.png",
+      "count": 1,
+      "topId": "CX-01",
+      "stats": {
+        "attack": 60,
+        "defense": 20,
+        "stamina": 20,
+        "burst": 0,
+        "dash": 0
+      },
+      "weight": null
+    },
+    {
+      "id": "cx-01-ratchet",
+      "type": "ratchet",
+      "typeLabel": "래칫",
+      "name": "CX-01 6-60",
+      "image": "assets/gp/parts/cx-01-ratchet.png",
+      "count": 1,
+      "topId": "CX-01",
+      "stats": {
+        "attack": 14,
+        "defense": 8,
+        "stamina": 8,
+        "burst": 0,
+        "dash": 0
+      },
+      "weight": 6.2
+    },
+    {
+      "id": "cx-01-bit",
+      "type": "bit",
+      "typeLabel": "비트",
+      "name": "CX-01 V",
+      "image": "assets/gp/parts/cx-01-bit.png",
+      "count": 1,
+      "topId": "CX-01",
+      "stats": {
+        "attack": 45,
+        "defense": 10,
+        "stamina": 5,
+        "burst": 80,
+        "dash": 40
+      },
+      "weight": 2.1
+    },
+    {
+      "id": "cx-02-blade",
+      "type": "blade",
+      "typeLabel": "블레이드",
+      "name": "CX-02 위저드 아크R",
+      "image": "assets/gp/parts/cx-02-blade.png",
+      "count": 1,
+      "topId": "CX-02",
+      "stats": {
+        "attack": 20,
+        "defense": 20,
+        "stamina": 60,
+        "burst": 0,
+        "dash": 0
+      },
+      "weight": null
+    },
+    {
+      "id": "cx-02-ratchet",
+      "type": "ratchet",
+      "typeLabel": "래칫",
+      "name": "CX-02 4-55",
+      "image": "assets/gp/parts/cx-02-ratchet.png",
+      "count": 1,
+      "topId": "CX-02",
+      "stats": {
+        "attack": 7,
+        "defense": 11,
+        "stamina": 12,
+        "burst": 30,
+        "dash": 0
+      },
+      "weight": 4.8
+    },
+    {
+      "id": "cx-02-bit",
+      "type": "bit",
+      "typeLabel": "비트",
+      "name": "CX-02 LO",
+      "image": "assets/gp/parts/cx-02-bit.png",
+      "count": 1,
+      "topId": "CX-02",
+      "stats": {
+        "attack": 5,
+        "defense": 25,
+        "stamina": 55,
+        "burst": 30,
+        "dash": 15
+      },
+      "weight": 1.9
+    }
+  ],
+  "announcements": [
+    {
+      "id": "bandai-youtube-Ninhgtydeiw",
+      "franchiseId": "gundam",
+      "title": "빌더즈 노트 건프라 재판 회의 2026 겨울 제2회 선발 선거 『0083 STARDUST MEMORY』",
+      "status": "공식 발표",
+      "date": "2026-10-16",
+      "source": "BANDAI Hobby Site YouTube",
+      "image": "assets/gp/ann/-Ninhgtydeiw.jpg"
+    },
+    {
+      "id": "bandai-youtube-Sr30ILcabUc",
+      "franchiseId": "pokemon",
+      "title": "포켓프라 Quick!! 불꽃숭이 신등장 · 디아루가와 나란히",
+      "status": "공식 발표",
+      "date": "2026-10-16",
+      "source": "BANDAI Hobby Site YouTube",
+      "image": "assets/gp/ann/-Sr30ILcabUc.jpg"
+    },
+    {
+      "id": "bandai-news-2026-10-13-vMDFfNzQyMy8",
+      "franchiseId": "gundam",
+      "title": "2026년 10월 일반 매장 발매 아이템",
+      "status": "상품화 확정",
+      "date": "2026-10-13",
+      "source": "BANDAI SPIRITS",
+      "image": "assets/gp/ann/vMDFfNzQyMy8.jpg"
+    },
+    {
+      "id": "tamashii-news-2026-10-09-aS1maWcv",
+      "franchiseId": "gundam",
+      "title": "스마트폰 앱 「디지피그」에 풀아머 건담 등장",
+      "status": "공식 발표",
+      "date": "2026-10-09",
+      "source": "TAMASHII WEB",
+      "image": "assets/gp/ann/-09-aS1maWcv.webp"
+    },
+    {
+      "id": "tamashii-news-2026-10-05-16191",
+      "franchiseId": "gundam",
+      "title": "【SEED FREEDOM】 블랙 나이트 스쿼드 카르라 METAL ROBOT 魂 상품화",
+      "status": "상품화 확정",
+      "date": "2026-10-05",
+      "source": "TAMASHII WEB",
+      "image": "assets/gp/ann/-10-05-16191.webp"
+    },
+    {
+      "id": "tamashii-news-2026-10-05-16192",
+      "franchiseId": "gundam",
+      "title": "【SEED FREEDOM】 카르라 전용 이펙트 파츠 세트 예약 시작",
+      "status": "예약 시작",
+      "date": "2026-10-05",
+      "source": "TAMASHII WEB",
+      "image": "assets/gp/ann/-10-05-16192.webp"
+    }
+  ],
+  "profile": {
+    "id": 1,
+    "name": "건프라러",
+    "handle": "gunpula_me",
+    "avatarText": "A",
+    "tags": [
+      "SEED",
+      "수성",
+      "MG 위주"
+    ],
+    "favoriteFranchises": [
+      "건담",
+      "BBX"
+    ],
+    "favoriteSeries": [
+      "SEED",
+      "00"
+    ],
+    "ownedCount": 8,
+    "wantedCount": 9,
+    "recentViewed": 3,
+    "spendKrw": 412000,
+    "workspace": "우리집 컬렉션",
+    "inviteCode": "GP7K2Q",
+    "members": [
+      {
+        "name": "건프라러",
+        "role": "Owner",
+        "self": true
+      },
+      {
+        "name": "동생",
+        "role": "Editor",
+        "self": false
+      }
+    ]
+  }
 }
