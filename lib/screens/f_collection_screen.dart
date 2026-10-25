@@ -324,6 +324,7 @@ class _CollectionScreenState extends State<CollectionScreen> with ChannelScope {
             ),
             for (final k in kits)
               ThumbRow( // F-5 P08 — 검색·캘린더와 같은 줄
+                id: k.id,
                 image: k.image,
                 title: k.name,
                 titleLines: 2,

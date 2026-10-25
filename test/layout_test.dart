@@ -59,6 +59,7 @@ Future<void> _show(WidgetTester tester, Size size, Widget home) async {
   tester.view.physicalSize = size;
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.reset);
+  paneSelection.value = null; // 테스트 사이에 남지 않게
   await tester.pumpWidget(MaterialApp(theme: buildGpTheme(), home: home));
   // 끝없는 애니메이션(색 고리 · 배너 자동 넘김)이 있어 pumpAndSettle 대신 몇 번 나눠 그린다
   for (var i = 0; i < 6; i++) {
@@ -115,6 +116,7 @@ void main() {
       expect(find.byType(KitDetailScreen), findsOneWidget);
       expect(find.descendant(of: find.byType(DetailPaneView), matching: find.byType(KitDetailScreen)), findsOneWidget);
       expect(find.byType(GpSearchBar), findsWidgets); // 왼쪽 홈은 그대로
+      expect(paneSelection.value, isNotNull); // 왼쪽에서 그 카드가 칠해짐
       expect(tester.takeException(), isNull);
     });
   }

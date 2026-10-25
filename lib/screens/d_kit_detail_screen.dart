@@ -33,7 +33,7 @@ import '../widgets.dart';
 
 /// 상품 상세 열기 — 폰: 오른쪽에서 밀려 들어옴 / 넓은 화면: 오른쪽 칸 (detail_pane.dart)
 void openKitDetail(BuildContext context, Kit kit, {Loaders loaders = const Loaders()}) {
-  openPage(context, KitDetailScreen(kit: kit, loaders: loaders));
+  openPage(context, KitDetailScreen(kit: kit, loaders: loaders), id: kit.id);
 }
 
 /// 넓은 화면 기준 (사진 왼쪽 · 정보 오른쪽)

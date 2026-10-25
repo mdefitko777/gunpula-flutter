@@ -9,6 +9,7 @@
 //   AppImage · CircleThumb · RaisedCircleButton · ChannelGlyph · showSoon · showToast · navClearance · 가격 표기
 import 'package:flutter/material.dart';
 
+import 'detail_pane.dart';
 import 'theme.dart';
 
 /// 로딩 상태
@@ -496,6 +497,7 @@ class ProductTile extends StatelessWidget {
     required this.onTap,
     this.subtitle = '',
     this.marks,
+    this.id,
     this.imageWidth,
     this.imageAspect = 1,
     this.titleLines = 1,
@@ -508,6 +510,9 @@ class ProductTile extends StatelessWidget {
 
   /// 주면 사진 위에 겹친다 — 보통 [QuickMarks] (리본 + · ♡)
   final Widget? marks;
+
+  /// 반반 화면에서 이 카드가 오른쪽 칸에 열려 있으면 사진에 파란 테두리
+  final String? id;
   final double? imageWidth;
 
   /// 가로 / 세로 (1 = 정사각형, 공식 예고 배너는 16:9 쯤)
@@ -523,6 +528,22 @@ class ProductTile extends StatelessWidget {
         children: [
           PhotoThumb(image),
           if (marks != null) Positioned.fill(child: marks!),
+          if (id != null)
+            Positioned.fill(
+              child: IgnorePointer(
+                child: ValueListenableBuilder(
+                  valueListenable: paneSelection,
+                  builder: (context, _, _) => isPaneSelected(id)
+                      ? DecoratedBox(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(color: Gp.accent, width: 2.5),
+                          ),
+                        )
+                      : const SizedBox.shrink(),
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -958,7 +979,11 @@ class ThumbRow extends StatelessWidget {
     this.size = 56,
     this.titleLines = 1,
     this.padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 7),
+    this.id,
   });
+
+  /// 반반 화면에서 이 줄이 오른쪽 칸에 열려 있으면 옅은 파랑 바탕
+  final String? id;
 
   final String image;
   final String title;
@@ -980,6 +1005,17 @@ class ThumbRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (id == null) return _row(context);
+    return ValueListenableBuilder(
+      valueListenable: paneSelection,
+      builder: (context, _, _) => ColoredBox(
+        color: isPaneSelected(id) ? Gp.accent.withValues(alpha: 0.08) : Colors.transparent,
+        child: _row(context),
+      ),
+    );
+  }
+
+  Widget _row(BuildContext context) {
     return InkWell(
       onTap: onTap,
       child: Padding(

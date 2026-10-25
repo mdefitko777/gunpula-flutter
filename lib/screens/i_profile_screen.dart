@@ -41,7 +41,7 @@ void openProfile(
 
 /// 친구 프로필 (같은 화면, 보기 전용)
 void openFriend(BuildContext context, Member friend, {Loaders loaders = const Loaders()}) {
-  openPage(context, ProfileScreen(loaders: loaders, friend: friend));
+  openPage(context, ProfileScreen(loaders: loaders, friend: friend), id: friend.handle);
 }
 
 class _ProfileData {

@@ -24,7 +24,7 @@ import 'd_kit_detail_screen.dart';
 const announcementStages = ['공식 발표', '상품화 확정', '예약 시작', '발매'];
 
 void openAnnouncement(BuildContext context, Announcement a, {Loaders loaders = const Loaders()}) {
-  openPage(context, AnnouncementScreen(item: a, loaders: loaders));
+  openPage(context, AnnouncementScreen(item: a, loaders: loaders), id: a.id);
 }
 
 class AnnouncementScreen extends StatefulWidget {

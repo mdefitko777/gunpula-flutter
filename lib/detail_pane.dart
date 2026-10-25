@@ -12,6 +12,13 @@ import 'theme.dart';
 /// 오른쪽 자세히 칸의 Navigator — 앱에 칸은 하나뿐. 넓은 화면에서만 붙어 있다(아니면 currentState == null)
 final detailPaneKey = GlobalKey<NavigatorState>();
 
+/// 오른쪽 칸에 지금 열린 것의 id (상품 id · 공고 id · 친구 아이디). 왼쪽 목록이 같은 줄을 칠한다.
+/// 칸이 없거나(폰) 비면 null. (ValueNotifier = Flutter 기본 부품, 상태관리 패키지 아님)
+final paneSelection = ValueNotifier<String?>(null);
+
+/// 이 id 가 지금 오른쪽 칸에 열려 있나 — 목록 줄 · 카드가 옅게 칠할지
+bool isPaneSelected(String? id) => id != null && detailPaneKey.currentState != null && paneSelection.value == id;
+
 /// 오른쪽 칸 안쪽 표시 — 여기서 연 화면은 칸 안에서 쌓는다
 class _InsidePane extends InheritedWidget {
   const _InsidePane({required super.child});
@@ -21,7 +28,7 @@ class _InsidePane extends InheritedWidget {
 }
 
 /// 화면 열기: 넓으면 오른쪽 칸, 아니면 쌓기
-void openPage(BuildContext context, Widget page) {
+void openPage(BuildContext context, Widget page, {String? id}) {
   final nav = detailPaneKey.currentState;
   final inside = context.getInheritedWidgetOfExactType<_InsidePane>() != null;
   // 앱 셸(맨 아래 화면: 왼쪽 · 서랍 · 🔔 ⚙)에서 연 것만 칸으로. 위에 덮인 전체 화면(카메라 결과 등)에서는 그 위에 쌓기
@@ -33,7 +40,8 @@ void openPage(BuildContext context, Widget page) {
   if (inside) {
     nav.push(CupertinoPageRoute<void>(builder: (_) => page)); // 칸 안에서 더 들어가기
   } else {
-    // 왼쪽에서 고름 → 칸 내용을 바꿈 (빈 칸 안내 위에 하나만)
+    // 왼쪽에서 고름 → 칸 내용을 바꿈 (빈 칸 안내 위에 하나만) + 왼쪽에서 그 줄을 칠함
+    paneSelection.value = id;
     nav.pushAndRemoveUntil(
       PageRouteBuilder<void>(
         pageBuilder: (_, _, _) => page,
@@ -58,11 +66,20 @@ class DetailPaneView extends StatelessWidget {
         child: ClipRect(
           child: Navigator(
             key: detailPaneKey,
+            observers: [_EmptyWatcher()],
             onGenerateRoute: (_) => PageRouteBuilder<void>(pageBuilder: (_, _, _) => const _EmptyPane()),
           ),
         ),
       ),
     );
+  }
+}
+
+/// 칸이 빈 안내로 돌아가면 왼쪽 칠하기를 지운다
+class _EmptyWatcher extends NavigatorObserver {
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    if (previousRoute?.isFirst ?? false) paneSelection.value = null;
   }
 }
 

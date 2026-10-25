@@ -493,6 +493,7 @@ class _EventRow extends StatelessWidget {
     final ann = event.ann;
     return ThumbRow(
       // H-5 — 컬렉션·검색과 같은 줄
+      id: kit?.id ?? ann?.id,
       image: event.image,
       title: event.title,
       subtitle: event.sub,

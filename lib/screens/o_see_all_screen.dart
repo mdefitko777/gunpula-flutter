@@ -411,6 +411,7 @@ class _SectionListViewState extends State<SectionListView> {
   }
 
   Widget _tile(Kit k) => ProductTile(
+    id: k.id,
     image: k.image,
     title: k.name,
     titleLines: 2,
@@ -420,6 +421,7 @@ class _SectionListViewState extends State<SectionListView> {
   );
 
   Widget _row(Kit k) => ThumbRow(
+    id: k.id,
     image: k.image,
     title: k.name,
     titleLines: 2,

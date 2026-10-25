@@ -464,6 +464,7 @@ class _HorizontalRow extends StatelessWidget {
             title: item.title,
             imageWidth: width,
             imageAspect: aspect,
+            id: kit?.id ?? item.ann?.id,
             onTap: () {
               final ann = item.ann;
               if (kit != null) {
