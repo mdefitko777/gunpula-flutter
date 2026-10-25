@@ -64,7 +64,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('설정', style: TextStyle(fontSize: Gp.t19, fontWeight: FontWeight.w600)),
+        title: const Text(
+          '설정',
+          style: TextStyle(fontSize: Gp.t19, fontWeight: FontWeight.w600),
+        ),
       ),
       body: ListView(
         padding: const EdgeInsets.only(bottom: 40),

@@ -262,7 +262,10 @@ class _SectionListViewState extends State<SectionListView> {
                 const SizedBox(width: 12),
               Container(width: 3, height: 16, color: Gp.accent), // 홈 줄 제목과 같은 색 막대
               const SizedBox(width: 8),
-              Text(widget.title, style: const TextStyle(fontSize: Gp.t19, fontWeight: FontWeight.w700)),
+              Text(
+                widget.title,
+                style: const TextStyle(fontSize: Gp.t19, fontWeight: FontWeight.w700),
+              ),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
@@ -318,7 +321,10 @@ class _SectionListViewState extends State<SectionListView> {
         children: [
           Expanded(
             child: labels.isEmpty
-                ? Text('${visible.length}개', style: const TextStyle(fontSize: Gp.t12, color: Gp.muted))
+                ? Text(
+                    '${visible.length}개',
+                    style: const TextStyle(fontSize: Gp.t12, color: Gp.muted),
+                  )
                 : Row(
                     children: [
                       Flexible(
@@ -359,7 +365,10 @@ class _SectionListViewState extends State<SectionListView> {
                 children: [
                   const Icon(Icons.swap_vert, size: 18, color: Gp.muted),
                   const SizedBox(width: 2),
-                  Text(_sort.label, style: const TextStyle(fontSize: Gp.t12, color: Gp.ink)),
+                  Text(
+                    _sort.label,
+                    style: const TextStyle(fontSize: Gp.t12, color: Gp.ink),
+                  ),
                 ],
               ),
             ),
@@ -437,7 +446,10 @@ class _SectionListViewState extends State<SectionListView> {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Text(yen(k.priceJpy), style: const TextStyle(fontSize: Gp.t12)),
-        Text(dateDot(k.date), style: const TextStyle(fontSize: Gp.t11, color: Gp.faint)),
+        Text(
+          dateDot(k.date),
+          style: const TextStyle(fontSize: Gp.t11, color: Gp.faint),
+        ),
       ],
     ),
     onTap: () => openKitDetail(context, k, loaders: widget.loaders),
@@ -572,9 +584,15 @@ class _FilterPanelState extends State<_FilterPanel> {
               padding: const EdgeInsets.fromLTRB(20, 16, 16, 16),
               child: Row(
                 children: [
-                  Text(title, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: Gp.t14)),
+                  Text(
+                    title,
+                    style: const TextStyle(fontWeight: FontWeight.w700, fontSize: Gp.t14),
+                  ),
                   const Spacer(),
-                  Text(summary, style: const TextStyle(fontSize: Gp.t12, color: Gp.accent)),
+                  Text(
+                    summary,
+                    style: const TextStyle(fontSize: Gp.t12, color: Gp.accent),
+                  ),
                   const SizedBox(width: 6),
                   AnimatedRotation(
                     turns: open ? 0.5 : 0,
@@ -601,8 +619,13 @@ class _FilterPanelState extends State<_FilterPanel> {
         padding: const EdgeInsets.fromLTRB(28, 11, 18, 11),
         child: Row(
           children: [
-            Expanded(child: Text(label, style: const TextStyle(fontSize: Gp.t14))),
-            Text('$n', style: const TextStyle(fontSize: Gp.t12, color: Gp.faint)),
+            Expanded(
+              child: Text(label, style: const TextStyle(fontSize: Gp.t14)),
+            ),
+            Text(
+              '$n',
+              style: const TextStyle(fontSize: Gp.t12, color: Gp.faint),
+            ),
             const SizedBox(width: 12),
             AnimatedContainer(
               duration: const Duration(milliseconds: 120),
@@ -652,7 +675,10 @@ class _FilterPanelState extends State<_FilterPanel> {
                   padding: const EdgeInsets.fromLTRB(20, 8, 8, 8),
                   child: Row(
                     children: [
-                      const Text('필터', style: TextStyle(fontSize: Gp.t19, fontWeight: FontWeight.w700)),
+                      const Text(
+                        '필터',
+                        style: TextStyle(fontSize: Gp.t19, fontWeight: FontWeight.w700),
+                      ),
                       const Spacer(),
                       IconButton(tooltip: '닫기', onPressed: () => Navigator.pop(context), icon: const Icon(Icons.close)),
                     ],

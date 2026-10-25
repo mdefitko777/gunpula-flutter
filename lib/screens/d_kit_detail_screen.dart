@@ -109,7 +109,10 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
               decoration: const InputDecoration(hintText: '예: 38000', suffixText: '원'),
             ),
             const SizedBox(height: 6),
-            Text('정가 ${yen(k.priceJpy)} · 컬렉션 지출 합계에 들어가요', style: const TextStyle(fontSize: Gp.t12, color: Gp.muted)),
+            Text(
+              '정가 ${yen(k.priceJpy)} · 컬렉션 지출 합계에 들어가요',
+              style: const TextStyle(fontSize: Gp.t12, color: Gp.muted),
+            ),
             const SizedBox(height: 14),
             FilledButton(
               onPressed: () {
@@ -263,11 +266,17 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
             ),
             if (k.nameJa.isNotEmpty && k.nameJa != k.name) ...[
               const SizedBox(height: 3),
-              Text(k.nameJa, style: const TextStyle(fontSize: Gp.t12, color: Gp.faint)),
+              Text(
+                k.nameJa,
+                style: const TextStyle(fontSize: Gp.t12, color: Gp.faint),
+              ),
             ],
             const SizedBox(height: 14),
             // 엔화 = 일본 정가, 원화 = 국내 시세 · 내 구매가 (섞여 보여도 무엇인지 알게)
-            const Text('일본 정가', style: TextStyle(fontSize: Gp.t12, color: Gp.muted)),
+            const Text(
+              '일본 정가',
+              style: TextStyle(fontSize: Gp.t12, color: Gp.muted),
+            ),
             const SizedBox(height: 2),
             // 좁은 화면에서는 다음 줄로 넘어가게 (Wrap)
             Wrap(
@@ -281,7 +290,10 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 3),
-                  child: Text('발매 ${dateDot(k.date)}', style: const TextStyle(color: Gp.muted, fontSize: Gp.t12)),
+                  child: Text(
+                    '발매 ${dateDot(k.date)}',
+                    style: const TextStyle(color: Gp.muted, fontSize: Gp.t12),
+                  ),
                 ),
                 if (k.limited) const TagPill('한정', strong: true),
                 if (k.pb) const TagPill('PB', strong: true),
@@ -297,7 +309,10 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
                 decoration: BoxDecoration(color: Gp.bg, borderRadius: BorderRadius.circular(Gp.radius)),
                 child: Row(
                   children: [
-                    const Text('국내 시세', style: TextStyle(fontSize: Gp.t12, color: Gp.muted)),
+                    const Text(
+                      '국내 시세',
+                      style: TextStyle(fontSize: Gp.t12, color: Gp.muted),
+                    ),
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
@@ -313,7 +328,10 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
                       ),
                     ),
                     if (k.market case final m?)
-                      Text('거래 ${m.samples}건', style: const TextStyle(fontSize: Gp.t12, color: Gp.muted)),
+                      Text(
+                        '거래 ${m.samples}건',
+                        style: const TextStyle(fontSize: Gp.t12, color: Gp.muted),
+                      ),
                     const Icon(Icons.chevron_right, size: 20, color: Gp.muted),
                   ],
                 ),
@@ -333,7 +351,10 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
                   ),
                   child: Row(
                     children: [
-                      const Text('내 구매가', style: TextStyle(fontSize: Gp.t12, color: Gp.muted)),
+                      const Text(
+                        '내 구매가',
+                        style: TextStyle(fontSize: Gp.t12, color: Gp.muted),
+                      ),
                       const SizedBox(width: 10),
                       Expanded(
                         child: Text(
@@ -509,7 +530,10 @@ class _SpecStrip extends StatelessWidget {
                     children: [
                       Text(specs[i].$2, style: const TextStyle(fontSize: Gp.t14)),
                       const SizedBox(height: 3),
-                      Text(specs[i].$1, style: const TextStyle(fontSize: Gp.t12, color: Gp.muted)),
+                      Text(
+                        specs[i].$1,
+                        style: const TextStyle(fontSize: Gp.t12, color: Gp.muted),
+                      ),
                     ],
                   ),
                 ),
@@ -540,7 +564,10 @@ class _SpecSheet extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(e.$1, style: const TextStyle(fontSize: Gp.t12, color: Gp.muted)),
+          Text(
+            e.$1,
+            style: const TextStyle(fontSize: Gp.t12, color: Gp.muted),
+          ),
           const SizedBox(height: 6),
           Text(e.$2, style: const TextStyle(fontSize: Gp.t14)),
         ],
@@ -588,7 +615,9 @@ class _SpecSheet extends StatelessWidget {
                     Expanded(
                       child: Text(e.$1, style: const TextStyle(color: Gp.muted)),
                     ),
-                    Expanded(child: Text(e.$2, style: const TextStyle(fontSize: Gp.t14))),
+                    Expanded(
+                      child: Text(e.$2, style: const TextStyle(fontSize: Gp.t14)),
+                    ),
                   ],
                 ),
               ),
@@ -623,7 +652,10 @@ class _MarketCard extends StatelessWidget {
             style: const TextStyle(fontSize: Gp.t19, fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 3),
-          Text('국내 시세 · 거래 ${m.samples}건', style: const TextStyle(fontSize: Gp.t12, color: Gp.muted)),
+          Text(
+            '국내 시세 · 거래 ${m.samples}건',
+            style: const TextStyle(fontSize: Gp.t12, color: Gp.muted),
+          ),
         ],
         const SizedBox(height: 12),
         const Divider(height: 1),
@@ -640,7 +672,10 @@ class _MarketCard extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(p, style: const TextStyle(fontSize: Gp.t12, fontWeight: FontWeight.w500)),
+                          Text(
+                            p,
+                            style: const TextStyle(fontSize: Gp.t12, fontWeight: FontWeight.w500),
+                          ),
                           const SizedBox(width: 2),
                           const Icon(Icons.north_east, size: 12, color: Gp.muted),
                         ],
@@ -687,7 +722,10 @@ class _BottomActions extends StatelessWidget {
           children: [
             Icon(icon, size: 21, color: Gp.ink),
             const SizedBox(height: 2),
-            Text(label, style: const TextStyle(fontSize: Gp.t11, color: Gp.muted)),
+            Text(
+              label,
+              style: const TextStyle(fontSize: Gp.t11, color: Gp.muted),
+            ),
           ],
         ),
       ),

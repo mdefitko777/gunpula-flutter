@@ -56,7 +56,10 @@ class ErrorView extends StatelessWidget {
           children: [
             const Icon(Icons.cloud_off_outlined, size: 40, color: Gp.ink),
             const SizedBox(height: 12),
-            Text(title, style: const TextStyle(fontSize: Gp.t16, fontWeight: FontWeight.w700)),
+            Text(
+              title,
+              style: const TextStyle(fontSize: Gp.t16, fontWeight: FontWeight.w700),
+            ),
             if (message.isNotEmpty) ...[
               const SizedBox(height: 6),
               Text(
@@ -453,7 +456,10 @@ class SectionHeader extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(fontSize: Gp.t16, fontWeight: FontWeight.w600)),
+                Text(
+                  title,
+                  style: const TextStyle(fontSize: Gp.t16, fontWeight: FontWeight.w600),
+                ),
                 if (subtitle.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(top: 3),
@@ -533,9 +539,8 @@ class ProductTile extends StatelessWidget {
           if (id != null)
             Positioned.fill(
               child: IgnorePointer(
-                child: ValueListenableBuilder(
-                  valueListenable: paneSelection,
-                  builder: (context, _, _) => isPaneSelected(id)
+                child: Builder(
+                  builder: (context) => isPaneSelected(context, id)
                       ? DecoratedBox(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(14),
@@ -980,10 +985,9 @@ class ThumbRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (id == null) return _row(context);
-    return ValueListenableBuilder(
-      valueListenable: paneSelection,
-      builder: (context, _, _) => ColoredBox(
-        color: isPaneSelected(id) ? Gp.accent.withValues(alpha: 0.08) : Colors.transparent,
+    return Builder(
+      builder: (context) => ColoredBox(
+        color: isPaneSelected(context, id) ? Gp.accent.withValues(alpha: 0.08) : Colors.transparent,
         child: _row(context),
       ),
     );

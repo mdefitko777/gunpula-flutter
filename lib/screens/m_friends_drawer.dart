@@ -133,7 +133,10 @@ class _FriendsDrawerState extends State<FriendsDrawer> {
         children: [
           Row(
             children: [
-              const Text('친구', style: TextStyle(fontSize: Gp.t19, fontWeight: FontWeight.w700)),
+              const Text(
+                '친구',
+                style: TextStyle(fontSize: Gp.t19, fontWeight: FontWeight.w700),
+              ),
               const Spacer(),
               IconButton(
                 tooltip: '친구 추가',
@@ -161,15 +164,24 @@ class _FriendsDrawerState extends State<FriendsDrawer> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(p.name, style: const TextStyle(fontSize: Gp.t16, fontWeight: FontWeight.w700)),
-                        Text('@${p.handle}', style: const TextStyle(fontSize: Gp.t12, color: Gp.muted)),
+                        Text(
+                          p.name,
+                          style: const TextStyle(fontSize: Gp.t16, fontWeight: FontWeight.w700),
+                        ),
+                        Text(
+                          '@${p.handle}',
+                          style: const TextStyle(fontSize: Gp.t12, color: Gp.muted),
+                        ),
                         const SizedBox(height: 5),
                         Row(
                           children: [
                             LevelChip(level: guideLevel(lit, verified)),
                             const SizedBox(width: 6),
                             const VerifiedBadge(size: 16),
-                            Text(' $verified', style: const TextStyle(fontSize: Gp.t12, fontWeight: FontWeight.w600)),
+                            Text(
+                              ' $verified',
+                              style: const TextStyle(fontSize: Gp.t12, fontWeight: FontWeight.w600),
+                            ),
                           ],
                         ),
                       ],
@@ -303,7 +315,10 @@ class _FriendsDrawerState extends State<FriendsDrawer> {
                   ),
                   Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
                   const Spacer(),
-                  Text('${shown.length}/${all.length}', style: const TextStyle(fontSize: Gp.t12, color: Gp.faint)),
+                  Text(
+                    '${shown.length}/${all.length}',
+                    style: const TextStyle(fontSize: Gp.t12, color: Gp.faint),
+                  ),
                 ],
               ),
             ),
@@ -348,7 +363,10 @@ class _FriendsDrawerState extends State<FriendsDrawer> {
               ListTile(
                 leading: CircleThumb(image: '', label: m.name, size: 42),
                 title: Text(m.self ? '${m.name} (나)' : m.name),
-                subtitle: Text('@${m.handle}', style: const TextStyle(fontSize: Gp.t12, color: Gp.muted)),
+                subtitle: Text(
+                  '@${m.handle}',
+                  style: const TextStyle(fontSize: Gp.t12, color: Gp.muted),
+                ),
                 trailing: TagPill(m.role),
                 onTap: m.self
                     ? () => _close(widget.onOpenProfile)

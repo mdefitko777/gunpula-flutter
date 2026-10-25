@@ -269,9 +269,15 @@ class _GroupTitle extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 12),
       child: Row(
         children: [
-          Text(title, style: const TextStyle(fontSize: Gp.t16, fontWeight: FontWeight.w800)),
+          Text(
+            title,
+            style: const TextStyle(fontSize: Gp.t16, fontWeight: FontWeight.w800),
+          ),
           const SizedBox(width: 8),
-          Text(hint, style: const TextStyle(fontSize: Gp.t12, color: Gp.faint)),
+          Text(
+            hint,
+            style: const TextStyle(fontSize: Gp.t12, color: Gp.faint),
+          ),
         ],
       ),
     );

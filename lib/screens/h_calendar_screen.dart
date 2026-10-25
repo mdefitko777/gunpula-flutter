@@ -364,11 +364,17 @@ class _MonthCalendar extends StatelessWidget {
               children: [
                 _Dot(filled: true),
                 SizedBox(width: 5),
-                Text('발매일', style: TextStyle(fontSize: Gp.t12, color: Gp.muted)),
+                Text(
+                  '발매일',
+                  style: TextStyle(fontSize: Gp.t12, color: Gp.muted),
+                ),
                 SizedBox(width: 16),
                 _Dot(filled: false),
                 SizedBox(width: 5),
-                Text('예고 · 공지', style: TextStyle(fontSize: Gp.t12, color: Gp.muted)),
+                Text(
+                  '예고 · 공지',
+                  style: TextStyle(fontSize: Gp.t12, color: Gp.muted),
+                ),
               ],
             ),
           ),

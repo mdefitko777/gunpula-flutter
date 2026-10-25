@@ -80,7 +80,10 @@ class _FriendCollectionScreenState extends State<FriendCollectionScreen> {
     final f = widget.friend;
     return Scaffold(
       appBar: AppBar(
-        title: Text('${f.name}의 컬렉션', style: const TextStyle(fontSize: Gp.t19, fontWeight: FontWeight.w600)),
+        title: Text(
+          '${f.name}의 컬렉션',
+          style: const TextStyle(fontSize: Gp.t19, fontWeight: FontWeight.w600),
+        ),
       ),
       body: FutureBuilder<_FriendData>(
         future: _future,
@@ -167,7 +170,10 @@ class _FriendCollectionScreenState extends State<FriendCollectionScreen> {
       children: [
         SizedBox(
           width: 34,
-          child: Text(who, style: const TextStyle(fontSize: Gp.t11, color: Gp.muted)),
+          child: Text(
+            who,
+            style: const TextStyle(fontSize: Gp.t11, color: Gp.muted),
+          ),
         ),
         Expanded(
           child: AccentBar(value: total == 0 ? 0 : n / total, height: 5, color: accent ? Gp.accent : Gp.faint),
@@ -188,7 +194,10 @@ class _FriendCollectionScreenState extends State<FriendCollectionScreen> {
         Row(
           children: [
             const VerifiedBadge(size: 18),
-            Text('  인증 ${f.verified}개 · 점등 ${f.lit}칸', style: const TextStyle(fontSize: Gp.t12, color: Gp.muted)),
+            Text(
+              '  인증 ${f.verified}개 · 점등 ${f.lit}칸',
+              style: const TextStyle(fontSize: Gp.t12, color: Gp.muted),
+            ),
           ],
         ),
         const SizedBox(height: 10),

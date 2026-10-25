@@ -380,7 +380,10 @@ class _CollectionScreenState extends State<CollectionScreen> with ChannelScope {
                           color: k.purchaseKrw == null ? Gp.faint : Gp.ink,
                         ),
                       ),
-                      Text('정가 ${yen(k.priceJpy)}', style: const TextStyle(fontSize: Gp.t11, color: Gp.faint)),
+                      Text(
+                        '정가 ${yen(k.priceJpy)}',
+                        style: const TextStyle(fontSize: Gp.t11, color: Gp.faint),
+                      ),
                     ] else
                       Text(yen(k.priceJpy), style: const TextStyle(fontSize: Gp.t12)),
                   ],

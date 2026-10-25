@@ -29,7 +29,8 @@ int _byDateDesc(Kit a, Kit b) => b.date.compareTo(a.date);
 
 /// db.json 을 그대로 쓰는 가짜 Loaders
 final fakeLoaders = Loaders(
-  kits: (ids) async => _list<Kit>('kits', Kit.fromJson).where((k) => ids.contains(k.franchiseId)).toList()..sort(_byDateDesc),
+  kits: (ids) async =>
+      _list<Kit>('kits', Kit.fromJson).where((k) => ids.contains(k.franchiseId)).toList()..sort(_byDateDesc),
   collection: () async =>
       _list<Kit>('kits', Kit.fromJson).where((k) => k.status != CollectStatus.none).toList()..sort(_byDateDesc),
   kitsByIds: (ids) async => _list<Kit>('kits', Kit.fromJson).where((k) => ids.contains(k.id)).toList(),
@@ -42,7 +43,8 @@ final fakeLoaders = Loaders(
       _list<Announcement>('announcements', Announcement.fromJson).where((a) => ids.contains(a.franchiseId)).toList()
         ..sort((a, b) => b.date.compareTo(a.date)),
   profile: () async => Profile.fromJson(db['profile'])!,
-  notifications: () async => _list<AppNotice>('notifications', AppNotice.fromJson)..sort((a, b) => b.at.compareTo(a.at)),
+  notifications: () async =>
+      _list<AppNotice>('notifications', AppNotice.fromJson)..sort((a, b) => b.at.compareTo(a.at)),
 );
 
 /// 작은 폰 · 보통 폰 · 가로 폰 · 태블릿 세로 · 넓은 창
@@ -60,10 +62,13 @@ Future<void> _show(WidgetTester tester, Size size, Widget home) async {
   tester.view.physicalSize = size;
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.reset);
-  paneSelection.value = null; // 테스트 사이에 남지 않게
   // 실제 앱(main.dart)처럼 맨 위에 좋아요 · 구매함 한 벌
   await tester.pumpWidget(
-    MaterialApp(theme: buildGpTheme(), builder: (context, child) => MarksHost(child: child!), home: home),
+    MaterialApp(
+      theme: buildGpTheme(),
+      builder: (context, child) => MarksHost(child: PaneHost(child: child!)),
+      home: home,
+    ),
   );
   // 끝없는 애니메이션(색 고리 · 배너 자동 넘김)이 있어 pumpAndSettle 대신 몇 번 나눠 그린다
   for (var i = 0; i < 6; i++) {
@@ -120,7 +125,7 @@ void main() {
       expect(find.byType(KitDetailScreen), findsOneWidget);
       expect(find.descendant(of: find.byType(DetailPaneView), matching: find.byType(KitDetailScreen)), findsOneWidget);
       expect(find.byType(GpSearchBar), findsWidgets); // 왼쪽 홈은 그대로
-      expect(paneSelection.value, isNotNull); // 왼쪽에서 그 카드가 칠해짐
+      expect(paneSelectedId(tester.element(find.byType(DetailPaneView))), isNotNull); // 왼쪽에서 그 카드가 칠해짐
       expect(tester.takeException(), isNull);
     });
   }

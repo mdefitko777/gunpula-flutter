@@ -180,11 +180,17 @@ class _HelpSheet extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
-                Text(detail, style: const TextStyle(fontSize: Gp.t12, color: Gp.muted)),
+                Text(
+                  detail,
+                  style: const TextStyle(fontSize: Gp.t12, color: Gp.muted),
+                ),
               ],
             ),
           ),
-          Text('+${t.index}점', style: const TextStyle(fontSize: Gp.t12, color: Gp.accent)),
+          Text(
+            '+${t.index}점',
+            style: const TextStyle(fontSize: Gp.t12, color: Gp.accent),
+          ),
         ],
       ),
     );
@@ -242,7 +248,10 @@ class _LevelBar extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 10),
-          Text('다음 레벨까지 ${_pointsPerLevel - into}점', style: const TextStyle(fontSize: Gp.t11, color: Gp.muted)),
+          Text(
+            '다음 레벨까지 ${_pointsPerLevel - into}점',
+            style: const TextStyle(fontSize: Gp.t11, color: Gp.muted),
+          ),
         ],
       ),
     );
@@ -263,7 +272,10 @@ class _Progress extends StatelessWidget {
           child: AccentBar(value: total == 0 ? 0 : owned / total, color: Gp.own),
         ),
         const SizedBox(width: 8),
-        Text('$owned/$total', style: const TextStyle(fontSize: Gp.t11, color: Gp.muted)),
+        Text(
+          '$owned/$total',
+          style: const TextStyle(fontSize: Gp.t11, color: Gp.muted),
+        ),
       ],
     );
   }
@@ -582,7 +594,10 @@ class _WorkGuideScreenState extends State<WorkGuideScreen> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(w.name, style: const TextStyle(fontSize: Gp.t16, fontWeight: FontWeight.w600)),
+            Text(
+              w.name,
+              style: const TextStyle(fontSize: Gp.t16, fontWeight: FontWeight.w600),
+            ),
             Text(
               '수집 $ownedNow / ${w.total}',
               style: const TextStyle(fontSize: Gp.t12, color: Gp.own, fontWeight: FontWeight.w500),
@@ -813,8 +828,14 @@ class _UnitSheetState extends State<_UnitSheet> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(unit.name, style: const TextStyle(fontSize: Gp.t16, fontWeight: FontWeight.w600)),
-                      Text(unit.nameEn, style: const TextStyle(fontSize: Gp.t12, color: Gp.muted)),
+                      Text(
+                        unit.name,
+                        style: const TextStyle(fontSize: Gp.t16, fontWeight: FontWeight.w600),
+                      ),
+                      Text(
+                        unit.nameEn,
+                        style: const TextStyle(fontSize: Gp.t12, color: Gp.muted),
+                      ),
                       Text(
                         status,
                         style: TextStyle(
@@ -963,7 +984,10 @@ class _PhotoSourceSheet extends StatelessWidget {
             ),
             const Padding(
               padding: EdgeInsets.fromLTRB(0, 4, 0, 10),
-              child: Text('최근 사진', style: TextStyle(fontSize: Gp.t12, color: Gp.muted)),
+              child: Text(
+                '최근 사진',
+                style: TextStyle(fontSize: Gp.t12, color: Gp.muted),
+              ),
             ),
             GridView.count(
               crossAxisCount: 3,
@@ -1081,7 +1105,10 @@ class _TopSheet extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(top.name, style: const TextStyle(fontSize: Gp.t16, fontWeight: FontWeight.w600)),
+            Text(
+              top.name,
+              style: const TextStyle(fontSize: Gp.t16, fontWeight: FontWeight.w600),
+            ),
             Text(
               '부품 ${top.owned} / ${top.total} 보유',
               style: const TextStyle(fontSize: Gp.t12, color: Gp.own, fontWeight: FontWeight.w500),
@@ -1101,7 +1128,10 @@ class _TopSheet extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(p.typeLabel, style: const TextStyle(fontSize: Gp.t12, color: Gp.muted)),
+                          Text(
+                            p.typeLabel,
+                            style: const TextStyle(fontSize: Gp.t12, color: Gp.muted),
+                          ),
                           Text(p.name, style: const TextStyle(fontWeight: FontWeight.w500)),
                         ],
                       ),
