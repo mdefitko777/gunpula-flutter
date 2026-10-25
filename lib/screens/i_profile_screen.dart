@@ -101,7 +101,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void _load() {
     // STATE: GET /profile · /kits?status_ne=none · /guideWorks → 프로필 · 숫자 · 게시물
     _future = Future.wait([widget.loaders.profile(), widget.loaders.collection(), widget.loaders.guideWorks()]).then(
-      (r) => _ProfileData(r[0] as Profile, r[1] as List<Kit>, (r[2] as List<GuideWork>).fold(0, (s, w) => s + w.owned)),
+      (r) => _ProfileData(r[0] as Profile, r[1] as List<Kit>, litCount(r[2] as List<GuideWork>)),
     );
   }
 
@@ -232,7 +232,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final mine = d.collection.where((k) => scope == null || scope.contains(k.franchiseId));
     final liked = mine.where((k) => k.status == CollectStatus.wanted).length;
     final owned = mine.where((k) => k.status == CollectStatus.owned).length;
-    final photos = p.showcase.where((s) => s.owner == p.handle).toList();
+    final photos = p.myPosts;
     return ListView(
       padding: const EdgeInsets.only(bottom: 40),
       children: [
@@ -311,7 +311,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ? null
                       : () => openFriend(
                           context,
-                          p.friends.where((f) => f.handle == m.handle).firstOrNull ?? m, // 친구 목록의 자세한 정보
+                          p.friendOf(m), // 친구 목록의 자세한 정보
                           loaders: widget.loaders,
                         ),
                 ),
@@ -378,16 +378,7 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final avatar = AccentRing(
-      width: 3,
-      child: Container(
-        width: 76,
-        height: 76,
-        alignment: Alignment.center,
-        decoration: const BoxDecoration(shape: BoxShape.circle, color: Gp.panel),
-        child: Text(avatarText, style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w700)),
-      ),
-    );
+    final avatar = RingAvatar(text: avatarText, size: 76, ringWidth: 3);
     return ColoredBox(
       color: Gp.panel,
       child: Stack(

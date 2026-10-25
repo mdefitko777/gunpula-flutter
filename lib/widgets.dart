@@ -25,10 +25,7 @@ class LoadingView extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const SizedBox.square(
-              dimension: 22,
-              child: CircularProgressIndicator(strokeWidth: 2.4, color: Gp.ink),
-            ),
+            const MiniSpinner(),
             const SizedBox(height: 12),
             Text(label, style: const TextStyle(color: Gp.muted)),
           ],
@@ -40,12 +37,7 @@ class LoadingView extends StatelessWidget {
 
 /// 오류 상태: 무엇이 잘못됐는지 + 다시 시도 버튼
 class ErrorView extends StatelessWidget {
-  const ErrorView({
-    super.key,
-    this.title = '정보를 불러오지 못했어요',
-    this.message = '',
-    required this.onRetry,
-  });
+  const ErrorView({super.key, this.title = '정보를 불러오지 못했어요', this.message = '', required this.onRetry});
 
   final String title;
   final String message;
@@ -134,13 +126,7 @@ class EmptyView extends StatelessWidget {
 /// 상품·로고 이미지. 경로가 비었거나 못 읽으면 회색 칸 + 글자.
 /// [grayscale] = 도감에서 아직 모으지 않은 칸 (불 꺼짐)
 class AppImage extends StatelessWidget {
-  const AppImage(
-    this.path, {
-    super.key,
-    this.fit = BoxFit.cover,
-    this.placeholder = '',
-    this.grayscale = false,
-  });
+  const AppImage(this.path, {super.key, this.fit = BoxFit.cover, this.placeholder = '', this.grayscale = false});
 
   final String path;
   final BoxFit fit;
@@ -283,8 +269,7 @@ class ChannelGlyph extends StatelessWidget {
   final Color color;
 
   @override
-  Widget build(BuildContext context) =>
-      CustomPaint(size: Size.square(size), painter: _ChannelGlyphPainter(color));
+  Widget build(BuildContext context) => CustomPaint(size: Size.square(size), painter: _ChannelGlyphPainter(color));
 }
 
 class _ChannelGlyphPainter extends CustomPainter {
@@ -298,17 +283,9 @@ class _ChannelGlyphPainter extends CustomPainter {
       ..strokeWidth = s.width * 0.085
       ..strokeCap = StrokeCap.round;
     canvas
-      ..drawLine(
-        Offset(s.width * 0.12, s.height * 0.26),
-        Offset(s.width * 0.52, s.height * 0.26),
-        p,
-      )
+      ..drawLine(Offset(s.width * 0.12, s.height * 0.26), Offset(s.width * 0.52, s.height * 0.26), p)
       ..drawLine(Offset(s.width * 0.12, s.height * 0.5), Offset(s.width * 0.88, s.height * 0.5), p)
-      ..drawLine(
-        Offset(s.width * 0.48, s.height * 0.74),
-        Offset(s.width * 0.88, s.height * 0.74),
-        p,
-      );
+      ..drawLine(Offset(s.width * 0.48, s.height * 0.74), Offset(s.width * 0.88, s.height * 0.74), p);
   }
 
   @override
@@ -321,7 +298,8 @@ class _ChannelGlyphPainter extends CustomPainter {
 class GpSearchBar extends StatelessWidget {
   const GpSearchBar({
     super.key,
-    required this.onCamera,
+    this.onCamera,
+    this.hint = defaultHint,
     this.onTap,
     this.controller,
     this.focusNode,
@@ -329,15 +307,16 @@ class GpSearchBar extends StatelessWidget {
     this.onSubmitted,
   });
 
-  /// 오른쪽 카메라 → 찍어서 찾기 (하단 카메라 버튼과 같은 동작)
-  final VoidCallback onCamera;
+  /// 오른쪽 카메라 → 찍어서 찾기 (하단 카메라 버튼과 같은 동작). 없으면 카메라를 숨긴다(친구 검색)
+  final VoidCallback? onCamera;
+  final String hint;
   final VoidCallback? onTap;
   final TextEditingController? controller;
   final FocusNode? focusNode;
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSubmitted;
 
-  static const hint = '이름 · 번호 · 생김새로 찾기';
+  static const defaultHint = '이름 · 번호 · 생김새로 찾기';
   static const _textStyle = TextStyle(fontSize: 14.5, color: Gp.ink);
   static const _hintStyle = TextStyle(fontSize: 14.5, color: Gp.faint);
 
@@ -356,7 +335,7 @@ class GpSearchBar extends StatelessWidget {
       onSubmitted: onSubmitted,
       textInputAction: TextInputAction.search,
       style: _textStyle,
-      decoration: const InputDecoration(
+      decoration: InputDecoration(
         hintText: hint,
         hintStyle: _hintStyle,
         filled: false,
@@ -394,11 +373,14 @@ class GpSearchBar extends StatelessWidget {
                           },
                         ),
                 ),
-              IconButton(
-                tooltip: '찍어서 찾기',
-                icon: const Icon(Icons.photo_camera_outlined, size: 21, color: Gp.ink),
-                onPressed: onCamera,
-              ),
+              if (onCamera != null)
+                IconButton(
+                  tooltip: '찍어서 찾기',
+                  icon: const Icon(Icons.photo_camera_outlined, size: 21, color: Gp.ink),
+                  onPressed: onCamera,
+                )
+              else
+                const SizedBox(width: 12),
             ],
           ),
         ),
@@ -408,8 +390,7 @@ class GpSearchBar extends StatelessWidget {
 }
 
 /// 아직 만들지 않은 화면으로 가는 자리 — 같은 안내 문구로 통일
-void showSoon(BuildContext context, [String what = '상품 상세']) =>
-    showToast(context, '$what 화면은 다음 단계에서 만들어요');
+void showSoon(BuildContext context, [String what = '상품 상세']) => showToast(context, '$what 화면은 다음 단계에서 만들어요');
 
 /// 짧은 알림(토스트) — 흰 바탕 · 검정 글자, 2.5초 뒤 사라진다. [onUndo]가 있으면 "되돌리기" (P03)
 void showToast(BuildContext context, String message, {VoidCallback? onUndo}) {
@@ -475,11 +456,7 @@ class SectionHeader extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 3),
                     child: Text(
                       subtitle,
-                      style: const TextStyle(
-                        fontSize: 12.5,
-                        color: Gp.accent,
-                        fontWeight: FontWeight.w500,
-                      ),
+                      style: const TextStyle(fontSize: 12.5, color: Gp.accent, fontWeight: FontWeight.w500),
                     ),
                   ),
               ],
@@ -661,15 +638,17 @@ class _QuickMarksState extends State<QuickMarks> {
   void _like() {
     final before = _liked;
     setState(() => _liked = !before); // STATE: 좋아요 → 하트 채움
-    showToast(context, before ? '좋아요를 취소했어요' : '「${widget.name}」 좋아요',
-        onUndo: () => setState(() => _liked = before));
+    showToast(context, before ? '좋아요를 취소했어요' : '「${widget.name}」 좋아요', onUndo: () => setState(() => _liked = before));
   }
 
   void _own() {
     final before = _owned;
     setState(() => _owned = !before); // STATE: 구매함 → + 가 ✓ 로
-    showToast(context, before ? '구매함에서 뺐어요' : '「${widget.name}」 구매함에 넣었어요',
-        onUndo: () => setState(() => _owned = before));
+    showToast(
+      context,
+      before ? '구매함에서 뺐어요' : '「${widget.name}」 구매함에 넣었어요',
+      onUndo: () => setState(() => _owned = before),
+    );
   }
 
   @override
@@ -712,10 +691,7 @@ class _QuickMarksState extends State<QuickMarks> {
                 duration: const Duration(milliseconds: 180),
                 width: widget.size,
                 height: widget.size,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: _liked ? Gp.panel : const Color(0x8C222222),
-                ),
+                decoration: BoxDecoration(shape: BoxShape.circle, color: _liked ? Gp.panel : const Color(0x8C222222)),
                 child: Icon(
                   _liked ? Icons.favorite : Icons.favorite_border,
                   size: widget.size * 0.6,
@@ -759,10 +735,83 @@ class VerifiedBadge extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        gradient: const LinearGradient(colors: [Gp.accent, Gp.accent2]),
+        gradient: Gp.accentGradient,
         border: Border.all(color: Gp.panel, width: 1.5),
       ),
       child: Icon(Icons.workspace_premium, size: size * 0.66, color: Colors.white),
+    );
+  }
+}
+
+/// 작은 돌아가는 원 — 불러오기 · 확인 중 (LoadingView · 시트 · 대화 상자 공통)
+class MiniSpinner extends StatelessWidget {
+  const MiniSpinner({super.key, this.size = 22, this.color = Gp.ink});
+  final double size;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) => SizedBox.square(
+    dimension: size,
+    child: CircularProgressIndicator(strokeWidth: size * 0.11, color: color),
+  );
+}
+
+/// 색 고리 아바타 — 앱 셸 왼쪽 위(누르면 친구 서랍) · 서랍 머리 · 내 정보 머리
+class RingAvatar extends StatelessWidget {
+  const RingAvatar({
+    super.key,
+    required this.text,
+    this.size = 56,
+    this.ringWidth = 2.5,
+    this.onTap,
+    this.tooltip = '',
+  });
+  final String text;
+  final double size;
+  final double ringWidth;
+
+  /// 주면 떠 있는 흰 버튼 얼굴 (앱 셸)
+  final VoidCallback? onTap;
+  final String tooltip;
+
+  @override
+  Widget build(BuildContext context) {
+    final label = Text(
+      text,
+      style: TextStyle(fontSize: size * 0.4, fontWeight: FontWeight.w700, color: Gp.ink),
+    );
+    final face = onTap == null
+        ? Container(
+            width: size,
+            height: size,
+            alignment: Alignment.center,
+            decoration: const BoxDecoration(shape: BoxShape.circle, color: Gp.panel),
+            child: label,
+          )
+        : Container(
+            padding: const EdgeInsets.all(2),
+            decoration: const BoxDecoration(shape: BoxShape.circle, color: Gp.bg),
+            child: RaisedCircleButton(tooltip: tooltip, size: size, onTap: onTap!, child: label),
+          );
+    return AccentRing(width: ringWidth, child: face);
+  }
+}
+
+/// Lv 알약 (그라데이션) — 도감 레벨 막대 · 친구 서랍
+class LevelChip extends StatelessWidget {
+  const LevelChip({super.key, required this.level, this.small = false});
+  final int level;
+  final bool small;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: small ? 6 : 9, vertical: small ? 1 : 3),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), gradient: Gp.accentGradient),
+      child: Text(
+        'Lv.$level',
+        style: TextStyle(fontSize: small ? 10.5 : 12, fontWeight: FontWeight.w700, color: Colors.white),
+      ),
     );
   }
 }
@@ -806,11 +855,16 @@ class UnderlineTab extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text.rich(
-                TextSpan(children: [
-                  TextSpan(text: label),
-                  if (count != null)
-                    TextSpan(text: ' $count', style: TextStyle(color: selected ? Gp.accent : Gp.faint)),
-                ]),
+                TextSpan(
+                  children: [
+                    TextSpan(text: label),
+                    if (count != null)
+                      TextSpan(
+                        text: ' $count',
+                        style: TextStyle(color: selected ? Gp.accent : Gp.faint),
+                      ),
+                  ],
+                ),
                 style: TextStyle(
                   fontSize: fontSize,
                   letterSpacing: 0.2,
@@ -851,10 +905,7 @@ class PageDots extends StatelessWidget {
             margin: const EdgeInsets.symmetric(horizontal: 2.5),
             width: i == index ? 16 : 5,
             height: 4,
-            decoration: BoxDecoration(
-              color: i == index ? Gp.accent : Gp.line,
-              borderRadius: BorderRadius.circular(2),
-            ),
+            decoration: BoxDecoration(color: i == index ? Gp.accent : Gp.line, borderRadius: BorderRadius.circular(2)),
           ),
       ],
     );
@@ -905,7 +956,10 @@ class ThumbRow extends StatelessWidget {
         child: Row(
           children: [
             if (leading != null) Padding(padding: const EdgeInsets.only(right: 8), child: leading),
-            SizedBox.square(dimension: size, child: PhotoThumb(image, radius: size > 60 ? 12 : 10)),
+            SizedBox.square(
+              dimension: size,
+              child: PhotoThumb(image, radius: size > 60 ? 12 : 10),
+            ),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -913,17 +967,29 @@ class ThumbRow extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      if (tag.isNotEmpty) Padding(padding: const EdgeInsets.only(right: 6), child: TagPill(tag, strong: tagStrong)),
+                      if (tag.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(right: 6),
+                          child: TagPill(tag, strong: tagStrong),
+                        ),
                       Expanded(
-                        child: Text(title, maxLines: titleLines, overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(fontSize: 14.5, fontWeight: FontWeight.w500)),
+                        child: Text(
+                          title,
+                          maxLines: titleLines,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(fontSize: 14.5, fontWeight: FontWeight.w500),
+                        ),
                       ),
                     ],
                   ),
                   if (subtitle.isNotEmpty) ...[
                     const SizedBox(height: 3),
-                    Text(subtitle, maxLines: 1, overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(fontSize: 12.5, color: Gp.muted)),
+                    Text(
+                      subtitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontSize: 12.5, color: Gp.muted),
+                    ),
                   ],
                 ],
               ),
@@ -1017,9 +1083,12 @@ class TogglePill extends StatelessWidget {
 
 /// 브랜드 색 진행 막대 (도감 수집 · 일치도)
 class AccentBar extends StatelessWidget {
-  const AccentBar({super.key, required this.value, this.height = 4});
+  const AccentBar({super.key, required this.value, this.height = 4, this.color = Gp.accent});
   final double value;
   final double height;
+
+  /// 비교용 두 번째 막대는 Gp.faint
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -1029,7 +1098,7 @@ class AccentBar extends StatelessWidget {
         value: value.clamp(0, 1),
         minHeight: height,
         backgroundColor: Gp.soft,
-        color: Gp.accent,
+        color: color,
       ),
     );
   }
@@ -1037,11 +1106,7 @@ class AccentBar extends StatelessWidget {
 
 /// 흰 띠 섹션 — 위에 회백색 틈 10을 두어 섹션마다 층이 보이게 (홈 · 상세)
 class SectionPanel extends StatelessWidget {
-  const SectionPanel({
-    super.key,
-    required this.child,
-    this.padding = const EdgeInsets.fromLTRB(16, 18, 16, 18),
-  });
+  const SectionPanel({super.key, required this.child, this.padding = const EdgeInsets.fromLTRB(16, 18, 16, 18)});
   final Widget child;
   final EdgeInsets padding;
 
@@ -1051,7 +1116,10 @@ class SectionPanel extends StatelessWidget {
       padding: const EdgeInsets.only(top: 10),
       child: ColoredBox(
         color: Gp.panel,
-        child: SizedBox(width: double.infinity, child: Padding(padding: padding, child: child)),
+        child: SizedBox(
+          width: double.infinity,
+          child: Padding(padding: padding, child: child),
+        ),
       ),
     );
   }
@@ -1060,13 +1128,7 @@ class SectionPanel extends StatelessWidget {
 /// 브랜드 색 고리 (하늘색 → 민트). 아바타 · 도감 "내 사진" 칸이 같이 쓴다.
 /// [spin] = 천천히 돌아가는 고리 (내 사진으로 점등한 칸)
 class AccentRing extends StatefulWidget {
-  const AccentRing({
-    super.key,
-    required this.child,
-    this.width = 2.5,
-    this.radius,
-    this.spin = false,
-  });
+  const AccentRing({super.key, required this.child, this.width = 2.5, this.radius, this.spin = false});
 
   final Widget child;
   final double width;
@@ -1080,10 +1142,7 @@ class AccentRing extends StatefulWidget {
 }
 
 class _AccentRingState extends State<AccentRing> with SingleTickerProviderStateMixin {
-  late final AnimationController _turn = AnimationController(
-    vsync: this,
-    duration: const Duration(seconds: 4),
-  );
+  late final AnimationController _turn = AnimationController(vsync: this, duration: const Duration(seconds: 4));
 
   @override
   void initState() {

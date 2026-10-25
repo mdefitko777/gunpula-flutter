@@ -65,6 +65,8 @@ class _AppShellState extends State<AppShell> {
   int _searchFocusTick = 0;
   List<String> _myChannels = [...defaultMyChannels]; // S-7 P04
 
+  final _scaffold = GlobalKey<ScaffoldState>();
+
   /// 내 정보 숫자 → 컬렉션 탭의 그 목록 (F-11)
   CollectionJump _jump = CollectionJump.liked;
   int _jumpTick = 0;
@@ -115,7 +117,14 @@ class _AppShellState extends State<AppShell> {
   @override
   Widget build(BuildContext context) {
     final wide = MediaQuery.sizeOf(context).width >= railBreakpoint;
-    final avatar = _AvatarButton(onTap: _openProfile); // S-1 P04
+    // S-1 P04 아바타 → 친구 서랍(M). 서랍 머리의 아바타를 한 번 더 누르면 내 정보(I)
+    final avatar = RingAvatar(
+      text: 'A',
+      size: 34,
+      ringWidth: 2,
+      tooltip: '친구 · 내 정보',
+      onTap: () => _scaffold.currentState?.openDrawer(),
+    );
     final bell = IconButton( // S-9 알림 (다음 단계: 알림 화면)
       tooltip: '알림',
       onPressed: () => showSoon(context, '알림'),
@@ -179,8 +188,9 @@ class _AppShellState extends State<AppShell> {
       children: [for (var i = 0; i < _tabs.length; i++) page(i)],
     );
     return Scaffold(
+      key: _scaffold,
       extendBody: true, // 탭 바 뒤로 내용이 비쳐 보이게
-      // S-11 친구 서랍 (M): 홈에서 왼쪽 가장자리를 오른쪽으로 밀면 열림
+      // S-11 친구 서랍 (M): 아바타 · 홈에서 왼쪽 가장자리를 오른쪽으로 밀기
       drawer: FriendsDrawer(
         loaders: widget.loaders,
         onOpenProfile: _openProfile,
@@ -238,32 +248,6 @@ class _AppShellState extends State<AppShell> {
                   if (shown != _barShown) setState(() => _barShown = shown); // STATE: 스크롤 방향 → 탭 바 숨김/표시
                 },
               ),
-      ),
-    );
-  }
-}
-
-class _AvatarButton extends StatelessWidget {
-  const _AvatarButton({required this.onTap});
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    // 브랜드 색 고리(하늘색 → 민트) — 인스타그램 프로필 고리처럼
-    return AccentRing( // 도감 "내 사진" 칸과 같은 고리
-      width: 2,
-      child: Container(
-        padding: const EdgeInsets.all(2),
-        decoration: const BoxDecoration(shape: BoxShape.circle, color: Gp.bg),
-        child: RaisedCircleButton(
-          tooltip: '내 정보',
-          size: 34,
-          onTap: onTap,
-          child: const Text(
-            'A',
-            style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14, color: Gp.ink),
-          ),
-        ),
       ),
     );
   }

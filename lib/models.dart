@@ -380,6 +380,12 @@ class Profile {
   /// 친구 목록 (친구 서랍 · 친구 프로필)
   final List<Member> friends;
 
+  /// 내 게시물 (= 내 사진 인증 수)
+  List<ShowcasePhoto> get myPosts => [for (final s in showcase) if (s.owner == handle) s];
+
+  /// 공유 공간 멤버 → 친구 목록의 자세한 정보(좋아요 · 구매함 id 등)
+  Member friendOf(Member m) => friends.where((f) => f.handle == m.handle).firstOrNull ?? m;
+
   /// 알 수도 있는 친구 (이름, 아이디, 함께 아는 친구 수)
   final List<({String name, String handle, int mutual})> suggested;
 
@@ -510,6 +516,9 @@ class ShowcasePhoto {
   /// 다른 사람이 저장할 때 오른쪽 아래 "GP · @아이디" 를 넣을지
   final bool watermark;
 }
+
+/// 작품 도감 전체의 점등 칸 수
+int litCount(Iterable<GuideWork> works) => works.fold(0, (s, w) => s + w.owned);
 
 /// 도감 레벨 (모든 작품 합): 구매 칸 2점 + 사진 인증 1점 더, 5점마다 한 단계
 int guideLevel(int lit, int verified) => 1 + (lit * 2 + verified) ~/ 5;

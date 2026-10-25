@@ -25,6 +25,9 @@ abstract final class Gp {
   static const accent2 = Color(0xFF2CC6A0);
 
   /// 떠 있는 흰 버튼(아바타 · + · 채널 타일): 흰→옅은 회색 그라데이션 + 부드러운 그림자
+  /// 브랜드 그라데이션 (Lv 알약 · 인증 배지)
+  static const accentGradient = LinearGradient(colors: [accent, accent2]);
+
   static BoxDecoration raised({BoxShape shape = BoxShape.rectangle, double radius = 14}) =>
       BoxDecoration(
         shape: shape,

@@ -172,17 +172,7 @@ class _FriendCollectionScreenState extends State<FriendCollectionScreen> {
           child: Text(who, style: const TextStyle(fontSize: 11.5, color: Gp.muted)),
         ),
         Expanded(
-          child: accent
-              ? AccentBar(value: total == 0 ? 0 : n / total, height: 5)
-              : ClipRRect(
-                  borderRadius: BorderRadius.circular(3),
-                  child: LinearProgressIndicator(
-                    value: total == 0 ? 0 : n / total,
-                    minHeight: 5,
-                    color: Gp.faint,
-                    backgroundColor: Gp.soft,
-                  ),
-                ),
+          child: AccentBar(value: total == 0 ? 0 : n / total, height: 5, color: accent ? Gp.accent : Gp.faint),
         ),
         SizedBox(
           width: 52,

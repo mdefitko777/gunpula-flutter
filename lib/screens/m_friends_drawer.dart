@@ -1,9 +1,9 @@
-// 화면 M: 친구 서랍 — 홈에서 왼쪽 가장자리를 오른쪽으로 밀면 나온다 (QQ 옆 서랍처럼)
-// 위: 내 프로필 요약(누르면 I 내 정보) · 아래: 메뉴 대신 친구 (검색 · 알 수도 있는 친구 · 그룹별 목록)
+// 화면 M: 친구 서랍 — 왼쪽 위 아바타를 누르거나, 홈에서 왼쪽 가장자리를 밀면 나온다 (QQ 옆 서랍처럼)
+// 위: 내 프로필 요약(아바타를 한 번 더 누르면 I 내 정보) · 아래: 메뉴 대신 친구 (검색 · 알 수도 있는 친구 · 그룹별 목록)
 //
 // ┌──────── 디자인 가이드 대응표: M 친구 서랍 ─────────────────────────────────────────┐
 // │ 번호 │ Flutter 위젯명                     │ 비즈니스 명칭(한글)                    │ 원칙(P번호)   │
-// │ M-1  │ Drawer + 가장자리 밀기(홈)           │ 친구 서랍 열기 · 닫기(밖 누르기 · X)     │ P03 · P07     │
+// │ M-1  │ Drawer (아바타 · 홈 가장자리 밀기)    │ 친구 서랍 열기 · 닫기(밖 누르기 · X)     │ P03 · P07     │
 // │ M-2  │ 색 고리 아바타 · 이름 · Lv · 배지     │ 내 프로필 요약 → 내 정보                │ P04           │
 // │ M-3  │ 알약 버튼                           │ 새 친구 요청 n건                        │ P01           │
 // │ M-4  │ TextField (목록 거르기)              │ 친구 검색                               │ P07           │
@@ -50,7 +50,7 @@ class _FriendsDrawerState extends State<FriendsDrawer> {
     // STATE: GET /profile · /guideWorks → 내 요약 · 친구 목록
     final r = await Future.wait([widget.loaders.profile(), widget.loaders.guideWorks()]);
     final works = r[1] as List<GuideWork>;
-    return (r[0] as Profile, works.fold(0, (s, w) => s + w.owned));
+    return (r[0] as Profile, litCount(works));
   }
 
   /// 서랍을 닫고 열기
@@ -75,7 +75,7 @@ class _FriendsDrawerState extends State<FriendsDrawer> {
             return ErrorView(message: '${snap.error}', onRetry: () => setState(() => _future = _load()));
           }
           final (p, lit) = snap.data!;
-          final verified = p.showcase.where((s) => s.owner == p.handle).length;
+          final verified = p.myPosts.length;
           return ListView(
             padding: EdgeInsets.zero,
             children: [
@@ -102,7 +102,6 @@ class _FriendsDrawerState extends State<FriendsDrawer> {
                     ListTile(
                       leading: const Icon(Icons.home_outlined, color: Gp.ink),
                       title: const Text('공유 공간'),
-                      subtitle: Text(p.workspace, style: const TextStyle(fontSize: 12, color: Gp.muted)),
                       trailing: const Icon(Icons.chevron_right, color: Gp.faint),
                       onTap: () => setState(() => _spaceTab = true), // STATE: 아래 탭 → 공유 공간
                     ),
@@ -156,16 +155,7 @@ class _FriendsDrawerState extends State<FriendsDrawer> {
               padding: const EdgeInsets.symmetric(vertical: 4),
               child: Row(
                 children: [
-                  AccentRing(
-                    width: 2.5,
-                    child: Container(
-                      width: 56,
-                      height: 56,
-                      alignment: Alignment.center,
-                      decoration: const BoxDecoration(shape: BoxShape.circle, color: Gp.panel),
-                      child: Text(p.avatarText, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
-                    ),
-                  ),
+                  RingAvatar(text: p.avatarText),
                   const SizedBox(width: 14),
                   Expanded(
                     child: Column(
@@ -176,7 +166,7 @@ class _FriendsDrawerState extends State<FriendsDrawer> {
                         const SizedBox(height: 5),
                         Row(
                           children: [
-                            _LevelChip(level: guideLevel(lit, verified)),
+                            LevelChip(level: guideLevel(lit, verified)),
                             const SizedBox(width: 6),
                             const VerifiedBadge(size: 16),
                             Text(' $verified', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
@@ -211,24 +201,9 @@ class _FriendsDrawerState extends State<FriendsDrawer> {
   Widget _search() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-      child: TextField(
+      child: GpSearchBar(
+        hint: '친구 검색', // 홈 · 검색과 같은 검색창 (카메라 없음)
         onChanged: (v) => setState(() => _query = v.trim()), // STATE: 검색어 → 아래 목록 거르기
-        decoration: InputDecoration(
-          isDense: true,
-          hintText: '친구 검색',
-          prefixIcon: const Icon(Icons.search, size: 20),
-          filled: true,
-          fillColor: Gp.panel,
-          contentPadding: const EdgeInsets.symmetric(vertical: 10),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(24),
-            borderSide: const BorderSide(color: Gp.line),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(24),
-            borderSide: const BorderSide(color: Gp.line),
-          ),
-        ),
       ),
     );
   }
@@ -298,7 +273,7 @@ class _FriendsDrawerState extends State<FriendsDrawer> {
         children: [
           Flexible(child: Text(m.name, overflow: TextOverflow.ellipsis)),
           const SizedBox(width: 6),
-          _LevelChip(level: guideLevel(m.lit, m.verified), small: true),
+          LevelChip(level: guideLevel(m.lit, m.verified), small: true),
         ],
       ),
       subtitle: Text(
@@ -377,33 +352,9 @@ class _FriendsDrawerState extends State<FriendsDrawer> {
                 trailing: TagPill(m.role),
                 onTap: m.self
                     ? () => _close(widget.onOpenProfile)
-                    : () => _close(
-                        () => widget.onOpenFriend(p.friends.where((f) => f.handle == m.handle).firstOrNull ?? m),
-                      ),
+                    : () => _close(() => widget.onOpenFriend(p.friendOf(m))),
               ),
         ],
-      ),
-    );
-  }
-}
-
-/// 작은 레벨 표시 (그라데이션 알약)
-class _LevelChip extends StatelessWidget {
-  const _LevelChip({required this.level, this.small = false});
-  final int level;
-  final bool small;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: small ? 6 : 8, vertical: small ? 1 : 2),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        gradient: const LinearGradient(colors: [Gp.accent, Gp.accent2]),
-      ),
-      child: Text(
-        'Lv.$level',
-        style: TextStyle(fontSize: small ? 10.5 : 11.5, fontWeight: FontWeight.w700, color: Colors.white),
       ),
     );
   }

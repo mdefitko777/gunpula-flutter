@@ -230,18 +230,7 @@ class _LevelBar extends StatelessWidget {
           AnimatedSwitcher(
             duration: const Duration(milliseconds: 300),
             transitionBuilder: (c, a) => ScaleTransition(scale: a, child: c),
-            child: Container(
-              key: ValueKey(level),
-              padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                gradient: const LinearGradient(colors: [Gp.accent, Gp.accent2]),
-              ),
-              child: Text(
-                'Lv.$level',
-                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white),
-              ),
-            ),
+            child: LevelChip(key: ValueKey(level), level: level),
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -900,15 +889,7 @@ class _UnitSheetState extends State<_UnitSheet> {
               future: _kits,
               builder: (context, snap) {
                 if (snap.connectionState != ConnectionState.done) {
-                  return const SizedBox(
-                    height: 90,
-                    child: Center(
-                      child: SizedBox.square(
-                        dimension: 22,
-                        child: CircularProgressIndicator(strokeWidth: 2.4, color: Gp.ink),
-                      ),
-                    ),
-                  );
+                  return const SizedBox(height: 90, child: Center(child: MiniSpinner()));
                 }
                 if (snap.hasError) {
                   return const Text('상품을 불러오지 못했어요', style: TextStyle(color: Gp.muted));
@@ -1009,7 +990,7 @@ class _CheckingDialog extends StatelessWidget {
     return const AlertDialog(
       content: Row(
         children: [
-          SizedBox.square(dimension: 22, child: CircularProgressIndicator(strokeWidth: 2.4, color: Gp.accent)),
+          MiniSpinner(color: Gp.accent),
           SizedBox(width: 16),
           Expanded(child: Text('사진 속 기체를 확인하고 있어요')),
         ],

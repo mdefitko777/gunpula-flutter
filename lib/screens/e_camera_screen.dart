@@ -210,13 +210,7 @@ class _CameraScreenState extends State<CameraScreen> {
                                     child: const Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        SizedBox.square(
-                                          dimension: 16,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                            color: Gp.accent,
-                                          ),
-                                        ),
+                                        MiniSpinner(size: 16, color: Gp.accent),
                                         SizedBox(width: 8),
                                         Text('AI가 비교하는 중…', // E-4 P01
                                             style: TextStyle(fontWeight: FontWeight.w600)),
