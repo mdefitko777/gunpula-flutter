@@ -8,7 +8,7 @@
 Gunpula v2 (임시 이름 — hobbyDB v2 재설계)
 
 ### 부제
-내 IP의 새 소식부터 내 컬렉션 도감까지, 수집가를 위한 한 앱
+새 소식부터 내 도감까지, 수집가의 한 앱
 
 ### 카테고리
 라이프스타일 (수집 · 취미)
@@ -59,7 +59,7 @@ v2에서 바뀐 것 — 원칙 카드(`docs/원칙카드.md`)의 P번호와 연�
 | 작성자 | TODO: 이름(또는 이니셜) · 1인 1팀 |
 | 데모 | TODO: 데모 영상 1분 `docs/영상/demo_1min.mp4` 또는 드라이브 링크 — **제출물 ①에 필수** (녹화 순서: 6장) |
 | AI 사용 | 규칙 `AGENTS.md` · 기록 `docs/prompt-log.md` · 셀프 논증 `docs/셀프논증.md` · 기획 확정 태그 `v1-plan` |
-| 발표자료 | `docs/발표/Gunpula_v2_발표.pptx` (교수 템플릿 v1.1.0 바탕) |
+| 발표자료 | `docs/발표/Gunpula_v2_발표.pptx` (교수 템플릿 v1.1.0 바탕 · 본문 12장 + 부록 23장 · 발표자 노트에 6분 대본) |
 
 > 이 저장소는 **UI만 구현**합니다(중간고사 안내문 5장). 보이기는 다 동작하는 것처럼, 실제 동작(저장 · 로그인 · 결제 · 실제 인식 · 실제 계산)은 없습니다.
 > 화면 16개: S 앱 셸 · C 채널 바 · A 홈 · B 검색 · O 전체 목록 · D 상품 상세 · E 찍어서 찾기 · H 캘린더 · F 컬렉션 · G 도감 · J 공식 예고 · M 친구 서랍 · I 내 정보 · L 친구 컬렉션 · N 알림 · K 설정 — 3장 · `docs/디자인가이드.md`.
@@ -113,6 +113,7 @@ flutter run --dart-define=DEMO_STATE=empty     # 빈 상태
 ```bash
 flutter test test/layout_test.dart          # 7가지 화면 크기 × 주요 화면 넘침 0 · 반반 화면 · 좋아요 한 벌 (53개)
 flutter test tool/screenshots_test.dart     # docs/screenshots/*.png 다시 만들기 (Windows 맑은 고딕 사용)
+python tool/number_screenshots.py           # 홈 · 상세 · 도감 캡처에 요소 번호 붙이기 (*_numbered.png)
 python tool/make_guide.py .                 # 코드 대응표 → docs/디자인가이드.md
 ```
 
@@ -206,7 +207,7 @@ grep -rnE "http\.(post|put|patch|delete)|SharedPreferences|sqflite|hive|Firebase
   - [x] Flutter 코드 + `mock_server/db.json`
   - [ ] README — 앱 소개 · 실행 방법 · **데모 영상 1분 링크**(TODO)
   - [x] `docs/` — 디자인 가이드 · 기획 · 원칙 카드 · prompt-log · 셀프 논증(초안 — 확인 필요) · 자가평가(점수 TODO)
-- [ ] ② **발표자료** — `docs/발표/Gunpula_v2_발표.pptx` (6분 + 질의 2분, 본문 7장 + 부록 B1–B5)
+- [ ] ② **발표자료** — `docs/발표/Gunpula_v2_발표.pptx` (6분 + 질의 2분, 본문 01–12장 + 부록 B0–B5) — 남은 일: 표지 발표자 칸 · 10장에 데모 영상 넣기 · 리허설
 
 ## 10. 확인된 상태 (2026-10-26)
 

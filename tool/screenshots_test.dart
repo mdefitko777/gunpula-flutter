@@ -1,6 +1,7 @@
 // README · 발표자료 · 원칙 카드용 스크린샷을 만든다 (서버 · 브라우저 없이, db.json 가짜 Loaders).
 // 쓰는 법 (Windows, 프로젝트 폴더에서):  flutter test tool/screenshots_test.dart
 // 결과: docs/screenshots/*.png — 한글은 Windows 의 맑은 고딕(malgun.ttf), 아이콘은 Flutter 의 MaterialIcons 를 불러 그린다.
+import 'dart:async';
 import 'dart:io';
 import 'dart:ui' as ui;
 
@@ -8,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mid_project_template/api.dart';
 import 'package:mid_project_template/detail_pane.dart';
 import 'package:mid_project_template/marks.dart';
 import 'package:mid_project_template/models.dart';
@@ -73,6 +75,19 @@ Future<void> _save(WidgetTester tester, String name) async {
     ..writeAsBytesSync(bytes!);
 }
 
+// 테스트 엔진은 글꼴 이름이 없는 글자를 네모로 그린다 — 테마가 통째로 정한 글자(버튼 · 제목 줄)에만 이름을 붙여 준다(앱 테마는 그대로).
+ThemeData _theme() {
+  final th = buildGpTheme();
+  return th.copyWith(
+    appBarTheme: th.appBarTheme.copyWith(titleTextStyle: th.appBarTheme.titleTextStyle?.copyWith(fontFamily: 'Roboto')),
+    filledButtonTheme: FilledButtonThemeData(
+      style: th.filledButtonTheme.style?.copyWith(
+        textStyle: const WidgetStatePropertyAll(TextStyle(fontFamily: 'Roboto', fontWeight: FontWeight.w700)),
+      ),
+    ),
+  );
+}
+
 Future<void> _open(WidgetTester tester, Size size, Widget home) async {
   tester.view.physicalSize = size;
   tester.view.devicePixelRatio = 1;
@@ -82,7 +97,7 @@ Future<void> _open(WidgetTester tester, Size size, Widget home) async {
       key: _shot,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        theme: buildGpTheme(),
+        theme: _theme(),
         builder: (context, child) => MarksHost(child: PaneHost(child: child!)),
         home: home,
       ),
@@ -188,5 +203,34 @@ void main() {
     t.widget<ProductTile>(find.byType(ProductTile).at(1)).onTap();
     await _settle(t);
     await _save(t, '20_fold');
+  });
+
+  // 3상태 (발표 부록 B1) — 홈의 GET 이 끝나지 않을 때 · 실패할 때 · 비었을 때
+  Loaders homeWith(Future<List<Kit>> Function(List<String>) kits) => Loaders(
+    kits: kits,
+    collection: fakeLoaders.collection,
+    kitsByIds: fakeLoaders.kitsByIds,
+    worlds: fakeLoaders.worlds,
+    guideWorks: fakeLoaders.guideWorks,
+    guideUnits: fakeLoaders.guideUnits,
+    bbxTops: fakeLoaders.bbxTops,
+    announcements: (ids) async => [],
+    profile: fakeLoaders.profile,
+    notifications: fakeLoaders.notifications,
+  );
+
+  testWidgets('상태 · 로딩', (t) async {
+    await _open(t, phone, AppShell(loaders: homeWith((_) => Completer<List<Kit>>().future)));
+    await _save(t, '21_state_loading');
+  });
+
+  testWidgets('상태 · 오류', (t) async {
+    await _open(t, phone, AppShell(loaders: homeWith((_) async => throw 'localhost:3000 서버에 연결할 수 없어요')));
+    await _save(t, '22_state_error');
+  });
+
+  testWidgets('상태 · 빈 채널', (t) async {
+    await _open(t, phone, AppShell(loaders: homeWith((_) async => [])));
+    await _save(t, '23_state_empty');
   });
 }
