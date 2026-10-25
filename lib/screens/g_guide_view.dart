@@ -95,7 +95,7 @@ class _ChannelPicker extends StatelessWidget {
                         channelOf(id).label,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(fontSize: 13),
+                        style: const TextStyle(fontSize: Gp.t12),
                       ),
                     ],
                   ),
@@ -180,11 +180,11 @@ class _HelpSheet extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
-                Text(detail, style: const TextStyle(fontSize: 12.5, color: Gp.muted)),
+                Text(detail, style: const TextStyle(fontSize: Gp.t12, color: Gp.muted)),
               ],
             ),
           ),
-          Text('+${t.index}점', style: const TextStyle(fontSize: 12, color: Gp.accent)),
+          Text('+${t.index}점', style: const TextStyle(fontSize: Gp.t12, color: Gp.accent)),
         ],
       ),
     );
@@ -205,7 +205,7 @@ class _HelpSheet extends StatelessWidget {
               bbx
                   ? '베이는 부품 3개(블레이드 · 래칫 · 비트)를 모두 가지면 컬러가 돼요. 칸 위 숫자 = 가진 부품 수.'
                   : '점수가 $_pointsPerLevel점 모일 때마다 작품 레벨(Lv)이 올라가요.',
-              style: const TextStyle(fontSize: 12.5, color: Gp.muted, height: 1.4),
+              style: const TextStyle(fontSize: Gp.t12, color: Gp.muted, height: 1.4),
             ),
           ],
         ),
@@ -242,7 +242,7 @@ class _LevelBar extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 10),
-          Text('다음 레벨까지 ${_pointsPerLevel - into}점', style: const TextStyle(fontSize: 11.5, color: Gp.muted)),
+          Text('다음 레벨까지 ${_pointsPerLevel - into}점', style: const TextStyle(fontSize: Gp.t11, color: Gp.muted)),
         ],
       ),
     );
@@ -263,7 +263,7 @@ class _Progress extends StatelessWidget {
           child: AccentBar(value: total == 0 ? 0 : owned / total, color: Gp.own),
         ),
         const SizedBox(width: 8),
-        Text('$owned/$total', style: const TextStyle(fontSize: 11.5, color: Gp.muted)),
+        Text('$owned/$total', style: const TextStyle(fontSize: Gp.t11, color: Gp.muted)),
       ],
     );
   }
@@ -318,14 +318,14 @@ class _WorkCard extends StatelessWidget {
                     name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                    style: const TextStyle(fontSize: Gp.t12, fontWeight: FontWeight.w600),
                   ),
                   if (subtitle.isNotEmpty)
                     Text(
                       subtitle,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontSize: 11.5, color: Gp.faint),
+                      style: const TextStyle(fontSize: Gp.t11, color: Gp.faint),
                     ),
                   const SizedBox(height: 6),
                   _Progress(owned: owned, total: total), // P01
@@ -582,10 +582,10 @@ class _WorkGuideScreenState extends State<WorkGuideScreen> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(w.name, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600)),
+            Text(w.name, style: const TextStyle(fontSize: Gp.t16, fontWeight: FontWeight.w600)),
             Text(
               '수집 $ownedNow / ${w.total}',
-              style: const TextStyle(fontSize: 12, color: Gp.own, fontWeight: FontWeight.w500),
+              style: const TextStyle(fontSize: Gp.t12, color: Gp.own, fontWeight: FontWeight.w500),
             ),
           ],
         ),
@@ -744,7 +744,7 @@ class _LitCellState extends State<_LitCell> with SingleTickerProviderStateMixin 
               maxLines: 2,
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontSize: 12, color: t == CellTier.none ? Gp.muted : Gp.ink, height: 1.25),
+              style: TextStyle(fontSize: Gp.t12, color: t == CellTier.none ? Gp.muted : Gp.ink, height: 1.25),
             ),
           ),
         ],
@@ -813,12 +813,12 @@ class _UnitSheetState extends State<_UnitSheet> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(unit.name, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600)),
-                      Text(unit.nameEn, style: const TextStyle(fontSize: 12.5, color: Gp.muted)),
+                      Text(unit.name, style: const TextStyle(fontSize: Gp.t16, fontWeight: FontWeight.w600)),
+                      Text(unit.nameEn, style: const TextStyle(fontSize: Gp.t12, color: Gp.muted)),
                       Text(
                         status,
                         style: TextStyle(
-                          fontSize: 12.5,
+                          fontSize: Gp.t12,
                           color: switch (tier) {
                             CellTier.none => Gp.faint,
                             CellTier.liked => Gp.accent,
@@ -875,7 +875,7 @@ class _UnitSheetState extends State<_UnitSheet> {
                 Expanded(
                   child: Text(
                     widget.photo == null ? '이 기체가 찍힌 내 사진을 올리면 칸에 색 고리가 돌아요' : '도감 칸에 이 사진이 보여요 · 다시 누르면 사진 바꾸기',
-                    style: const TextStyle(fontSize: 12, color: Gp.muted),
+                    style: const TextStyle(fontSize: Gp.t12, color: Gp.muted),
                   ),
                 ),
                 if (widget.photo != null)
@@ -963,7 +963,7 @@ class _PhotoSourceSheet extends StatelessWidget {
             ),
             const Padding(
               padding: EdgeInsets.fromLTRB(0, 4, 0, 10),
-              child: Text('최근 사진', style: TextStyle(fontSize: 13, color: Gp.muted)),
+              child: Text('최근 사진', style: TextStyle(fontSize: Gp.t12, color: Gp.muted)),
             ),
             GridView.count(
               crossAxisCount: 3,
@@ -1081,10 +1081,10 @@ class _TopSheet extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(top.name, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600)),
+            Text(top.name, style: const TextStyle(fontSize: Gp.t16, fontWeight: FontWeight.w600)),
             Text(
               '부품 ${top.owned} / ${top.total} 보유',
-              style: const TextStyle(fontSize: 12.5, color: Gp.own, fontWeight: FontWeight.w500),
+              style: const TextStyle(fontSize: Gp.t12, color: Gp.own, fontWeight: FontWeight.w500),
             ),
             const SizedBox(height: 12),
             for (final p in top.parts)
@@ -1101,7 +1101,7 @@ class _TopSheet extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(p.typeLabel, style: const TextStyle(fontSize: 12, color: Gp.muted)),
+                          Text(p.typeLabel, style: const TextStyle(fontSize: Gp.t12, color: Gp.muted)),
                           Text(p.name, style: const TextStyle(fontWeight: FontWeight.w500)),
                         ],
                       ),

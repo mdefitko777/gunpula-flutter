@@ -335,7 +335,7 @@ class _CollectionScreenState extends State<CollectionScreen> with ChannelScope {
                   Expanded(
                     child: Text(
                       _ownedTab ? '${kits.length}개 · 지출 합계 ${won(spent)}' : '합계 ${yen(total)} · $pieces개', // F-4 P01
-                      style: const TextStyle(color: Gp.muted, fontSize: 13),
+                      style: const TextStyle(color: Gp.muted, fontSize: Gp.t12),
                     ),
                   ),
                   trash,
@@ -375,14 +375,14 @@ class _CollectionScreenState extends State<CollectionScreen> with ChannelScope {
                       Text(
                         k.purchaseKrw == null ? '구매가 미입력' : won(k.purchaseKrw!),
                         style: TextStyle(
-                          fontSize: 13.5,
+                          fontSize: Gp.t14,
                           fontWeight: k.purchaseKrw == null ? FontWeight.w400 : FontWeight.w600,
                           color: k.purchaseKrw == null ? Gp.faint : Gp.ink,
                         ),
                       ),
-                      Text('정가 ${yen(k.priceJpy)}', style: const TextStyle(fontSize: 11.5, color: Gp.faint)),
+                      Text('정가 ${yen(k.priceJpy)}', style: const TextStyle(fontSize: Gp.t11, color: Gp.faint)),
                     ] else
-                      Text(yen(k.priceJpy), style: const TextStyle(fontSize: 13)),
+                      Text(yen(k.priceJpy), style: const TextStyle(fontSize: Gp.t12)),
                   ],
                 ),
               ),
@@ -447,7 +447,7 @@ class _TopRow extends StatelessWidget {
       // 채널 바와 같은 밑줄 탭
       label: label,
       count: n,
-      fontSize: 16,
+      fontSize: Gp.t16,
       selected: !guide && ownedTab == owned,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       onTap: () {

@@ -56,7 +56,7 @@ class ErrorView extends StatelessWidget {
           children: [
             const Icon(Icons.cloud_off_outlined, size: 40, color: Gp.ink),
             const SizedBox(height: 12),
-            Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+            Text(title, style: const TextStyle(fontSize: Gp.t16, fontWeight: FontWeight.w700)),
             if (message.isNotEmpty) ...[
               const SizedBox(height: 6),
               Text(
@@ -320,8 +320,8 @@ class GpSearchBar extends StatelessWidget {
   final ValueChanged<String>? onSubmitted;
 
   static const defaultHint = '이름 · 번호 · 생김새로 찾기';
-  static const _textStyle = TextStyle(fontSize: 14.5, color: Gp.ink);
-  static const _hintStyle = TextStyle(fontSize: 14.5, color: Gp.faint);
+  static const _textStyle = TextStyle(fontSize: Gp.t14, color: Gp.ink);
+  static const _hintStyle = TextStyle(fontSize: Gp.t14, color: Gp.faint);
 
   @override
   Widget build(BuildContext context) {
@@ -453,13 +453,13 @@ class SectionHeader extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600)),
+                Text(title, style: const TextStyle(fontSize: Gp.t16, fontWeight: FontWeight.w600)),
                 if (subtitle.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(top: 3),
                     child: Text(
                       subtitle,
-                      style: const TextStyle(fontSize: 12.5, color: Gp.accent, fontWeight: FontWeight.w500),
+                      style: const TextStyle(fontSize: Gp.t12, color: Gp.accent, fontWeight: FontWeight.w500),
                     ),
                   ),
               ],
@@ -558,7 +558,7 @@ class ProductTile extends StatelessWidget {
           title,
           maxLines: titleLines,
           overflow: TextOverflow.ellipsis,
-          style: const TextStyle(fontSize: 13.5, height: 1.3),
+          style: const TextStyle(fontSize: Gp.t14, height: 1.3),
         ),
         if (subtitle.isNotEmpty) ...[
           const SizedBox(height: 3),
@@ -566,7 +566,7 @@ class ProductTile extends StatelessWidget {
             subtitle,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontSize: 12, color: Gp.muted),
+            style: const TextStyle(fontSize: Gp.t12, color: Gp.muted),
           ),
         ],
       ],
@@ -751,7 +751,7 @@ Future<T?> showPickSheet<T>(
                       child: Text(
                         label(v),
                         style: TextStyle(
-                          fontSize: 15,
+                          fontSize: Gp.t14,
                           color: v == current ? Gp.accent : Gp.ink,
                           fontWeight: v == current ? FontWeight.w600 : FontWeight.w400,
                         ),
@@ -836,7 +836,7 @@ class LevelChip extends StatelessWidget {
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), gradient: Gp.accentGradient),
       child: Text(
         'Lv.$level',
-        style: TextStyle(fontSize: small ? 10.5 : 12, fontWeight: FontWeight.w700, color: Colors.white),
+        style: TextStyle(fontSize: small ? Gp.t11 : Gp.t12, fontWeight: FontWeight.w700, color: Colors.white),
       ),
     );
   }
@@ -1018,7 +1018,7 @@ class ThumbRow extends StatelessWidget {
                           title,
                           maxLines: titleLines,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(fontSize: 14.5, fontWeight: FontWeight.w500),
+                          style: const TextStyle(fontSize: Gp.t14, fontWeight: FontWeight.w500),
                         ),
                       ),
                     ],
@@ -1029,7 +1029,7 @@ class ThumbRow extends StatelessWidget {
                       subtitle,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontSize: 12.5, color: Gp.muted),
+                      style: const TextStyle(fontSize: Gp.t12, color: Gp.muted),
                     ),
                   ],
                 ],
@@ -1064,7 +1064,7 @@ class TagPill extends StatelessWidget {
       child: Text(
         text,
         style: TextStyle(
-          fontSize: 11,
+          fontSize: Gp.t11,
           fontWeight: strong ? FontWeight.w600 : FontWeight.w500,
           color: strong ? Gp.ink : Gp.muted,
         ),
@@ -1123,7 +1123,7 @@ class TogglePill extends StatelessWidget {
                   label,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                  style: const TextStyle(fontSize: Gp.t14, fontWeight: FontWeight.w600),
                 ),
               ),
             ],

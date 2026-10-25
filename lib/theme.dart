@@ -20,6 +20,14 @@ abstract final class Gp {
   static const danger = Color(0xFFC0392B);
   static const radius = 12.0;
 
+  /// 글자 크기 6단계 (타이포 스케일) — 이 밖의 크기는 쓰지 않는다
+  static const t11 = 11.0; // 아주 작은 보조: 배지 숫자 · 시간 · 알약
+  static const t12 = 12.5; // 보조 글: 부제 · 설명 · 목록 둘째 줄
+  static const t14 = 14.0; // 본문 · 버튼 · 목록 제목
+  static const t16 = 16.0; // 시트 제목 · 강조 본문
+  static const t19 = 19.0; // 화면 · 섹션 큰 제목 · 상품명
+  static const t24 = 24.0; // 가격 · 큰 숫자 · 아바타 글자
+
   /// 브랜드 포인트 색: 라이징 프리덤 · 엑시아의 하늘색. 흑백 화면에 "가끔만" 쓴다
   /// (줄 제목 앞 막대 · 선택 채널 밑줄 · 배너 점 · 아바타 고리 · 기간 글자).
   static const accent = Color(0xFF1C86D9);
@@ -71,7 +79,7 @@ ThemeData buildGpTheme() {
       elevation: 0,
       scrolledUnderElevation: 0,
       centerTitle: false,
-      titleTextStyle: TextStyle(color: Gp.ink, fontSize: 20, fontWeight: FontWeight.w800),
+      titleTextStyle: TextStyle(color: Gp.ink, fontSize: Gp.t19, fontWeight: FontWeight.w800),
     ),
     dividerTheme: const DividerThemeData(color: Gp.line, thickness: 1, space: 1),
     // 큰 검정 바탕 + 흰 글자는 쓰지 않는다 → 옅은 회색 바탕 + 검정 글자
@@ -113,7 +121,7 @@ ThemeData buildGpTheme() {
     snackBarTheme: SnackBarThemeData(
       behavior: SnackBarBehavior.floating,
       backgroundColor: const Color(0xF7FFFFFF),
-      contentTextStyle: const TextStyle(color: Gp.ink, fontSize: 14, fontWeight: FontWeight.w500),
+      contentTextStyle: const TextStyle(color: Gp.ink, fontSize: Gp.t14, fontWeight: FontWeight.w500),
       actionTextColor: Gp.accent,
       elevation: 6,
       insetPadding: const EdgeInsets.fromLTRB(16, 0, 16, 90),
@@ -129,7 +137,7 @@ ThemeData buildGpTheme() {
       height: 64,
       labelTextStyle: WidgetStateProperty.resolveWith(
         (s) => TextStyle(
-          fontSize: 11,
+          fontSize: Gp.t11,
           fontWeight: s.contains(WidgetState.selected) ? FontWeight.w700 : FontWeight.w500,
           color: s.contains(WidgetState.selected) ? Gp.ink : Gp.faint,
         ),
@@ -143,8 +151,8 @@ ThemeData buildGpTheme() {
       indicatorColor: Gp.soft,
       selectedIconTheme: IconThemeData(color: Gp.ink),
       unselectedIconTheme: IconThemeData(color: Gp.faint),
-      selectedLabelTextStyle: TextStyle(color: Gp.ink, fontWeight: FontWeight.w700, fontSize: 12),
-      unselectedLabelTextStyle: TextStyle(color: Gp.faint, fontSize: 12),
+      selectedLabelTextStyle: TextStyle(color: Gp.ink, fontWeight: FontWeight.w700, fontSize: Gp.t12),
+      unselectedLabelTextStyle: TextStyle(color: Gp.faint, fontSize: Gp.t12),
     ),
   );
 }

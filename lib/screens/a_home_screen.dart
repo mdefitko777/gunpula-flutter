@@ -404,7 +404,7 @@ class _HeroBannerState extends State<_HeroBanner> {
                                 Text(
                                   '${a.status} · ${channelOf(a.franchiseId).label}', // A-4 P01
                                   style: const TextStyle(
-                                    fontSize: 11.5,
+                                    fontSize: Gp.t11,
                                     letterSpacing: 0.8,
                                     color: Gp.muted,
                                     fontWeight: FontWeight.w600,
@@ -415,7 +415,7 @@ class _HeroBannerState extends State<_HeroBanner> {
                                   a.title,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(fontSize: 19, fontWeight: FontWeight.w500),
+                                  style: const TextStyle(fontSize: Gp.t19, fontWeight: FontWeight.w500),
                                 ),
                               ],
                             ),

@@ -99,10 +99,10 @@ class _EmptyPane extends StatelessWidget {
             SizedBox(height: 10),
             Text(
               'Gunpula',
-              style: TextStyle(fontSize: 30, fontWeight: FontWeight.w800, letterSpacing: 1.5, color: Color(0xFFDCDCDA)),
+              style: TextStyle(fontSize: Gp.t24, fontWeight: FontWeight.w800, letterSpacing: 1.5, color: Color(0xFFDCDCDA)),
             ),
             SizedBox(height: 8),
-            Text('상품 · 공고 · 친구를 고르면 여기에 보여요', style: TextStyle(fontSize: 13, color: Gp.faint)),
+            Text('상품 · 공고 · 친구를 고르면 여기에 보여요', style: TextStyle(fontSize: Gp.t12, color: Gp.faint)),
           ],
         ),
       ),

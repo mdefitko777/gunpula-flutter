@@ -97,7 +97,7 @@ void openAlbum(BuildContext context, {required Loaders loaders, required VoidCal
           children: [
             const Padding(
               padding: EdgeInsets.only(bottom: 12),
-              child: Text('최근 사진', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600)),
+              child: Text('최근 사진', style: TextStyle(fontSize: Gp.t16, fontWeight: FontWeight.w600)),
             ),
             GridView.count(
               crossAxisCount: 3,
@@ -230,7 +230,7 @@ class _CameraScreenState extends State<CameraScreen> {
                               ),
                               child: Text(
                                 barcode ? '상자 뒷면 바코드를 가로 틀에 맞춰 주세요' : '상자나 실물을 네모 안에 맞춰 주세요', // P10
-                                style: const TextStyle(fontSize: 13),
+                                style: const TextStyle(fontSize: Gp.t12),
                               ),
                             ),
                           ],
@@ -419,7 +419,7 @@ class _CameraResultScreenState extends State<CameraResultScreen> {
     final scene = widget.scene;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('찾은 결과', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+        title: const Text('찾은 결과', style: TextStyle(fontSize: Gp.t19, fontWeight: FontWeight.w600)),
       ),
       body: FutureBuilder<List<Kit>>(
         future: _future,
@@ -487,11 +487,11 @@ class _CameraResultScreenState extends State<CameraResultScreen> {
                       child: AspectRatio(aspectRatio: 1.25, child: PhotoThumb(best.image)),
                     ),
                     const SizedBox(height: 14),
-                    Text(best.name, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                    Text(best.name, style: const TextStyle(fontSize: Gp.t19, fontWeight: FontWeight.w600)),
                     const SizedBox(height: 3),
                     Text(
                       joinDot([best.line, best.series, if (best.date.length >= 4) best.date.substring(0, 4)]),
-                      style: const TextStyle(color: Gp.muted, fontSize: 13),
+                      style: const TextStyle(color: Gp.muted, fontSize: Gp.t12),
                     ),
                     const SizedBox(height: 14),
                     _MatchBar(score: score), // P01
@@ -501,7 +501,7 @@ class _CameraResultScreenState extends State<CameraResultScreen> {
                         const Icon(Icons.auto_awesome, size: 15, color: Gp.accent),
                         const SizedBox(width: 6),
                         Expanded(
-                          child: Text(why, style: const TextStyle(fontSize: 13, color: Gp.muted)), // P10
+                          child: Text(why, style: const TextStyle(fontSize: Gp.t12, color: Gp.muted)), // P10
                         ),
                       ],
                     ),
@@ -588,7 +588,7 @@ class _MatchBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Text('일치도', style: TextStyle(fontSize: 12.5, color: Gp.muted)),
+        const Text('일치도', style: TextStyle(fontSize: Gp.t12, color: Gp.muted)),
         const SizedBox(width: 10),
         Expanded(child: AccentBar(value: score / 100, height: 6)),
         const SizedBox(width: 10),

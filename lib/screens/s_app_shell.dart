@@ -464,7 +464,7 @@ class _BottomBar extends StatelessWidget {
                 Text(
                   t.$3,
                   style: TextStyle(
-                    fontSize: 10.5,
+                    fontSize: Gp.t11,
                     letterSpacing: 0.4,
                     fontWeight: on ? FontWeight.w700 : FontWeight.w400,
                     color: on ? Gp.ink : const Color(0xFF9A9A98),

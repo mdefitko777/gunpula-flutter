@@ -248,7 +248,7 @@ class _ChannelManagerScreenState extends State<ChannelManagerScreen> {
               const SizedBox(height: 12),
               const Text(
                 '회색 글자 채널은 아직 수록된 상품이 없어요. 추가하면 새 상품이 들어올 때 홈에 먼저 보여요.', // C-6 P10
-                style: TextStyle(color: Gp.muted, fontSize: 12),
+                style: TextStyle(color: Gp.muted, fontSize: Gp.t12),
               ),
             ],
           );
@@ -269,9 +269,9 @@ class _GroupTitle extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 12),
       child: Row(
         children: [
-          Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800)),
+          Text(title, style: const TextStyle(fontSize: Gp.t16, fontWeight: FontWeight.w800)),
           const SizedBox(width: 8),
-          Text(hint, style: const TextStyle(fontSize: 12, color: Gp.faint)),
+          Text(hint, style: const TextStyle(fontSize: Gp.t12, color: Gp.faint)),
         ],
       ),
     );
@@ -340,7 +340,7 @@ class _ChannelTile extends StatelessWidget {
                       channel.label,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontSize: 13, color: channel.hasData ? Gp.ink : Gp.faint),
+                      style: TextStyle(fontSize: Gp.t12, color: channel.hasData ? Gp.ink : Gp.faint),
                     ),
                   ),
                 ],

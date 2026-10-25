@@ -197,7 +197,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         final list = _tab == _Tab.all ? scoped : scoped.where((n) => n.type.tab == _tab).toList();
         return Scaffold(
           appBar: AppBar(
-            title: const Text('알림', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+            title: const Text('알림', style: TextStyle(fontSize: Gp.t19, fontWeight: FontWeight.w600)),
             actions: [
               TextButton(
                 onPressed: list.any((n) => !_isRead(n)) ? () => _readAll(list) : null, // N-6
@@ -269,7 +269,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
-          child: Text('내 채널($channels) 소식과 친구 소식 · 왼쪽으로 밀면 지워요', style: const TextStyle(fontSize: 12, color: Gp.faint)),
+          child: Text('내 채널($channels) 소식과 친구 소식 · 왼쪽으로 밀면 지워요', style: const TextStyle(fontSize: Gp.t12, color: Gp.faint)),
         ),
         for (final e in groups.entries) ...[
           SectionHeader(e.key, padding: const EdgeInsets.fromLTRB(16, 16, 16, 6)), // N-2
@@ -347,17 +347,17 @@ class _NoticeRow extends StatelessWidget {
                     n.title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 14, fontWeight: read ? FontWeight.w400 : FontWeight.w700),
+                    style: TextStyle(fontSize: Gp.t14, fontWeight: read ? FontWeight.w400 : FontWeight.w700),
                   ),
                   const SizedBox(height: 2),
                   Text(
                     n.body,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontSize: 12.5, color: Gp.muted, height: 1.35),
+                    style: const TextStyle(fontSize: Gp.t12, color: Gp.muted, height: 1.35),
                   ),
                   const SizedBox(height: 4),
-                  Text(noticeTime(n.at), style: const TextStyle(fontSize: 11.5, color: Gp.faint)),
+                  Text(noticeTime(n.at), style: const TextStyle(fontSize: Gp.t11, color: Gp.faint)),
                 ],
               ),
             ),

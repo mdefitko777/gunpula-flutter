@@ -80,7 +80,7 @@ class _FriendCollectionScreenState extends State<FriendCollectionScreen> {
     final f = widget.friend;
     return Scaffold(
       appBar: AppBar(
-        title: Text('${f.name}의 컬렉션', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+        title: Text('${f.name}의 컬렉션', style: const TextStyle(fontSize: Gp.t19, fontWeight: FontWeight.w600)),
       ),
       body: FutureBuilder<_FriendData>(
         future: _future,
@@ -138,7 +138,7 @@ class _FriendCollectionScreenState extends State<FriendCollectionScreen> {
           padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
           child: Text(
             liked ? '선물 고를 때 참고하세요 · 겹치는 상품엔 표시가 있어요' : '이미 가진 상품이에요 · 내가 좋아요한 상품과 겹치면 표시돼요',
-            style: const TextStyle(fontSize: 12.5, color: Gp.muted),
+            style: const TextStyle(fontSize: Gp.t12, color: Gp.muted),
           ),
         ),
         for (final k in kits)
@@ -151,7 +151,7 @@ class _FriendCollectionScreenState extends State<FriendCollectionScreen> {
             subtitle: joinDot([channelOf(k.franchiseId).label, k.line, k.series]),
             tag: mark(k),
             tagStrong: mark(k) == '내 좋아요' && !liked, // 친구가 이미 샀는데 나도 원함 → 겹쳐 사기 주의
-            trailing: Text(yen(k.priceJpy), style: const TextStyle(fontSize: 13)),
+            trailing: Text(yen(k.priceJpy), style: const TextStyle(fontSize: Gp.t12)),
             onTap: () => openKitDetail(context, k, loaders: widget.loaders),
           ),
       ],
@@ -167,7 +167,7 @@ class _FriendCollectionScreenState extends State<FriendCollectionScreen> {
       children: [
         SizedBox(
           width: 34,
-          child: Text(who, style: const TextStyle(fontSize: 11.5, color: Gp.muted)),
+          child: Text(who, style: const TextStyle(fontSize: Gp.t11, color: Gp.muted)),
         ),
         Expanded(
           child: AccentBar(value: total == 0 ? 0 : n / total, height: 5, color: accent ? Gp.accent : Gp.faint),
@@ -177,7 +177,7 @@ class _FriendCollectionScreenState extends State<FriendCollectionScreen> {
           child: Text(
             '$n/$total',
             textAlign: TextAlign.right,
-            style: const TextStyle(fontSize: 11.5, color: Gp.muted),
+            style: const TextStyle(fontSize: Gp.t11, color: Gp.muted),
           ),
         ),
       ],
@@ -188,7 +188,7 @@ class _FriendCollectionScreenState extends State<FriendCollectionScreen> {
         Row(
           children: [
             const VerifiedBadge(size: 18),
-            Text('  인증 ${f.verified}개 · 점등 ${f.lit}칸', style: const TextStyle(fontSize: 12.5, color: Gp.muted)),
+            Text('  인증 ${f.verified}개 · 점등 ${f.lit}칸', style: const TextStyle(fontSize: Gp.t12, color: Gp.muted)),
           ],
         ),
         const SizedBox(height: 10),

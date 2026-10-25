@@ -137,13 +137,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   const Padding(
                     padding: EdgeInsets.fromLTRB(16, 10, 16, 2),
-                    child: Text('보여 줄 친구', style: TextStyle(fontSize: 13, color: Gp.muted)),
+                    child: Text('보여 줄 친구', style: TextStyle(fontSize: Gp.t12, color: Gp.muted)),
                   ),
                   for (final f in p.friends)
                     CheckboxListTile(
                       secondary: CircleThumb(image: '', label: f.name, size: 34),
                       title: Text(f.name),
-                      subtitle: Text('@${f.handle}', style: const TextStyle(fontSize: 12, color: Gp.muted)),
+                      subtitle: Text('@${f.handle}', style: const TextStyle(fontSize: Gp.t12, color: Gp.muted)),
                       value: _postsPublic && !_hiddenFrom.contains(f.handle),
                       activeColor: Gp.accent,
                       onChanged:
@@ -155,7 +155,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     padding: EdgeInsets.fromLTRB(16, 8, 16, 0),
                     child: Text(
                       '사진 한 장만 숨기려면 그 사진을 눌러 "게시물에 보이기"를 끄세요.',
-                      style: TextStyle(fontSize: 12, color: Gp.muted),
+                      style: TextStyle(fontSize: Gp.t12, color: Gp.muted),
                     ),
                   ),
                 ],
@@ -214,7 +214,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         title: Text(
           friend == null ? '내 정보' : '${friend.name}의 컬렉션',
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+          style: const TextStyle(fontSize: Gp.t19, fontWeight: FontWeight.w600),
         ),
       ),
       body: FutureBuilder<_ProfileData>(
@@ -275,7 +275,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 decoration: BoxDecoration(color: Gp.bg, borderRadius: BorderRadius.circular(Gp.radius)),
                 child: Row(
                   children: [
-                    const Text('초대 코드', style: TextStyle(color: Gp.muted, fontSize: 13)),
+                    const Text('초대 코드', style: TextStyle(color: Gp.muted, fontSize: Gp.t12)),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(p.inviteCode, style: const TextStyle(fontWeight: FontWeight.w700, letterSpacing: 2)),
@@ -358,7 +358,7 @@ class _Header extends StatelessWidget {
             children: [
               Container(height: 70, color: Gp.soft), // 배경(커버)
               const SizedBox(height: 56), // 아바타가 겹쳐 앉는 자리
-              Text(name, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+              Text(name, style: const TextStyle(fontSize: Gp.t19, fontWeight: FontWeight.w700)),
               Text('@$handle', style: const TextStyle(color: Gp.muted)),
               const SizedBox(height: 10),
               Wrap(spacing: 6, children: [for (final t in tags) TagPill(t)]), // I-2 P06
@@ -412,7 +412,7 @@ class _Stats extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(value, style: const TextStyle(fontSize: 19, fontWeight: FontWeight.w700)),
+                  Text(value, style: const TextStyle(fontSize: Gp.t19, fontWeight: FontWeight.w700)),
                   ?extra,
                 ],
               ),
@@ -421,7 +421,7 @@ class _Stats extends StatelessWidget {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(label, style: const TextStyle(fontSize: 12, color: Gp.muted)),
+                Text(label, style: const TextStyle(fontSize: Gp.t12, color: Gp.muted)),
                 if (onJump != null) const Icon(Icons.chevron_right, size: 14, color: Gp.faint),
               ],
             ),
@@ -454,7 +454,7 @@ class _Stats extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         const VerifiedBadge(size: 16),
-                        Text(' $verified', style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600)),
+                        Text(' $verified', style: const TextStyle(fontSize: Gp.t12, fontWeight: FontWeight.w600)),
                       ],
                     ),
                   ),
@@ -466,7 +466,7 @@ class _Stats extends StatelessWidget {
           ),
           if (spendKrw case final spend?) ...[
             const Divider(height: 20),
-            Text('구매 지출 합계 ${won(spend)}', style: const TextStyle(fontSize: 12.5, color: Gp.muted)),
+            Text('구매 지출 합계 ${won(spend)}', style: const TextStyle(fontSize: Gp.t12, color: Gp.muted)),
           ],
         ],
       ),
@@ -506,7 +506,7 @@ class _PhotoWall extends StatelessWidget {
               padding: EdgeInsets.fromLTRB(16, 0, 16, 4),
               child: Text(
                 '아직 게시물이 없어요 · 도감에서 "내 사진"으로 인증하면 여기에 모여요', // P09
-                style: TextStyle(color: Gp.muted, fontSize: 13),
+                style: TextStyle(color: Gp.muted, fontSize: Gp.t12),
               ),
             )
           else
@@ -582,7 +582,7 @@ class _PhotoViewScreenState extends State<PhotoViewScreen> {
     final ph = widget.photo;
     return Scaffold(
       appBar: AppBar(
-        title: Text(ph.unit, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600)),
+        title: Text(ph.unit, style: const TextStyle(fontSize: Gp.t16, fontWeight: FontWeight.w600)),
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
@@ -609,7 +609,7 @@ class _PhotoViewScreenState extends State<PhotoViewScreen> {
               child: Text(
                 '다른 사람이 저장하면 이렇게 보여요',
                 textAlign: TextAlign.right,
-                style: TextStyle(fontSize: 11.5, color: Gp.faint),
+                style: TextStyle(fontSize: Gp.t11, color: Gp.faint),
               ),
             ),
           const SizedBox(height: 14),
@@ -624,7 +624,7 @@ class _PhotoViewScreenState extends State<PhotoViewScreen> {
           ),
           const Padding(
             padding: EdgeInsets.only(left: 24, top: 2),
-            child: Text('도감에서 인증한 사진', style: TextStyle(fontSize: 12.5, color: Gp.muted)),
+            child: Text('도감에서 인증한 사진', style: TextStyle(fontSize: Gp.t12, color: Gp.muted)),
           ),
           const SizedBox(height: 8),
           if (widget.mine)
@@ -656,7 +656,7 @@ class _PhotoViewScreenState extends State<PhotoViewScreen> {
           else
             Text(
               _watermark ? '@${ph.owner} 님의 사진 · 저장하면 워터마크가 들어가요' : '@${ph.owner} 님이 워터마크를 껐어요',
-              style: const TextStyle(fontSize: 12.5, color: Gp.muted),
+              style: const TextStyle(fontSize: Gp.t12, color: Gp.muted),
             ),
           const SizedBox(height: 16),
           OutlinedButton.icon(
@@ -683,7 +683,7 @@ class _Watermark extends StatelessWidget {
       decoration: BoxDecoration(color: const Color(0x47000000), borderRadius: BorderRadius.circular(6)),
       child: Text(
         text,
-        style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w600, letterSpacing: 0.3),
+        style: const TextStyle(color: Colors.white, fontSize: Gp.t11, fontWeight: FontWeight.w600, letterSpacing: 0.3),
       ),
     );
   }

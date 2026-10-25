@@ -262,13 +262,13 @@ class _SectionListViewState extends State<SectionListView> {
                 const SizedBox(width: 12),
               Container(width: 3, height: 16, color: Gp.accent), // 홈 줄 제목과 같은 색 막대
               const SizedBox(width: 8),
-              Text(widget.title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+              Text(widget.title, style: const TextStyle(fontSize: Gp.t19, fontWeight: FontWeight.w700)),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   joinDot([widget.subtitle, '$count개']),
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 12.5, color: Gp.accent, fontWeight: FontWeight.w500),
+                  style: const TextStyle(fontSize: Gp.t12, color: Gp.accent, fontWeight: FontWeight.w500),
                 ),
               ),
               if (widget.history && _kits.isNotEmpty)
@@ -318,7 +318,7 @@ class _SectionListViewState extends State<SectionListView> {
         children: [
           Expanded(
             child: labels.isEmpty
-                ? Text('${visible.length}개', style: const TextStyle(fontSize: 12.5, color: Gp.muted))
+                ? Text('${visible.length}개', style: const TextStyle(fontSize: Gp.t12, color: Gp.muted))
                 : Row(
                     children: [
                       Flexible(
@@ -326,7 +326,7 @@ class _SectionListViewState extends State<SectionListView> {
                           '${labels.join(' · ')}  ${visible.length}개',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(fontSize: 12.5, color: Gp.accent),
+                          style: const TextStyle(fontSize: Gp.t12, color: Gp.accent),
                         ),
                       ),
                       InkWell(
@@ -359,7 +359,7 @@ class _SectionListViewState extends State<SectionListView> {
                 children: [
                   const Icon(Icons.swap_vert, size: 18, color: Gp.muted),
                   const SizedBox(width: 2),
-                  Text(_sort.label, style: const TextStyle(fontSize: 13, color: Gp.ink)),
+                  Text(_sort.label, style: const TextStyle(fontSize: Gp.t12, color: Gp.ink)),
                 ],
               ),
             ),
@@ -436,8 +436,8 @@ class _SectionListViewState extends State<SectionListView> {
     trailing: Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Text(yen(k.priceJpy), style: const TextStyle(fontSize: 13)),
-        Text(dateDot(k.date), style: const TextStyle(fontSize: 11.5, color: Gp.faint)),
+        Text(yen(k.priceJpy), style: const TextStyle(fontSize: Gp.t12)),
+        Text(dateDot(k.date), style: const TextStyle(fontSize: Gp.t11, color: Gp.faint)),
       ],
     ),
     onTap: () => openKitDetail(context, k, loaders: widget.loaders),
@@ -470,7 +470,7 @@ class _SectionListViewState extends State<SectionListView> {
                   UnderlineTab(
                     label: s.isEmpty ? '전체' : s,
                     count: s.isEmpty ? all.length : all.where((a) => a.status == s).length,
-                    fontSize: 14,
+                    fontSize: Gp.t14,
                     selected: _annStatus == s,
                     onTap: () => setState(() => _annStatus = s), // STATE: 상태 → 목록
                   ),
@@ -512,7 +512,7 @@ class _SectionListViewState extends State<SectionListView> {
                                       joinDot([channelOf(a.franchiseId).label, dateDot(a.date), a.source]),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(fontSize: 12, color: Gp.muted),
+                                      style: const TextStyle(fontSize: Gp.t12, color: Gp.muted),
                                     ),
                                   ),
                                 ],
@@ -522,7 +522,7 @@ class _SectionListViewState extends State<SectionListView> {
                                 a.title,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                                style: const TextStyle(fontSize: Gp.t14, fontWeight: FontWeight.w500),
                               ),
                             ],
                           ),
@@ -572,9 +572,9 @@ class _FilterPanelState extends State<_FilterPanel> {
               padding: const EdgeInsets.fromLTRB(20, 16, 16, 16),
               child: Row(
                 children: [
-                  Text(title, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15)),
+                  Text(title, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: Gp.t14)),
                   const Spacer(),
-                  Text(summary, style: const TextStyle(fontSize: 13, color: Gp.accent)),
+                  Text(summary, style: const TextStyle(fontSize: Gp.t12, color: Gp.accent)),
                   const SizedBox(width: 6),
                   AnimatedRotation(
                     turns: open ? 0.5 : 0,
@@ -601,8 +601,8 @@ class _FilterPanelState extends State<_FilterPanel> {
         padding: const EdgeInsets.fromLTRB(28, 11, 18, 11),
         child: Row(
           children: [
-            Expanded(child: Text(label, style: const TextStyle(fontSize: 14))),
-            Text('$n', style: const TextStyle(fontSize: 12, color: Gp.faint)),
+            Expanded(child: Text(label, style: const TextStyle(fontSize: Gp.t14))),
+            Text('$n', style: const TextStyle(fontSize: Gp.t12, color: Gp.faint)),
             const SizedBox(width: 12),
             AnimatedContainer(
               duration: const Duration(milliseconds: 120),
@@ -652,7 +652,7 @@ class _FilterPanelState extends State<_FilterPanel> {
                   padding: const EdgeInsets.fromLTRB(20, 8, 8, 8),
                   child: Row(
                     children: [
-                      const Text('필터', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w700)),
+                      const Text('필터', style: TextStyle(fontSize: Gp.t19, fontWeight: FontWeight.w700)),
                       const Spacer(),
                       IconButton(tooltip: '닫기', onPressed: () => Navigator.pop(context), icon: const Icon(Icons.close)),
                     ],

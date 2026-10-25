@@ -238,7 +238,7 @@ class _CalendarScreenState extends State<CalendarScreen> with ChannelScope {
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
           child: Text(
             '${_month.month}월 $_day일만 보는 중 · 날짜를 다시 누르면 한 달 전체',
-            style: const TextStyle(color: Gp.muted, fontSize: 12.5),
+            style: const TextStyle(color: Gp.muted, fontSize: Gp.t12),
           ),
         ),
       for (final d in days) ...[
@@ -311,7 +311,7 @@ class _MonthCalendar extends StatelessWidget {
                 child: Text(
                   '${month.year}년 ${month.month}월',
                   textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 16.5, fontWeight: FontWeight.w600),
+                  style: const TextStyle(fontSize: Gp.t16, fontWeight: FontWeight.w600),
                 ),
               ),
               IconButton(tooltip: '다음 달', onPressed: onNext, icon: const Icon(Icons.chevron_right)),
@@ -331,7 +331,7 @@ class _MonthCalendar extends StatelessWidget {
                     child: Text(
                       w,
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 12, color: i == 0 ? Gp.danger : Gp.faint),
+                      style: TextStyle(fontSize: Gp.t12, color: i == 0 ? Gp.danger : Gp.faint),
                     ),
                   ),
                 ),
@@ -364,11 +364,11 @@ class _MonthCalendar extends StatelessWidget {
               children: [
                 _Dot(filled: true),
                 SizedBox(width: 5),
-                Text('발매일', style: TextStyle(fontSize: 12, color: Gp.muted)),
+                Text('발매일', style: TextStyle(fontSize: Gp.t12, color: Gp.muted)),
                 SizedBox(width: 16),
                 _Dot(filled: false),
                 SizedBox(width: 5),
-                Text('예고 · 공지', style: TextStyle(fontSize: 12, color: Gp.muted)),
+                Text('예고 · 공지', style: TextStyle(fontSize: Gp.t12, color: Gp.muted)),
               ],
             ),
           ),
@@ -439,7 +439,7 @@ class _DayCell extends StatelessWidget {
               child: Text(
                 '$day',
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: Gp.t14,
                   fontWeight: selected || today ? FontWeight.w700 : FontWeight.w400,
                   color: selected ? Gp.accent : (sunday ? Gp.danger : Gp.ink),
                 ),
@@ -475,7 +475,7 @@ class _DayHeader extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 18, 16, 6),
       child: Text(
         '${date.month}.${date.day.toString().padLeft(2, '0')} (${_weekdays[date.weekday % 7]})',
-        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+        style: const TextStyle(fontSize: Gp.t14, fontWeight: FontWeight.w600),
       ),
     );
   }
@@ -511,7 +511,7 @@ class _EventRow extends StatelessWidget {
           ? null
           : Text(
               dday,
-              style: const TextStyle(fontWeight: FontWeight.w700, color: Gp.accent, fontSize: 13),
+              style: const TextStyle(fontWeight: FontWeight.w700, color: Gp.accent, fontSize: Gp.t12),
             ),
     );
   }

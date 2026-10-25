@@ -75,13 +75,13 @@ class _AnnouncementScreenState extends State<AnnouncementScreen> {
                       children: [
                         TagPill(a.status, strong: true), // J-2 P01
                         const SizedBox(width: 8),
-                        Text(channelOf(a.franchiseId).label, style: const TextStyle(fontSize: 12.5, color: Gp.muted)),
+                        Text(channelOf(a.franchiseId).label, style: const TextStyle(fontSize: Gp.t12, color: Gp.muted)),
                       ],
                     ),
                     const SizedBox(height: 10),
-                    Text(a.title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, height: 1.35)),
+                    Text(a.title, style: const TextStyle(fontSize: Gp.t19, fontWeight: FontWeight.w600, height: 1.35)),
                     const SizedBox(height: 6),
-                    Text(joinDot([dateDot(a.date), a.source]), style: const TextStyle(fontSize: 13, color: Gp.muted)),
+                    Text(joinDot([dateDot(a.date), a.source]), style: const TextStyle(fontSize: Gp.t12, color: Gp.muted)),
                     const SizedBox(height: 20),
                     _StageLine(current: stage), // J-3 P01
                     const SizedBox(height: 20),
@@ -229,7 +229,7 @@ class _StageLine extends StatelessWidget {
                   label,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 11.5,
+                    fontSize: Gp.t11,
                     fontWeight: i == current ? FontWeight.w700 : FontWeight.w400,
                     color: i == current ? Gp.accent : (i < current ? Gp.ink : Gp.faint),
                   ),

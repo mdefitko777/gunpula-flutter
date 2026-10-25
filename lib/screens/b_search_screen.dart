@@ -195,7 +195,7 @@ class _SearchScreenState extends State<SearchScreen> with ChannelScope {
             padding: const EdgeInsets.fromLTRB(16, 16, 4, 10),
             trailing: TextButton(
               onPressed: () => setState(_recent.clear), // STATE: 최근 검색 → 비움
-              child: const Text('전체 삭제', style: TextStyle(color: Gp.muted, fontSize: 13)),
+              child: const Text('전체 삭제', style: TextStyle(color: Gp.muted, fontSize: Gp.t12)),
             ),
           ),
           Padding(
@@ -267,7 +267,7 @@ class _SearchScreenState extends State<SearchScreen> with ChannelScope {
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
           child: Text(
             '정확한 이름이 기억나지 않으면 생김새나 작품을 문장으로 적어 보세요.', // B-5 P10
-            style: TextStyle(color: Gp.muted.withValues(alpha: 0.9), fontSize: 13),
+            style: TextStyle(color: Gp.muted.withValues(alpha: 0.9), fontSize: Gp.t12),
           ),
         ),
         Padding(
@@ -370,7 +370,7 @@ class _AiCandidates extends StatelessWidget {
               SizedBox(width: 6),
               Text('AI 추천 후보', style: TextStyle(fontWeight: FontWeight.w700)),
               Spacer(),
-              Text('설명과 닮은 순서', style: TextStyle(color: Gp.faint, fontSize: 12)),
+              Text('설명과 닮은 순서', style: TextStyle(color: Gp.faint, fontSize: Gp.t12)),
             ],
           ),
           const SizedBox(height: 12),
