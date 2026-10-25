@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 
 import '../api.dart';
+import '../marks.dart';
 import '../models.dart';
 import '../theme.dart';
 import '../widgets.dart';
@@ -51,37 +52,28 @@ const barcodeScene = CameraScene(
 
 /// 앨범의 "최근 사진" — 고르면 그 장면으로 결과
 const albumScenes = <CameraScene>[
-  CameraScene(photo: 'assets/gp/kits/gu04.jpg', candidates: [
-    ('gu04', 91, '흰색/파랑 몸체 · Witch from Mercury 로고'),
-    ('gu05', 63, '같은 작품의 다른 기체'),
-  ]),
-  CameraScene(photo: 'assets/gp/kits/po19.png', candidates: [
-    ('po19', 93, '이브이 · 큰 사이즈 포켓프라'),
-    ('po21', 48, '같은 포켓프라 Quick!! 라인'),
-  ]),
-  CameraScene(photo: 'assets/gp/kits/be43.png', candidates: [
-    ('be43', 88, '드랜 소드 블레이드 모양'),
-    ('be48', 84, '같은 블레이드의 메탈 코트'),
-  ]),
-  CameraScene(photo: 'assets/gp/kits/fa30.jpg', candidates: [
-    ('fa30', 90, '검은 갑옷 세이버 · figma 상자'),
-  ]),
-  CameraScene(photo: 'assets/gp/kits/gu10.jpg', candidates: [
-    ('gu10', 89, '흰 날개 · W 계열 배색'),
-    ('gu09', 41, '같은 RG/MG 계열 변형 기체'),
-  ]),
-  CameraScene(photo: 'assets/gp/kits/ar37.jpg', candidates: [
-    ('ar37', 86, '흰색 기체 + 대형 부스터(V.O.B)'),
-  ]),
+  CameraScene(
+    photo: 'assets/gp/kits/gu04.jpg',
+    candidates: [('gu04', 91, '흰색/파랑 몸체 · Witch from Mercury 로고'), ('gu05', 63, '같은 작품의 다른 기체')],
+  ),
+  CameraScene(
+    photo: 'assets/gp/kits/po19.png',
+    candidates: [('po19', 93, '이브이 · 큰 사이즈 포켓프라'), ('po21', 48, '같은 포켓프라 Quick!! 라인')],
+  ),
+  CameraScene(
+    photo: 'assets/gp/kits/be43.png',
+    candidates: [('be43', 88, '드랜 소드 블레이드 모양'), ('be48', 84, '같은 블레이드의 메탈 코트')],
+  ),
+  CameraScene(photo: 'assets/gp/kits/fa30.jpg', candidates: [('fa30', 90, '검은 갑옷 세이버 · figma 상자')]),
+  CameraScene(
+    photo: 'assets/gp/kits/gu10.jpg',
+    candidates: [('gu10', 89, '흰 날개 · W 계열 배색'), ('gu09', 41, '같은 RG/MG 계열 변형 기체')],
+  ),
+  CameraScene(photo: 'assets/gp/kits/ar37.jpg', candidates: [('ar37', 86, '흰색 기체 + 대형 부스터(V.O.B)')]),
 ];
 
 /// 카메라 열기 (아래에서 올라오는 전체 화면)
-void openCamera(
-  BuildContext context,
-  CameraMode mode, {
-  required Loaders loaders,
-  required VoidCallback onGoSearch,
-}) {
+void openCamera(BuildContext context, CameraMode mode, {required Loaders loaders, required VoidCallback onGoSearch}) {
   Navigator.of(context, rootNavigator: true).push(
     MaterialPageRoute<void>(
       fullscreenDialog: true,
@@ -117,13 +109,11 @@ void openAlbum(BuildContext context, {required Loaders loaders, required VoidCal
                   GestureDetector(
                     onTap: () {
                       Navigator.pop(sheet);
-                      nav.push(MaterialPageRoute<void>(
-                        builder: (_) => CameraResultScreen(
-                          scene: scene,
-                          loaders: loaders,
-                          onGoSearch: onGoSearch,
+                      nav.push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => CameraResultScreen(scene: scene, loaders: loaders, onGoSearch: onGoSearch),
                         ),
-                      ));
+                      );
                     },
                     child: PhotoThumb(scene.photo, radius: 8),
                   ),
@@ -137,12 +127,7 @@ void openAlbum(BuildContext context, {required Loaders loaders, required VoidCal
 }
 
 class CameraScreen extends StatefulWidget {
-  const CameraScreen({
-    super.key,
-    required this.mode,
-    required this.loaders,
-    required this.onGoSearch,
-  });
+  const CameraScreen({super.key, required this.mode, required this.loaders, required this.onGoSearch});
 
   final CameraMode mode;
   final Loaders loaders;
@@ -165,11 +150,7 @@ class _CameraScreenState extends State<CameraScreen> {
     if (!mounted) return;
     Navigator.of(context).pushReplacement(
       MaterialPageRoute<void>(
-        builder: (_) => CameraResultScreen(
-          scene: _scene,
-          loaders: widget.loaders,
-          onGoSearch: widget.onGoSearch,
-        ),
+        builder: (_) => CameraResultScreen(scene: _scene, loaders: widget.loaders, onGoSearch: widget.onGoSearch),
       ),
     );
   }
@@ -212,8 +193,10 @@ class _CameraScreenState extends State<CameraScreen> {
                                       children: [
                                         MiniSpinner(size: 16, color: Gp.accent),
                                         SizedBox(width: 8),
-                                        Text('AI가 비교하는 중…', // E-4 P01
-                                            style: TextStyle(fontWeight: FontWeight.w600)),
+                                        Text(
+                                          'AI가 비교하는 중…', // E-4 P01
+                                          style: TextStyle(fontWeight: FontWeight.w600),
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -246,9 +229,7 @@ class _CameraScreenState extends State<CameraScreen> {
                                 borderRadius: BorderRadius.circular(99),
                               ),
                               child: Text(
-                                barcode
-                                    ? '상자 뒷면 바코드를 가로 틀에 맞춰 주세요'
-                                    : '상자나 실물을 네모 안에 맞춰 주세요', // P10
+                                barcode ? '상자 뒷면 바코드를 가로 틀에 맞춰 주세요' : '상자나 실물을 네모 안에 맞춰 주세요', // P10
                                 style: const TextStyle(fontSize: 13),
                               ),
                             ),
@@ -272,7 +253,8 @@ class _CameraScreenState extends State<CameraScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      UnderlineTab( // E-2 P07
+                      UnderlineTab(
+                        // E-2 P07
                         label: '사진',
                         selected: !barcode,
                         onTap: () => setState(() => _mode = CameraMode.photo),
@@ -301,7 +283,8 @@ class _CameraScreenState extends State<CameraScreen> {
                         ),
                       ),
                       const Spacer(),
-                      RaisedCircleButton( // E-3 P07
+                      RaisedCircleButton(
+                        // E-3 P07
                         tooltip: '찍기',
                         size: 72,
                         onTap: _analyzing ? () {} : _shoot,
@@ -392,12 +375,7 @@ class _FrameCorners extends CustomPainter {
 
 /// 찍은 결과 — 가장 닮은 상품 + 다른 후보
 class CameraResultScreen extends StatefulWidget {
-  const CameraResultScreen({
-    super.key,
-    required this.scene,
-    required this.loaders,
-    required this.onGoSearch,
-  });
+  const CameraResultScreen({super.key, required this.scene, required this.loaders, required this.onGoSearch});
 
   final CameraScene scene;
   final Loaders loaders;
@@ -409,7 +387,6 @@ class CameraResultScreen extends StatefulWidget {
 
 class _CameraResultScreenState extends State<CameraResultScreen> {
   late Future<List<Kit>> _future;
-  bool _wanted = false;
 
   @override
   void initState() {
@@ -420,13 +397,6 @@ class _CameraResultScreenState extends State<CameraResultScreen> {
   void _load() {
     // STATE: 장면의 후보 id → GET /kits?id= → 카드
     _future = widget.loaders.kitsByIds([for (final c in widget.scene.candidates) c.$1]);
-  }
-
-  void _toggleWant() {
-    final before = _wanted;
-    setState(() => _wanted = !before); // STATE: 좋아요 → 버튼 채움
-    showToast(context, before ? '좋아요를 취소했어요' : '좋아요를 눌렀어요',
-        onUndo: () => setState(() => _wanted = before));
   }
 
   void _retake() {
@@ -466,7 +436,8 @@ class _CameraResultScreenState extends State<CameraResultScreen> {
               if (byId[id] case final k?) (k, score, why),
           ];
           if (found.isEmpty) {
-            return EmptyView( // E-10 P09
+            return EmptyView(
+              // E-10 P09
               icon: Icons.image_search,
               message: '닮은 상품을 찾지 못했어요',
               detail: '밝은 곳에서 상자 앞면이 보이게 다시 찍어 보세요',
@@ -546,12 +517,13 @@ class _CameraResultScreenState extends State<CameraResultScreen> {
                         ),
                         const SizedBox(width: 10),
                         Expanded(
-                          child: TogglePill( // E-7 P03 — 상세의 좋아요 버튼과 같은 부품
+                          child: TogglePill(
+                            // E-7 P03 — 상세의 좋아요 버튼과 같은 부품
                             label: '좋아요',
                             icon: Icons.favorite_border,
                             activeIcon: Icons.favorite,
-                            active: _wanted,
-                            onTap: _toggleWant,
+                            active: Marks.of(context).liked(best), // 앱 전체 한 벌
+                            onTap: () => Marks.read(context).toggleLike(context, best),
                           ),
                         ),
                       ],
@@ -567,7 +539,10 @@ class _CameraResultScreenState extends State<CameraResultScreen> {
                     title: k.name,
                     subtitle: w,
                     onTap: () => openKitDetail(context, k, loaders: widget.loaders),
-                    trailing: Text('$s%', style: const TextStyle(fontWeight: FontWeight.w700, color: Gp.muted)),
+                    trailing: Text(
+                      '$s%',
+                      style: const TextStyle(fontWeight: FontWeight.w700, color: Gp.muted),
+                    ),
                   ),
               ],
               // E-9 못 찾았을 때
@@ -617,7 +592,10 @@ class _MatchBar extends StatelessWidget {
         const SizedBox(width: 10),
         Expanded(child: AccentBar(value: score / 100, height: 6)),
         const SizedBox(width: 10),
-        Text('$score%', style: const TextStyle(fontWeight: FontWeight.w700, color: Gp.accent)),
+        Text(
+          '$score%',
+          style: const TextStyle(fontWeight: FontWeight.w700, color: Gp.accent),
+        ),
       ],
     );
   }

@@ -24,7 +24,11 @@ import 'd_kit_detail_screen.dart';
 const announcementStages = ['공식 발표', '상품화 확정', '예약 시작', '발매'];
 
 void openAnnouncement(BuildContext context, Announcement a, {Loaders loaders = const Loaders()}) {
-  openPage(context, AnnouncementScreen(item: a, loaders: loaders), id: a.id);
+  openPage(
+    context,
+    AnnouncementScreen(item: a, loaders: loaders),
+    id: a.id,
+  );
 }
 
 class AnnouncementScreen extends StatefulWidget {
@@ -43,8 +47,7 @@ class _AnnouncementScreenState extends State<AnnouncementScreen> {
   void _toggleNotify() {
     final before = _notify;
     setState(() => _notify = !before); // STATE: 알림 → 버튼 채움
-    showToast(context, before ? '알림을 껐어요' : '다음 단계가 되면 알려 드릴게요',
-        onUndo: () => setState(() => _notify = before));
+    showToast(context, before ? '알림을 껐어요' : '다음 단계가 되면 알려 드릴게요', onUndo: () => setState(() => _notify = before));
   }
 
   @override
@@ -72,8 +75,7 @@ class _AnnouncementScreenState extends State<AnnouncementScreen> {
                       children: [
                         TagPill(a.status, strong: true), // J-2 P01
                         const SizedBox(width: 8),
-                        Text(channelOf(a.franchiseId).label,
-                            style: const TextStyle(fontSize: 12.5, color: Gp.muted)),
+                        Text(channelOf(a.franchiseId).label, style: const TextStyle(fontSize: 12.5, color: Gp.muted)),
                       ],
                     ),
                     const SizedBox(height: 10),
@@ -86,7 +88,8 @@ class _AnnouncementScreenState extends State<AnnouncementScreen> {
                     Row(
                       children: [
                         Expanded(
-                          child: TogglePill( // J-4 P03
+                          child: TogglePill(
+                            // J-4 P03
                             label: _notify ? '알림 받는 중' : '알림 받기',
                             icon: Icons.notifications_none,
                             activeIcon: Icons.notifications_active,
@@ -129,8 +132,10 @@ class _AnnouncementScreenState extends State<AnnouncementScreen> {
                     if (kits.isEmpty) {
                       return const Padding(
                         padding: EdgeInsets.all(16),
-                        child: Text('아직 연결된 상품이 없어요 · 상품화되면 여기에 보여요', // P09
-                            style: TextStyle(color: Gp.muted)),
+                        child: Text(
+                          '아직 연결된 상품이 없어요 · 상품화되면 여기에 보여요', // P09
+                          style: TextStyle(color: Gp.muted),
+                        ),
                       );
                     }
                     return Column(
@@ -149,7 +154,7 @@ class _AnnouncementScreenState extends State<AnnouncementScreen> {
                               title: kits[i].name,
                               imageWidth: 148,
                               onTap: () => openKitDetail(context, kits[i], loaders: widget.loaders),
-                              marks: QuickMarks(name: kits[i].name, liked: kits[i].status == CollectStatus.wanted, owned: kits[i].status == CollectStatus.owned),
+                              marks: QuickMarks(kit: kits[i]),
                             ),
                           ),
                         ),
@@ -163,7 +168,8 @@ class _AnnouncementScreenState extends State<AnnouncementScreen> {
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(12),
-              child: RaisedCircleButton( // J-1 P03
+              child: RaisedCircleButton(
+                // J-1 P03
                 tooltip: '뒤로',
                 size: 40,
                 onTap: () => Navigator.of(context).maybePop(),
@@ -194,7 +200,10 @@ class _StageLine extends StatelessWidget {
                 Row(
                   children: [
                     Expanded(
-                      child: Container(height: 2, color: i == 0 ? Colors.transparent : (i <= current ? Gp.accent : Gp.line)),
+                      child: Container(
+                        height: 2,
+                        color: i == 0 ? Colors.transparent : (i <= current ? Gp.accent : Gp.line),
+                      ),
                     ),
                     Container(
                       width: i == current ? 14 : 10,

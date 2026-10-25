@@ -20,6 +20,7 @@
 import 'package:flutter/material.dart';
 
 import '../api.dart';
+import '../marks.dart';
 import '../channels.dart';
 import '../models.dart';
 import '../theme.dart';
@@ -68,15 +69,15 @@ class _CollectionScreenState extends State<CollectionScreen> with ChannelScope {
   bool _editing = false;
   final Set<String> _selected = {};
 
-  /// 이 화면에서 지운 상품 (가짜 삭제 — 저장하지 않음)
-  final Set<String> _removed = {};
+  /// 휴지통: 지운 상품 id → 어느 탭에서 지웠나 (true = 구매함). 지우기 = 앱 전체 Marks 에서 끄기
+  final Map<String, bool> _removed = {};
 
   @override
   List<String> get myChannels => widget.myChannels;
 
   @override
   void loadScope(List<String> ids) {
-    _future = widget.loaders.collection(); // STATE: GET /kits?status_ne=none → 좋아요 · 구매함
+    _future = widget.loaders.kits(ids); // STATE: GET /kits(내 채널) → 좋아요 · 구매함은 Marks 로 거름 (홈에서 누른 ♡ 도 보임)
   }
 
   @override
@@ -106,10 +107,14 @@ class _CollectionScreenState extends State<CollectionScreen> with ChannelScope {
       isScrollControlled: true,
       builder: (sheet) => StatefulBuilder(
         builder: (sheet, setSheet) {
-          final gone = all.where((k) => _removed.contains(k.id)).toList();
+          final gone = all.where((k) => _removed.containsKey(k.id)).toList();
           void restore(Iterable<String> ids, String msg) {
             final list = [...ids];
-            setState(() => _removed.removeAll(list)); // STATE: 복원 → 목록에 다시
+            final marks = Marks.read(context);
+            for (final k in all.where((k) => list.contains(k.id))) {
+              _removed[k.id]! ? marks.set(k, owned: true) : marks.set(k, liked: true); // 앱 전체에 다시 켜기
+            }
+            setState(() => list.forEach(_removed.remove)); // STATE: 복원 → 목록에 다시
             setSheet(() {});
             showToast(context, msg);
           }
@@ -148,7 +153,7 @@ class _CollectionScreenState extends State<CollectionScreen> with ChannelScope {
                               image: k.image,
                               title: k.name,
                               size: 52,
-                              tag: k.status == CollectStatus.owned ? '구매함' : '좋아요',
+                              tag: _removed[k.id]! ? '구매함' : '좋아요',
                               onTap: () => restore([k.id], '「${k.name}」을(를) 복원했어요'),
                               trailing: const Text(
                                 '복원',
@@ -169,15 +174,14 @@ class _CollectionScreenState extends State<CollectionScreen> with ChannelScope {
 
   List<Kit> _visible(List<Kit> all) {
     final ids = scopeIds;
-    final want = _ownedTab ? CollectStatus.owned : CollectStatus.wanted;
-    return all
-        .where((k) => k.status == want && ids.contains(k.franchiseId) && !_removed.contains(k.id))
-        .toList();
+    final marks = Marks.of(context);
+    return all.where((k) => (_ownedTab ? marks.owned(k) : marks.liked(k)) && ids.contains(k.franchiseId)).toList();
   }
 
   Future<void> _deleteSelected() async {
     final n = _selected.length;
-    final ok = await showDialog<bool>( // F-7 P05
+    final ok = await showDialog<bool>(
+      // F-7 P05
       context: context,
       builder: (context) => AlertDialog(
         title: Text('$n개를 ${_ownedTab ? '구매함' : '좋아요'}에서 삭제할까요?'),
@@ -190,19 +194,40 @@ class _CollectionScreenState extends State<CollectionScreen> with ChannelScope {
     );
     if (ok != true || !mounted) return;
     final gone = {..._selected};
+    final tab = _ownedTab;
+    final marks = Marks.read(context);
+    final kits = (await _future).where((k) => gone.contains(k.id)).toList();
+    void apply(bool on) {
+      for (final k in kits) {
+        tab ? marks.set(k, owned: on) : marks.set(k, liked: on); // 앱 전체에서 끄기/켜기
+      }
+    }
+
+    apply(false);
     setState(() {
-      _removed.addAll(gone); // STATE: 선택 → 목록에서 빠짐
+      for (final id in gone) {
+        _removed[id] = tab; // STATE: 선택 → 목록에서 빠지고 휴지통으로
+      }
       _selected.clear();
       _editing = false;
     });
-    showToast(context, '$n개를 삭제했어요', onUndo: () => setState(() => _removed.removeAll(gone))); // P03
+    if (!mounted) return;
+    showToast(
+      context,
+      '$n개를 삭제했어요',
+      onUndo: () {
+        apply(true);
+        setState(() => gone.forEach(_removed.remove));
+      },
+    ); // P03
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ChannelHeader( // F-1 P04
+        ChannelHeader(
+          // F-1 P04
           leading: widget.leading,
           myChannels: widget.myChannels,
           selected: channel,
@@ -221,8 +246,11 @@ class _CollectionScreenState extends State<CollectionScreen> with ChannelScope {
               }
               final all = snap.data!;
               final ids = scopeIds;
+              final marks = Marks.of(context);
               int count(CollectStatus s) => all
-                  .where((k) => k.status == s && ids.contains(k.franchiseId) && !_removed.contains(k.id))
+                  .where(
+                    (k) => ids.contains(k.franchiseId) && (s == CollectStatus.owned ? marks.owned(k) : marks.liked(k)),
+                  )
                   .length;
               return Column(
                 children: [
@@ -243,7 +271,8 @@ class _CollectionScreenState extends State<CollectionScreen> with ChannelScope {
                   ),
                   Expanded(
                     child: _guide
-                        ? GuideView( // F-8
+                        ? GuideView(
+                            // F-8
                             channel: channel,
                             myChannels: widget.myChannels,
                             onPickChannel: selectChannel,
@@ -261,7 +290,8 @@ class _CollectionScreenState extends State<CollectionScreen> with ChannelScope {
   }
 
   Widget _list(List<Kit> kits, List<Kit> all) {
-    final trash = IconButton( // F-10
+    final trash = IconButton(
+      // F-10
       tooltip: '휴지통',
       onPressed: () => _openTrash(all),
       icon: Badge(
@@ -272,12 +302,11 @@ class _CollectionScreenState extends State<CollectionScreen> with ChannelScope {
       ),
     );
     if (kits.isEmpty) {
-      return EmptyView( // F-9 P09
+      return EmptyView(
+        // F-9 P09
         icon: _ownedTab ? Icons.bookmark_added_outlined : Icons.favorite_border, // 구매함 = 리본, 좋아요 = ♡
         message: _ownedTab ? '아직 구매함에 넣은 상품이 없어요' : '아직 좋아요에 담은 상품이 없어요',
-        detail: channel == allChannelId
-            ? '상품 상세에서 좋아요 · 구매함을 누르면 여기에 모여요'
-            : '${channelOf(channel).label} 채널에는 아직 없어요',
+        detail: channel == allChannelId ? '상품 상세에서 좋아요 · 구매함을 누르면 여기에 모여요' : '${channelOf(channel).label} 채널에는 아직 없어요',
         action: _removed.isEmpty
             ? OutlinedButton.icon(
                 onPressed: widget.onGoSearch,
@@ -305,9 +334,7 @@ class _CollectionScreenState extends State<CollectionScreen> with ChannelScope {
                 children: [
                   Expanded(
                     child: Text(
-                      _ownedTab
-                          ? '${kits.length}개 · 지출 합계 ${won(spent)}'
-                          : '합계 ${yen(total)} · $pieces개', // F-4 P01
+                      _ownedTab ? '${kits.length}개 · 지출 합계 ${won(spent)}' : '합계 ${yen(total)} · $pieces개', // F-4 P01
                       style: const TextStyle(color: Gp.muted, fontSize: 13),
                     ),
                   ),
@@ -323,7 +350,8 @@ class _CollectionScreenState extends State<CollectionScreen> with ChannelScope {
               ),
             ),
             for (final k in kits)
-              ThumbRow( // F-5 P08 — 검색·캘린더와 같은 줄
+              ThumbRow(
+                // F-5 P08 — 검색·캘린더와 같은 줄
                 id: k.id,
                 image: k.image,
                 title: k.name,
@@ -415,7 +443,8 @@ class _TopRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget tab(String label, int n, bool owned) => UnderlineTab( // 채널 바와 같은 밑줄 탭
+    Widget tab(String label, int n, bool owned) => UnderlineTab(
+      // 채널 바와 같은 밑줄 탭
       label: label,
       count: n,
       fontSize: 16,

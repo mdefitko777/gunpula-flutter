@@ -473,13 +473,7 @@ class _HorizontalRow extends StatelessWidget {
                 openAnnouncement(context, ann, loaders: loaders);
               }
             },
-            marks: kit == null
-                ? null
-                : QuickMarks(
-                    name: kit.name,
-                    liked: kit.status == CollectStatus.wanted,
-                    owned: kit.status == CollectStatus.owned,
-                  ), // A-9 P07
+            marks: kit == null ? null : QuickMarks(kit: kit), // A-9 P07
           );
         },
       ),

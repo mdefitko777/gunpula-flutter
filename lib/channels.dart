@@ -32,5 +32,7 @@ const allChannels = <Channel>[
 /// 처음 설치했을 때의 내 채널
 const defaultMyChannels = ['gundam', 'beyblade', 'pokemon'];
 
-Channel channelOf(String id) =>
-    allChannels.firstWhere((c) => c.id == id, orElse: () => Channel(id: id, label: id, hasData: false));
+Channel channelOf(String id) => allChannels.firstWhere(
+  (c) => c.id == id,
+  orElse: () => Channel(id: id, label: id, hasData: false),
+);

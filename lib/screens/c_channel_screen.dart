@@ -78,11 +78,7 @@ class ChannelHeader extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (leading != null)
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 10, 8, 2),
-            child: leading,
-          ),
+        if (leading != null) Padding(padding: const EdgeInsets.fromLTRB(16, 10, 8, 2), child: leading),
         ChannelBar(
           myChannels: myChannels,
           selected: selected,
@@ -144,11 +140,9 @@ class ChannelBar extends StatelessWidget {
             tooltip: '채널 관리',
             icon: const ChannelGlyph(), // C-2 P07
             onPressed: () => Navigator.of(context).push(
-              CupertinoPageRoute<void>( // C-3 P03
-                builder: (_) => ChannelManagerScreen(
-                  initial: myChannels,
-                  onChanged: onMyChannelsChanged,
-                ),
+              CupertinoPageRoute<void>(
+                // C-3 P03
+                builder: (_) => ChannelManagerScreen(initial: myChannels, onChanged: onMyChannelsChanged),
               ),
             ),
           ),
@@ -210,7 +204,8 @@ class _ChannelManagerScreenState extends State<ChannelManagerScreen> {
                   cols: cols,
                   children: [
                     for (final (i, id) in _mine.indexed)
-                      DragTarget<String>( // C-4 P03
+                      DragTarget<String>(
+                        // C-4 P03
                         onWillAcceptWithDetails: (d) => d.data != id,
                         onAcceptWithDetails: (d) => _moveTo(d.data, i),
                         builder: (context, cand, _) => LongPressDraggable<String>(
@@ -345,10 +340,7 @@ class _ChannelTile extends StatelessWidget {
                       channel.label,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: channel.hasData ? Gp.ink : Gp.faint,
-                      ),
+                      style: TextStyle(fontSize: 13, color: channel.hasData ? Gp.ink : Gp.faint),
                     ),
                   ),
                 ],

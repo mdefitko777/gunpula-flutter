@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 abstract final class Gp {
   static const ink = Color(0xFF111111);
   static const muted = Color(0xFF6B6B6B);
+
   /// 보조 글자 — 흰 바탕 대비 4.5:1 (WCAG AA) 을 넘기는 가장 옅은 회색
   static const faint = Color(0xFF767676);
   static const line = Color(0xFFE6E6E6);
@@ -33,21 +34,20 @@ abstract final class Gp {
   /// 브랜드 그라데이션 (Lv 알약 · 인증 배지)
   static const accentGradient = LinearGradient(colors: [accent, accent2]);
 
-  static BoxDecoration raised({BoxShape shape = BoxShape.rectangle, double radius = 14}) =>
-      BoxDecoration(
-        shape: shape,
-        borderRadius: shape == BoxShape.circle ? null : BorderRadius.circular(radius),
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFFFFFFFF), Color(0xFFEDEDEB)],
-        ),
-        border: Border.all(color: const Color(0xE6FFFFFF)),
-        boxShadow: const [
-          BoxShadow(color: Color(0x1A000000), blurRadius: 16, offset: Offset(0, 6)),
-          BoxShadow(color: Color(0x0F000000), blurRadius: 2, offset: Offset(0, 1)),
-        ],
-      );
+  static BoxDecoration raised({BoxShape shape = BoxShape.rectangle, double radius = 14}) => BoxDecoration(
+    shape: shape,
+    borderRadius: shape == BoxShape.circle ? null : BorderRadius.circular(radius),
+    gradient: const LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [Color(0xFFFFFFFF), Color(0xFFEDEDEB)],
+    ),
+    border: Border.all(color: const Color(0xE6FFFFFF)),
+    boxShadow: const [
+      BoxShadow(color: Color(0x1A000000), blurRadius: 16, offset: Offset(0, 6)),
+      BoxShadow(color: Color(0x0F000000), blurRadius: 2, offset: Offset(0, 1)),
+    ],
+  );
 }
 
 ThemeData buildGpTheme() {
@@ -91,19 +91,14 @@ ThemeData buildGpTheme() {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Gp.radius)),
       ),
     ),
-    textButtonTheme: TextButtonThemeData(
-      style: TextButton.styleFrom(foregroundColor: Gp.ink),
-    ),
+    textButtonTheme: TextButtonThemeData(style: TextButton.styleFrom(foregroundColor: Gp.ink)),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: Gp.soft,
       isDense: true,
       hintStyle: const TextStyle(color: Gp.faint),
       contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(Gp.radius),
-        borderSide: BorderSide.none,
-      ),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(Gp.radius), borderSide: BorderSide.none),
     ),
     bottomSheetTheme: const BottomSheetThemeData(
       backgroundColor: Gp.panel,

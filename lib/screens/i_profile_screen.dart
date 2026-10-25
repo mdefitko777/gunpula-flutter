@@ -23,6 +23,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 
 import '../api.dart';
+import '../channels.dart';
+import '../marks.dart';
 import '../detail_pane.dart';
 import '../models.dart';
 import '../theme.dart';
@@ -41,7 +43,11 @@ void openProfile(
 
 /// 친구 프로필 (같은 화면, 보기 전용)
 void openFriend(BuildContext context, Member friend, {Loaders loaders = const Loaders()}) {
-  openPage(context, ProfileScreen(loaders: loaders, friend: friend), id: friend.handle);
+  openPage(
+    context,
+    ProfileScreen(loaders: loaders, friend: friend),
+    id: friend.handle,
+  );
 }
 
 class _ProfileData {
@@ -95,7 +101,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     // STATE: GET /profile · /kits?status_ne=none · /guideWorks → 프로필 · 숫자 · 게시물
     _future = Future.wait([
       widget.loaders.profile(),
-      widget.loaders.collection(),
+      widget.loaders.kits(widget.myChannels ?? [for (final c in allChannels) c.id]), // 내 채널 상품 전부 → Marks 로 셈
       widget.loaders.guideWorks(),
     ]).then((r) => _ProfileData(r[0] as Profile, r[1] as List<Kit>, litCount(r[2] as List<GuideWork>)));
   }
@@ -225,9 +231,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _mine(Profile p, _ProfileData d) {
     final scope = widget.myChannels;
+    final marks = Marks.of(context); // 앱 전체 한 벌 — 홈에서 누른 ♡ · 리본도 숫자에 반영
     final mine = d.collection.where((k) => scope == null || scope.contains(k.franchiseId));
-    final liked = mine.where((k) => k.status == CollectStatus.wanted).length;
-    final owned = mine.where((k) => k.status == CollectStatus.owned).length;
+    final liked = mine.where(marks.liked).length;
+    final owned = mine.where(marks.owned).length;
     final photos = p.myPosts;
     return ListView(
       padding: const EdgeInsets.only(bottom: 40),

@@ -25,6 +25,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 
 import '../api.dart';
+import '../marks.dart';
 import '../detail_pane.dart';
 import '../channels.dart';
 import '../models.dart';
@@ -33,7 +34,11 @@ import '../widgets.dart';
 
 /// 상품 상세 열기 — 폰: 오른쪽에서 밀려 들어옴 / 넓은 화면: 오른쪽 칸 (detail_pane.dart)
 void openKitDetail(BuildContext context, Kit kit, {Loaders loaders = const Loaders()}) {
-  openPage(context, KitDetailScreen(kit: kit, loaders: loaders), id: kit.id);
+  openPage(
+    context,
+    KitDetailScreen(kit: kit, loaders: loaders),
+    id: kit.id,
+  );
 }
 
 /// 넓은 화면 기준 (사진 왼쪽 · 정보 오른쪽)
@@ -54,8 +59,9 @@ class KitDetailScreen extends StatefulWidget {
 
 class _KitDetailScreenState extends State<KitDetailScreen> {
   // 좋아요 · 구매함은 따로 켜고 끈다 (둘 다 켤 수 있음)
-  late bool _wanted = widget.kit.status == CollectStatus.wanted;
-  late bool _owned = widget.kit.status == CollectStatus.owned;
+  // 앱 전체 한 벌(Marks)에서 읽고 바꾼다 — 홈 카드 · 컬렉션과 같이 바뀜
+  bool get _wanted => Marks.of(context).liked(k);
+  bool get _owned => Marks.of(context).owned(k);
   late final Future<List<Kit>> _related = widget.loaders.kits([widget.kit.franchiseId]);
 
   Kit get k => widget.kit;
@@ -126,17 +132,9 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
     );
   }
 
-  void _toggleWanted() {
-    final before = _wanted;
-    setState(() => _wanted = !before); // STATE: 좋아요 → 하트 채움
-    showToast(context, before ? '좋아요를 취소했어요' : '좋아요를 눌렀어요', onUndo: () => setState(() => _wanted = before));
-  }
+  void _toggleWanted() => Marks.read(context).toggleLike(context, k); // STATE: 좋아요 (앱 전체)
 
-  void _toggleOwned() {
-    final before = _owned;
-    setState(() => _owned = !before); // STATE: 구매함 → 버튼
-    showToast(context, before ? '구매함에서 뺐어요' : '구매함에 넣었어요', onUndo: () => setState(() => _owned = before));
-  }
+  void _toggleOwned() => Marks.read(context).toggleOwn(context, k); // STATE: 구매함 (앱 전체)
 
   void _copy(String text, String what) {
     Clipboard.setData(ClipboardData(text: text));
@@ -398,11 +396,7 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
                       title: rest[i].name,
                       imageWidth: 148,
                       onTap: () => openKitDetail(context, rest[i], loaders: widget.loaders),
-                      marks: QuickMarks(
-                        name: rest[i].name,
-                        liked: rest[i].status == CollectStatus.wanted,
-                        owned: rest[i].status == CollectStatus.owned,
-                      ),
+                      marks: QuickMarks(kit: rest[i]),
                     ),
                   ),
                 ),

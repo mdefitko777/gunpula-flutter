@@ -10,6 +10,8 @@
 import 'package:flutter/material.dart';
 
 import 'detail_pane.dart';
+import 'marks.dart';
+import 'models.dart';
 import 'theme.dart';
 
 /// 로딩 상태
@@ -666,51 +668,23 @@ class MarkOverlay extends StatelessWidget {
   }
 }
 
-/// 상품 카드용 MarkOverlay — 스스로 켜고 끔 (가짜 저장, 토스트 + 되돌리기)
-class QuickMarks extends StatefulWidget {
-  const QuickMarks({super.key, required this.name, this.liked = false, this.owned = false, this.size = 28});
-  final String name;
-  final bool liked;
-  final bool owned;
+/// 상품 카드용 MarkOverlay — 앱 전체 좋아요 · 구매함(Marks)을 보고 바꾼다 (토스트 + 되돌리기)
+class QuickMarks extends StatelessWidget {
+  const QuickMarks({super.key, required this.kit, this.size = 28});
+  final Kit kit;
   final double size;
 
   @override
-  State<QuickMarks> createState() => _QuickMarksState();
-}
-
-class _QuickMarksState extends State<QuickMarks> {
-  late bool _liked = widget.liked;
-  late bool _owned = widget.owned;
-
-  /// 거르기 · 정렬로 같은 자리에 다른 상품이 오면 그 상품의 값으로 다시 시작
-  @override
-  void didUpdateWidget(QuickMarks old) {
-    super.didUpdateWidget(old);
-    if (old.name != widget.name || old.liked != widget.liked || old.owned != widget.owned) {
-      _liked = widget.liked;
-      _owned = widget.owned;
-    }
-  }
-
-  void _like() {
-    final before = _liked;
-    setState(() => _liked = !before); // STATE: 좋아요 → 하트 채움
-    showToast(context, before ? '좋아요를 취소했어요' : '「${widget.name}」 좋아요', onUndo: () => setState(() => _liked = before));
-  }
-
-  void _own() {
-    final before = _owned;
-    setState(() => _owned = !before); // STATE: 구매함 → 리본 + 가 ✓ 로
-    showToast(
-      context,
-      before ? '구매함에서 뺐어요' : '「${widget.name}」 구매함에 넣었어요',
-      onUndo: () => setState(() => _owned = before),
+  Widget build(BuildContext context) {
+    final m = Marks.of(context);
+    return MarkOverlay(
+      liked: m.liked(kit),
+      owned: m.owned(kit),
+      onLike: () => Marks.read(context).toggleLike(context, kit),
+      onOwn: () => Marks.read(context).toggleOwn(context, kit),
+      size: size,
     );
   }
-
-  @override
-  Widget build(BuildContext context) =>
-      MarkOverlay(liked: _liked, owned: _owned, onLike: _like, onOwn: _own, size: widget.size);
 }
 
 /// 책갈피 리본 모양 (아래 가운데가 파인 사각형)

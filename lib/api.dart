@@ -83,8 +83,7 @@ Future<List<Kit>> fetchKits(List<String> channelIds) async {
 }
 
 /// 컬렉션: 좋아요 · 구매함 상품 (모든 채널)
-Future<List<Kit>> fetchCollection() =>
-    _getList('kits?status_ne=none&_sort=date&_order=desc', Kit.fromJson);
+Future<List<Kit>> fetchCollection() => _getList('kits?status_ne=none&_sort=date&_order=desc', Kit.fromJson);
 
 /// 도감 대화상자의 대응 모델: GET /kits?id=a&id=b
 Future<List<Kit>> fetchKitsByIds(List<String> ids) async {
@@ -100,8 +99,7 @@ Future<List<World>> fetchWorlds(String channelId) =>
 Future<List<GuideWork>> fetchGuideWorks() => _getList('guideWorks', GuideWork.fromJson);
 
 /// 도감 > 건담 > 작품: 기체 칸
-Future<List<GuideUnit>> fetchGuideUnits(String workId) =>
-    _getList('guideUnits?workId=$workId', GuideUnit.fromJson);
+Future<List<GuideUnit>> fetchGuideUnits(String workId) => _getList('guideUnits?workId=$workId', GuideUnit.fromJson);
 
 /// 도감 > 베이블레이드 X
 Future<List<BbxTop>> fetchBbxTops() => _getList('bbxTops', BbxTop.fromJson);
@@ -109,15 +107,11 @@ Future<List<BbxTop>> fetchBbxTops() => _getList('bbxTops', BbxTop.fromJson);
 /// 캘린더 · 홈: 공식 예고
 Future<List<Announcement>> fetchAnnouncements(List<String> channelIds) async {
   if (channelIds.isEmpty) return const [];
-  return _getList(
-    'announcements?${_byChannels(channelIds)}&_sort=date&_order=desc',
-    Announcement.fromJson,
-  );
+  return _getList('announcements?${_byChannels(channelIds)}&_sort=date&_order=desc', Announcement.fromJson);
 }
 
 /// 알림: 최근 것부터
-Future<List<AppNotice>> fetchNotifications() =>
-    _getList('notifications?_sort=at&_order=desc', AppNotice.fromJson);
+Future<List<AppNotice>> fetchNotifications() => _getList('notifications?_sort=at&_order=desc', AppNotice.fromJson);
 
 /// 내 정보: GET /profile (객체 하나)
 Future<Profile> fetchProfile() async {

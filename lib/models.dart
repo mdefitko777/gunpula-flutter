@@ -262,7 +262,10 @@ class BbxPart {
       have: _b(json, 'have'),
       topId: _s(json, 'topId'),
       stats: raw is Map<String, Object?>
-          ? {for (final e in raw.entries) if (e.value is num) e.key: (e.value! as num).toInt()}
+          ? {
+              for (final e in raw.entries)
+                if (e.value is num) e.key: (e.value! as num).toInt(),
+            }
           : const {},
     );
   }
@@ -381,7 +384,10 @@ class Profile {
   final List<Member> friends;
 
   /// 내 게시물 (= 내 사진 인증 수)
-  List<ShowcasePhoto> get myPosts => [for (final s in showcase) if (s.owner == handle) s];
+  List<ShowcasePhoto> get myPosts => [
+    for (final s in showcase)
+      if (s.owner == handle) s,
+  ];
 
   /// 공유 공간 멤버 → 친구 목록의 자세한 정보(좋아요 · 구매함 id 등)
   Member friendOf(Member m) => friends.where((f) => f.handle == m.handle).firstOrNull ?? m;

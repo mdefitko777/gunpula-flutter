@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mid_project_template/api.dart';
 import 'package:mid_project_template/detail_pane.dart';
+import 'package:mid_project_template/marks.dart';
 import 'package:mid_project_template/widgets.dart';
 import 'package:mid_project_template/models.dart';
 import 'package:mid_project_template/screens/d_kit_detail_screen.dart';
@@ -60,7 +61,10 @@ Future<void> _show(WidgetTester tester, Size size, Widget home) async {
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.reset);
   paneSelection.value = null; // 테스트 사이에 남지 않게
-  await tester.pumpWidget(MaterialApp(theme: buildGpTheme(), home: home));
+  // 실제 앱(main.dart)처럼 맨 위에 좋아요 · 구매함 한 벌
+  await tester.pumpWidget(
+    MaterialApp(theme: buildGpTheme(), builder: (context, child) => MarksHost(child: child!), home: home),
+  );
   // 끝없는 애니메이션(색 고리 · 배너 자동 넘김)이 있어 pumpAndSettle 대신 몇 번 나눠 그린다
   for (var i = 0; i < 6; i++) {
     await tester.pump(const Duration(milliseconds: 300));
@@ -124,5 +128,32 @@ void main() {
   testWidgets('폰(390×844)에서는 칸 없이 쌓기', (tester) async {
     await _show(tester, const Size(390, 844), AppShell(loaders: fakeLoaders));
     expect(find.byType(DetailPaneView), findsNothing);
+  });
+
+  // 좋아요 · 구매함 한 벌: 상품 사진에서 ♡ 를 누르면 다른 화면(여기선 글자)도 같이 바뀐다
+  testWidgets('좋아요 한 벌 — 한 곳에서 누르면 다른 곳도 바뀜', (tester) async {
+    final none = _list<Kit>('kits', Kit.fromJson).firstWhere((k) => k.status == CollectStatus.none);
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: buildGpTheme(),
+        builder: (context, child) => MarksHost(child: child!),
+        home: Scaffold(
+          body: Column(
+            children: [
+              SizedBox.square(dimension: 150, child: QuickMarks(kit: none)),
+              Builder(builder: (c) => Text(Marks.of(c).liked(none) ? '좋아요 켜짐' : '좋아요 꺼짐')),
+              Builder(builder: (c) => Text(Marks.of(c).owned(none) ? '구매함 켜짐' : '구매함 꺼짐')),
+            ],
+          ),
+        ),
+      ),
+    );
+    expect(find.text('좋아요 꺼짐'), findsOneWidget);
+    await tester.tap(find.byIcon(Icons.favorite_border));
+    await tester.pump();
+    expect(find.text('좋아요 켜짐'), findsOneWidget);
+    await tester.tap(find.byIcon(Icons.add)); // 리본 +
+    await tester.pump();
+    expect(find.text('구매함 켜짐'), findsOneWidget);
   });
 }

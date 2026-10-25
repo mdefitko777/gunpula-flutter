@@ -8,6 +8,7 @@
 // 기획 문서(docs/디자인가이드.md)에 없는 화면은 만들지 않는다(감점). 화면을 늘리면 이 주석·가이드도 같이 고친다.
 import 'package:flutter/material.dart';
 
+import 'marks.dart';
 import 'screens/s_app_shell.dart';
 import 'theme.dart';
 
@@ -22,6 +23,8 @@ class GunpulaApp extends StatelessWidget {
       title: 'Gunpula v2', // M-1
       debugShowCheckedModeBanner: false,
       theme: buildGpTheme(), // M-2 P08
+      // M-3 좋아요 · 구매함 한 벌을 모든 화면(전체 화면 · 오른쪽 칸 포함) 위에
+      builder: (context, child) => MarksHost(child: child!),
       home: const AppShell(),
     );
   }

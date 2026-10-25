@@ -13,6 +13,7 @@ import 'package:flutter/cupertino.dart' show CupertinoPageRoute;
 import 'package:flutter/material.dart';
 
 import '../api.dart';
+import '../marks.dart';
 import '../channels.dart';
 import '../models.dart';
 import '../theme.dart';
@@ -127,11 +128,8 @@ class _FriendCollectionScreenState extends State<FriendCollectionScreen> {
     if (kits.isEmpty) {
       return EmptyView(message: liked ? '${f.name}의 좋아요가 비어 있어요' : '${f.name}의 구매함이 비어 있어요');
     }
-    String mark(Kit k) {
-      final me = mine.where((m) => m.id == k.id).firstOrNull;
-      if (me == null) return '';
-      return me.status == CollectStatus.owned ? '나도 있음' : '내 좋아요';
-    }
+    final m = Marks.of(context); // 앱 전체 한 벌 — 방금 누른 ♡ 도 반영
+    String mark(Kit k) => m.owned(k) ? '나도 있음' : (m.liked(k) ? '내 좋아요' : '');
 
     return ListView(
       padding: const EdgeInsets.only(bottom: 32),

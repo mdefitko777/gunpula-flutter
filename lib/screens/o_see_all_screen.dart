@@ -20,6 +20,7 @@
 import 'package:flutter/material.dart';
 
 import '../api.dart';
+import '../marks.dart';
 import '../channels.dart';
 import '../models.dart';
 import '../theme.dart';
@@ -120,7 +121,6 @@ class KitFilter {
     if (release != ReleaseState.any) release.label,
   ];
 }
-
 
 /// 값별 개수, 많은 순
 List<(String, int)> _counts(Iterable<String> values) {
@@ -331,7 +331,8 @@ class _SectionListViewState extends State<SectionListView> {
                       ),
                       InkWell(
                         onTap: () => setState(() => _filter = KitFilter()), // STATE: 필터 초기화
-                        child: const SizedBox.square( // 누르는 자리 40
+                        child: const SizedBox.square(
+                          // 누르는 자리 40
                           dimension: 40,
                           child: Icon(Icons.close, size: 16, color: Gp.muted),
                         ),
@@ -416,7 +417,7 @@ class _SectionListViewState extends State<SectionListView> {
     title: k.name,
     titleLines: 2,
     subtitle: joinDot([yen(k.priceJpy), dateDot(k.date)]),
-    marks: QuickMarks(name: k.name, liked: k.status == CollectStatus.wanted, owned: k.status == CollectStatus.owned),
+    marks: QuickMarks(kit: k),
     onTap: () => openKitDetail(context, k, loaders: widget.loaders),
   );
 
@@ -427,11 +428,11 @@ class _SectionListViewState extends State<SectionListView> {
     titleLines: 2,
     size: 64,
     subtitle: joinDot([channelOf(k.franchiseId).label, kitWork(k), k.line]),
-    tag: switch (k.status) {
-      CollectStatus.wanted => '좋아요',
-      CollectStatus.owned => '구매함',
-      CollectStatus.none => '',
-    },
+    tag: Marks.of(context).owned(k)
+        ? '구매함'
+        : Marks.of(context).liked(k)
+        ? '좋아요'
+        : '',
     trailing: Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
