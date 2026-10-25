@@ -4,13 +4,12 @@
 // │ 번호 │ Flutter 위젯명                     │ 비즈니스 명칭(한글)                    │ 원칙(P번호)   │
 // │ D-1  │ RaisedCircleButton(‹)              │ 뒤로 (보던 화면 그대로)                 │ P03           │
 // │ D-2  │ PageView + 점 표시                 │ 공식 사진 (여러 장 넘기기)              │ P02 · P08     │
-// │ D-3  │ Text(분류 · 작품 · 라인)            │ 어디에 속한 상품인지                    │ P01 · P06     │
 // │ D-4  │ 제목 + 복사 · 일본어 원래 이름 · 공식 링크 │ 상품명 (공식 사이트 검색용 원문 · 출처) │ P02 · P07 │
 // │ D-5  │ Text(¥) + 발매일 + 한정 표시         │ 일본 정가 · 발매 · 한정/PB              │ P02 · P01     │
 // │ D-6  │ 두 토글 버튼 + 토스트(되돌리기)       │ 원함 · 구매함 (따로 켜고 끔, 가짜 저장)  │ P03 · P01     │
 // │ D-7  │ 수량 − n +                         │ 원하는 수량 (원함일 때만)               │ P05           │
 // │ D-8  │ 가로 스크롤 요약 줄 → 바텀 시트       │ 공식 정보 (요약 → 전체 표)              │ P08 · P06     │
-// │ D-9  │ 추정가 2칸 · 검색어 복사 · 플랫폼 칩  │ 시장가 (없으면 이유 + 찾아볼 곳)        │ P01 · P07     │
+// │ D-9  │ 시세 카드: 가격 범위 · 검색어 복사 · 플랫폼 3칸 │ 시장가 (없으면 이유 + 찾아볼 곳) │ P01 · P07 · P08 │
 // │ D-10 │ 가로 ProductTile (GET /kits)        │ 같은 작품의 다른 상품                   │ P06           │
 // │ D-11 │ 세로 사진 목록                      │ 상품 상세 (공식 사진 전부)              │ P02           │
 // │ D-12 │ TextButton → showDialog(확인)       │ 정보 오류 제보 (보내기 전 확인)         │ P05 · P09     │
@@ -61,8 +60,6 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
 
   Kit get k => widget.kit;
 
-  /// 시장 검색에 쓰기 좋은 이름 (일본어 원래 이름이 있으면 그것)
-  String get _searchName => k.nameJa.isNotEmpty ? k.nameJa : k.name;
 
   void _toggleWanted() {
     final before = _wanted;
@@ -173,18 +170,12 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
   }
 
   List<Widget> _info(BuildContext context) {
-    final channel = channelOf(k.franchiseId).label;
     return [
       // 기본 정보
       _Panel(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              [channel, k.series, k.line].where((s) => s.isNotEmpty).join(' · '), // D-3 P06
-              style: const TextStyle(fontSize: 12.5, color: Gp.muted, letterSpacing: 0.3),
-            ),
-            const SizedBox(height: 8),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -217,48 +208,47 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
             ),
             const SizedBox(height: 14),
             Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  yen(k.priceJpy), // D-5 P02
-                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
-                ),
-                const SizedBox(width: 10),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 3),
-                  child: Text('발매 ${k.date}', style: const TextStyle(color: Gp.muted)),
-                ),
-                const Spacer(),
-                if (k.pb) const _Badge('PB'),
-                if (k.limited) const _Badge('한정'),
-              ],
-            ),
-            const SizedBox(height: 18),
-            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
-                  child: _StatusButton( // D-6 P03
-                    label: '원함',
-                    icon: Icons.bookmark_border,
-                    activeIcon: Icons.bookmark,
-                    active: _wanted,
-                    onTap: _toggleWanted,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        yen(k.priceJpy), // D-5 P02
+                        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
+                      ),
+                      const SizedBox(height: 2),
+                      Row(
+                        children: [
+                          Text('발매 ${k.date}', style: const TextStyle(color: Gp.muted, fontSize: 13)),
+                          if (k.limited) const _Badge('한정'),
+                          if (k.pb) const _Badge('PB'),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: _StatusButton(
-                    label: '구매함',
-                    icon: Icons.check_circle_outline,
-                    activeIcon: Icons.check_circle,
-                    active: _owned,
-                    onTap: _toggleOwned,
-                  ),
+                // D-6 원함 · 구매함 — 가격 오른쪽의 작은 알약 두 개 (P03)
+                _StatusButton(
+                  label: '원함',
+                  icon: Icons.bookmark_border,
+                  activeIcon: Icons.bookmark,
+                  active: _wanted,
+                  onTap: _toggleWanted,
+                ),
+                const SizedBox(width: 6),
+                _StatusButton(
+                  label: '구매함',
+                  icon: Icons.check_circle_outline,
+                  activeIcon: Icons.check_circle,
+                  active: _owned,
+                  onTap: _toggleOwned,
                 ),
               ],
             ),
             if (_wanted) ...[
-              const SizedBox(height: 14),
+              const SizedBox(height: 10),
               Row(
                 children: [
                   const Text('원하는 수량', style: TextStyle(color: Gp.muted)),
@@ -278,63 +268,17 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
         padding: EdgeInsets.zero,
         child: _SpecStrip(specs: _specs, onTap: _openSpecs), // D-8 P08
       ),
-      // 시장가
+      // 시장가: 한 장의 카드 (가격 범위 → 검색어 복사 → 플랫폼 3칸)
       _Panel(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SectionHeader('시장가', padding: EdgeInsets.fromLTRB(0, 0, 0, 12)), // D-9 P01
-            if (k.market case final m?) ...[
-              Row(
-                children: [
-                  Expanded(child: _Estimate('일반 추정', won(m.normalKrw))),
-                  const SizedBox(width: 10),
-                  Expanded(child: _Estimate('보수 추정', won(m.conservativeKrw))),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Text('국내 중고·신품 거래 ${m.samples}건 기준 예시값',
-                  style: const TextStyle(fontSize: 12, color: Gp.faint)),
-            ] else
-              const Text(
-                '아직 모인 가격 샘플이 없어요. 아래 이름으로 지금 가격을 직접 찾아보세요.', // P09
-                style: TextStyle(color: Gp.muted),
-              ),
-            const SizedBox(height: 14),
-            // 검색어 복사 — 플랫폼 앱에 그대로 붙여 넣기 (P07)
-            Container(
-              padding: const EdgeInsets.fromLTRB(14, 6, 4, 6),
-              decoration: BoxDecoration(
-                color: Gp.bg,
-                borderRadius: BorderRadius.circular(Gp.radius),
-              ),
-              child: Row(
-                children: [
-                  const Text('검색어', style: TextStyle(fontSize: 12.5, color: Gp.muted)),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(_searchName, maxLines: 1, overflow: TextOverflow.ellipsis),
-                  ),
-                  _CopyButton(onTap: () => _copy(_searchName, '검색어')),
-                ],
-              ),
-            ),
-            const SizedBox(height: 10),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                for (final p in marketPlatforms)
-                  ActionChip(
-                    avatar: const Icon(Icons.search, size: 16),
-                    label: Text('$p에서 찾기'),
-                    onPressed: () => _external(p),
-                    backgroundColor: Gp.panel,
-                    side: const BorderSide(color: Gp.line),
-                    shape: const StadiumBorder(),
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  ),
-              ],
+            _MarketCard(
+              market: k.market,
+              name: k.name,
+              onCopy: () => _copy(k.name, '검색어'), // P07 플랫폼 앱에 그대로 붙여 넣기
+              onOpen: _external,
             ),
           ],
         ),
@@ -664,20 +608,22 @@ class _StatusButton extends StatelessWidget {
       selected: active,
       child: GestureDetector(
         onTap: onTap,
+        // 작은 알약 (높이 34) — 가격 줄 오른쪽에 들어가게
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 180),
-          height: 48,
+          height: 34,
+          padding: const EdgeInsets.symmetric(horizontal: 11),
           decoration: BoxDecoration(
             color: active ? Gp.accent.withValues(alpha: 0.07) : Gp.panel,
-            borderRadius: BorderRadius.circular(Gp.radius),
-            border: Border.all(color: active ? Gp.accent : Gp.line, width: active ? 1.4 : 1),
+            borderRadius: BorderRadius.circular(99),
+            border: Border.all(color: active ? Gp.accent : Gp.line, width: active ? 1.3 : 1),
           ),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(active ? activeIcon : icon, size: 19, color: active ? Gp.accent : Gp.ink),
-              const SizedBox(width: 6),
-              Text(label, style: const TextStyle(fontWeight: FontWeight.w600, color: Gp.ink)),
+              Icon(active ? activeIcon : icon, size: 16, color: active ? Gp.accent : Gp.ink),
+              const SizedBox(width: 4),
+              Text(label, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
             ],
           ),
         ),
@@ -696,17 +642,18 @@ class _Stepper extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget btn(IconData icon, String tip, int? next) => IconButton(
       tooltip: tip,
+      visualDensity: VisualDensity.compact,
       onPressed: next == null ? null : () => onChanged(next),
-      icon: Icon(icon, size: 18),
+      icon: Icon(icon, size: 16),
       style: IconButton.styleFrom(side: const BorderSide(color: Gp.line)),
     );
     return Row(
       children: [
         btn(Icons.remove, '줄이기', value > 1 ? value - 1 : null), // P05 1 아래로는 못 내림
         SizedBox(
-          width: 36,
+          width: 30,
           child: Text('$value', textAlign: TextAlign.center,
-              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
+              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
         ),
         btn(Icons.add, '늘리기', value < 99 ? value + 1 : null),
       ],
@@ -714,26 +661,121 @@ class _Stepper extends StatelessWidget {
   }
 }
 
-/// 시장가 한 칸
-class _Estimate extends StatelessWidget {
-  const _Estimate(this.label, this.value);
-  final String label;
-  final String value;
+/// D-9 시세 카드 — 나열 대신 한 덩어리: 가격 범위 · 검색어 · 플랫폼
+class _MarketCard extends StatelessWidget {
+  const _MarketCard({
+    required this.market,
+    required this.name,
+    required this.onCopy,
+    required this.onOpen,
+  });
+
+  final Market? market;
+  final String name;
+  final VoidCallback onCopy;
+  final ValueChanged<String> onOpen;
 
   @override
   Widget build(BuildContext context) {
+    final m = market;
     return Container(
-      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: Gp.bg,
-        borderRadius: BorderRadius.circular(Gp.radius),
+        borderRadius: BorderRadius.circular(14),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(label, style: const TextStyle(fontSize: 12, color: Gp.muted)),
-          const SizedBox(height: 4),
-          Text(value, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+          // 가격 범위
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
+            child: m == null
+                ? const Text(
+                    '아직 모인 시세가 없어요 · 아래에서 지금 가격을 찾아보세요', // P09
+                    style: TextStyle(color: Gp.muted),
+                  )
+                : Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${won(m.normalKrw).replaceAll('원', '')} ~ ${won(m.conservativeKrw)}',
+                              style: const TextStyle(fontSize: 21, fontWeight: FontWeight.w700),
+                            ),
+                            const SizedBox(height: 3),
+                            const Text(
+                              '국내 중고·신품 시세 (일반 ~ 보수 추정)',
+                              style: TextStyle(fontSize: 12, color: Gp.muted),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: Gp.panel,
+                          borderRadius: BorderRadius.circular(99),
+                          border: Border.all(color: Gp.line),
+                        ),
+                        child: Text(
+                          '거래 ${m.samples}건',
+                          style: const TextStyle(fontSize: 11.5, color: Gp.muted),
+                        ),
+                      ),
+                    ],
+                  ),
+          ),
+          const Divider(height: 1, indent: 16, endIndent: 16),
+          // 검색어 복사
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 4, 4, 4),
+            child: Row(
+              children: [
+                const Text('이 이름으로 찾기', style: TextStyle(fontSize: 12.5, color: Gp.muted)),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(name, maxLines: 1, overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontSize: 13.5)),
+                ),
+                IconButton(
+                  tooltip: '검색어 복사',
+                  visualDensity: VisualDensity.compact,
+                  onPressed: onCopy,
+                  icon: const Icon(Icons.content_copy_rounded, size: 17, color: Gp.muted),
+                ),
+              ],
+            ),
+          ),
+          const Divider(height: 1, indent: 16, endIndent: 16),
+          // 플랫폼 3칸
+          IntrinsicHeight(
+            child: Row(
+              children: [
+                for (final (i, p) in marketPlatforms.indexed) ...[
+                  if (i > 0) const VerticalDivider(width: 1, indent: 12, endIndent: 12),
+                  Expanded(
+                    child: InkWell(
+                      onTap: () => onOpen(p),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 13),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(p, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+                            const SizedBox(width: 2),
+                            const Icon(Icons.north_east, size: 12, color: Gp.muted),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
         ],
       ),
     );
