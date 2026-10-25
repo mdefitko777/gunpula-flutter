@@ -1,22 +1,22 @@
-// 화면 O: 전체 목록 — 홈 안에서 바뀌는 보기 (새 화면을 쌓지 않음)
-// 홈 위쪽(아바타 줄 · 채널 바 · 검색창)은 그대로 두고, 그 아래만 이 목록으로 바뀐다.
-// 들어오는 곳: 홈 가로 줄의 › (최근 추가 · 10월 발매 · 공식 예고 · 최근 본) · 검색창 아래 "전체 상품 / 작품" 알약.
-// 홈 줄은 사진과 이름만(P08), 여기서는 가격 · 발매일까지 보이고 작품으로 거르며 검색창은 이 목록 안에서만 찾는다.
+// 화면 O: 전체 목록 — 새 화면을 쌓지 않고 탭 안에서 바뀌는 보기
+// 홈: 가로 줄 › (최근 추가 · 10월 발매 · 공식 예고 · 최근 본) → 홈 머리(아바타 · 채널 바 · 검색창) 아래만 이 목록.
+// 검색: 검색 결과 · "전체 상품 둘러보기"도 같은 목록 (AI 후보는 맨 위 머리로).
+// 홈 줄은 사진과 이름만(P08), 여기서는 가격 · 발매일까지 보이고, 오른쪽에서 나오는 필터 패널로 거른다.
 //
 // ┌──────── 디자인 가이드 대응표: O 전체 목록 ─────────────────────────────────────────┐
 // │ 번호 │ Flutter 위젯명                     │ 비즈니스 명칭(한글)                    │ 원칙(P번호)   │
-// │ O-1  │ ‹ + 제목 + 개수 · 보기 전환          │ 어느 목록인지 · 홈으로 돌아가기 · 격자/목록 │ P03 · P07   │
-// │ O-2  │ 알약 거르기 + 개수                   │ 상품: 작품별 (SEED · 수성 · FGO …)       │ P06 · P01     │
-// │      │                                    │ 예고: 공식 발표 · 상품화 확정 · 예약 시작 │              │
-// │ O-3  │ PopupMenuButton                     │ 정렬: 최신순 · 발매일순 · 가격 낮은/높은순 │ P07           │
+// │ O-1  │ ‹ + 제목 + 개수 · 필터 · 보기 전환    │ 어느 목록인지 · 돌아가기 · 격자/목록     │ P03 · P07     │
+// │ O-2  │ 오른쪽 패널(showGeneralDialog)       │ 필터: 작품 · 종류 · 라인 · 가격 · 발매   │ P06 · P08     │
+// │      │ 접히는 칸 + 체크 · 초기화 · n개 보기  │ (고르는 동안 결과 개수가 바로 바뀜)       │ P01 · P05     │
+// │ O-3  │ 고른 필터 한 줄 + PopupMenuButton    │ 지금 거르는 조건 · 정렬 4가지             │ P01 · P07     │
 // │ O-4  │ 격자 ProductTile(+ ♡) / ThumbRow     │ 상품 (가격 · 발매일 보임) → D 상세       │ P08 · P07     │
-// │ O-5  │ 16:9 카드                           │ 공식 예고 → J 공고                      │ P02           │
+// │ O-5  │ 밑줄 탭 + 16:9 카드                  │ 공식 예고: 공식 발표 · 상품화 확정 · 예약  │ P02 · P06     │
 // │ O-6  │ 기록 지우기 → showDialog → 토스트     │ 최근 본 기록 비우기 (되돌리기)            │ P05 · P03     │
-// │ O-7  │ 홈 검색창 (이 목록 안에서만 찾기)      │ "최근 추가에서 찾기"                     │ P07 · P04     │
+// │ O-7  │ 위 검색창 (이 목록 안에서만 찾기)      │ "최근 추가에서 찾기"                     │ P07 · P04     │
 // │ O-8  │ EmptyView                          │ 거른 결과 · 찾은 결과 없음 · 기록 없음     │ P09           │
 // └──────────────────────────────────────────────────────────────────────────────────┘
-// 전환: 홈 안에서 바뀜(쌓지 않음) — ‹ 또는 뒤로 가기로 홈. 칸 → 상세 쌓기.
-// 데이터는 홈이 GET 한 목록을 그대로 쓴다(다시 부르지 않음). 채널을 바꾸면 홈이 다시 GET 하고 목록도 따라 바뀐다.
+// 전환: 탭 안에서 바뀜(쌓지 않음) — ‹ 또는 뒤로 가기로 원래 화면. 칸 → 상세 쌓기. 필터 → 오른쪽에서 덮기.
+// 데이터는 부모 화면이 GET 한 목록을 그대로 쓴다(다시 부르지 않음).
 import 'package:flutter/material.dart';
 
 import '../api.dart';
@@ -28,7 +28,7 @@ import 'd_kit_detail_screen.dart';
 import 'j_announcement_screen.dart';
 
 /// 홈에서 펼칠 수 있는 목록
-enum HomeSection { all, recent, month, announcements, viewed }
+enum HomeSection { recent, month, announcements, viewed }
 
 enum KitSort { newest, release, priceLow, priceHigh }
 
@@ -41,8 +41,97 @@ extension on KitSort {
   };
 }
 
+enum PriceBand { any, under3k, mid, over10k }
+
+enum ReleaseState { any, released, upcoming }
+
+extension on PriceBand {
+  String get label => switch (this) {
+    PriceBand.any => '전체',
+    PriceBand.under3k => '¥3,000 이하',
+    PriceBand.mid => '¥3,000 – ¥10,000',
+    PriceBand.over10k => '¥10,000 이상',
+  };
+
+  bool hit(int? p) => switch (this) {
+    PriceBand.any => true,
+    PriceBand.under3k => p != null && p <= 3000,
+    PriceBand.mid => p != null && p > 3000 && p <= 10000,
+    PriceBand.over10k => p != null && p > 10000,
+  };
+}
+
+extension on ReleaseState {
+  String get label => switch (this) {
+    ReleaseState.any => '전체',
+    ReleaseState.released => '발매됨',
+    ReleaseState.upcoming => '발매 예정',
+  };
+}
+
+/// 프로토타입의 오늘 (캘린더와 같음) — 발매됨/예정 나누기
+const _today = '2026-10-25';
+
+/// O-2 필터 조건 (가짜 저장 없음, 이 목록 안에서만)
+class KitFilter {
+  KitFilter({
+    Set<String>? works,
+    Set<String>? types,
+    Set<String>? lines,
+    this.price = PriceBand.any,
+    this.release = ReleaseState.any,
+  }) : works = works ?? {},
+       types = types ?? {},
+       lines = lines ?? {};
+
+  final Set<String> works;
+  final Set<String> types;
+  final Set<String> lines;
+  PriceBand price;
+  ReleaseState release;
+
+  KitFilter copy() =>
+      KitFilter(works: {...works}, types: {...types}, lines: {...lines}, price: price, release: release);
+
+  int get count =>
+      works.length +
+      types.length +
+      lines.length +
+      (price == PriceBand.any ? 0 : 1) +
+      (release == ReleaseState.any ? 0 : 1);
+
+  bool matches(Kit k) =>
+      (works.isEmpty || works.contains(kitWork(k))) &&
+      (types.isEmpty || types.contains(k.type)) &&
+      (lines.isEmpty || lines.contains(k.line)) &&
+      price.hit(k.priceJpy) &&
+      switch (release) {
+        ReleaseState.any => true,
+        ReleaseState.released => k.date.compareTo(_today) <= 0,
+        ReleaseState.upcoming => k.date.compareTo(_today) > 0,
+      };
+
+  /// 고른 조건 한 줄 ("SEED · HG · ¥3,000 이하")
+  List<String> get labels => [
+    ...works,
+    ...types,
+    ...lines,
+    if (price != PriceBand.any) price.label,
+    if (release != ReleaseState.any) release.label,
+  ];
+}
+
 /// "2026-10-05" → "2026.10.05", "2027-07" → "2027.07"
 String dateLabel(String d) => d.replaceAll('-', '.');
+
+/// 값별 개수, 많은 순
+List<(String, int)> _counts(Iterable<String> values) {
+  final m = <String, int>{};
+  for (final v in values) {
+    if (v.isNotEmpty) m[v] = (m[v] ?? 0) + 1;
+  }
+  return [for (final e in m.entries) (e.key, e.value)]..sort((a, b) => b.$2.compareTo(a.$2));
+}
 
 class SectionListView extends StatefulWidget {
   const SectionListView({
@@ -54,8 +143,8 @@ class SectionListView extends StatefulWidget {
     this.announcements,
     this.history = false,
     this.sort = KitSort.newest,
-    this.work = '',
     this.query = '',
+    this.header,
     this.loaders = const Loaders(),
   });
 
@@ -71,11 +160,11 @@ class SectionListView extends StatefulWidget {
   final bool history;
   final KitSort sort;
 
-  /// 처음 고른 작품 ('' = 전체)
-  final String work;
-
-  /// 홈 검색창 글자 — 이 목록 안에서만 거른다 (O-7)
+  /// 위 검색창 글자 — 이 목록 안에서만 거른다 (O-7)
   final String query;
+
+  /// 격자 위에 함께 스크롤되는 머리 (검색의 AI 후보)
+  final Widget? header;
   final Loaders loaders;
 
   @override
@@ -84,22 +173,25 @@ class SectionListView extends StatefulWidget {
 
 class _SectionListViewState extends State<SectionListView> {
   late KitSort _sort = widget.sort;
-  late String _work = widget.work;
-  late List<Kit> _cleared = const []; // 최근 본: 지운 기록
+  KitFilter _filter = KitFilter();
+  List<Kit> _cleared = const []; // 최근 본: 지운 기록
   bool _grid = true;
   String _annStatus = '';
 
-  List<Kit> get _kits => widget.kits.where((k) => !_cleared.contains(k)).toList();
+  List<Kit> get _kits => [
+    for (final k in widget.kits)
+      if (!_cleared.contains(k)) k,
+  ];
 
   List<Kit> _visibleKits() {
     final list = [
       for (final k in _kits)
-        if ((_work.isEmpty || kitWork(k) == _work) && kitMatches(k, widget.query)) k,
+        if (_filter.matches(k) && kitMatches(k, widget.query)) k,
     ];
     int price(Kit k, int none) => k.priceJpy ?? none;
     switch (_sort) {
       case KitSort.newest:
-        break; // 홈 줄과 같은 순서 (GET 정렬 그대로)
+        break; // GET 정렬 그대로
       case KitSort.release:
         list.sort((a, b) => a.date.compareTo(b.date));
       case KitSort.priceLow:
@@ -128,6 +220,30 @@ class _SectionListViewState extends State<SectionListView> {
     showToast(context, '최근 본 기록을 지웠어요', onUndo: () => setState(() => _cleared = const []));
   }
 
+  /// O-2 오른쪽에서 나오는 필터 패널
+  Future<void> _openFilter() async {
+    final pool = [
+      for (final k in _kits)
+        if (kitMatches(k, widget.query)) k,
+    ];
+    final picked = await showGeneralDialog<KitFilter>(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: '필터 닫기',
+      barrierColor: const Color(0x52000000),
+      transitionDuration: const Duration(milliseconds: 260),
+      pageBuilder: (_, _, _) => _FilterPanel(kits: pool, initial: _filter),
+      transitionBuilder: (_, a, _, child) => SlideTransition(
+        position: Tween(
+          begin: const Offset(1, 0),
+          end: Offset.zero,
+        ).animate(CurvedAnimation(parent: a, curve: Curves.easeOutCubic)),
+        child: child,
+      ),
+    );
+    if (picked != null) setState(() => _filter = picked); // STATE: 필터 → 목록
+  }
+
   @override
   Widget build(BuildContext context) {
     final anns = widget.announcements;
@@ -141,7 +257,7 @@ class _SectionListViewState extends State<SectionListView> {
           child: Row(
             children: [
               IconButton(
-                tooltip: '홈으로',
+                tooltip: '돌아가기',
                 onPressed: widget.onBack,
                 icon: const Icon(Icons.arrow_back_ios_new, size: 18),
               ),
@@ -158,12 +274,23 @@ class _SectionListViewState extends State<SectionListView> {
               ),
               if (widget.history && _kits.isNotEmpty)
                 TextButton(onPressed: _clearHistory, child: const Text('기록 지우기')), // O-6
-              if (anns == null)
+              if (anns == null && _kits.isNotEmpty) ...[
+                IconButton(
+                  tooltip: '필터',
+                  onPressed: _openFilter,
+                  icon: Badge(
+                    isLabelVisible: _filter.count > 0,
+                    backgroundColor: Gp.accent,
+                    label: Text('${_filter.count}'),
+                    child: const Icon(Icons.tune, color: Gp.ink),
+                  ),
+                ),
                 IconButton(
                   tooltip: _grid ? '목록으로 보기' : '격자로 보기',
                   onPressed: () => setState(() => _grid = !_grid), // STATE: 보기 방식
                   icon: Icon(_grid ? Icons.view_list_outlined : Icons.grid_view_outlined, color: Gp.muted),
                 ),
+              ],
             ],
           ),
         ),
@@ -175,8 +302,7 @@ class _SectionListViewState extends State<SectionListView> {
   // ---------- 상품 ----------
 
   Widget _kitBody() {
-    final kits = _kits;
-    if (kits.isEmpty) {
+    if (_kits.isEmpty) {
       return EmptyView(
         // O-8
         icon: widget.history ? Icons.history : Icons.inbox_outlined,
@@ -184,20 +310,37 @@ class _SectionListViewState extends State<SectionListView> {
         detail: widget.history ? '상품 상세를 열면 여기에 남아요' : '',
       );
     }
-    final works = workCounts(kits.where((k) => kitMatches(k, widget.query)));
     final visible = _visibleKits();
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        FilterChipBar(
-          // O-2 작품별
-          options: [
-            (label: '전체', count: works.fold(0, (s, w) => s + w.$2), selected: _work.isEmpty),
-            for (final (w, n) in works) (label: w, count: n, selected: _work == w),
-          ],
-          onSelect: (i) => setState(() => _work = i == 0 ? '' : works[i - 1].$1), // STATE: 작품 → 목록
-          trailing: PopupMenuButton<KitSort>(
-            // O-3
+    final labels = _filter.labels;
+    final bar = Padding(
+      // O-3 고른 조건 + 정렬
+      padding: const EdgeInsets.fromLTRB(16, 0, 8, 4),
+      child: Row(
+        children: [
+          Expanded(
+            child: labels.isEmpty
+                ? Text('${visible.length}개', style: const TextStyle(fontSize: 12.5, color: Gp.muted))
+                : Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          '${labels.join(' · ')}  ${visible.length}개',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(fontSize: 12.5, color: Gp.accent),
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () => setState(() => _filter = KitFilter()), // STATE: 필터 초기화
+                        child: const Padding(
+                          padding: EdgeInsets.all(4),
+                          child: Icon(Icons.close, size: 16, color: Gp.muted),
+                        ),
+                      ),
+                    ],
+                  ),
+          ),
+          PopupMenuButton<KitSort>(
             tooltip: '정렬',
             initialValue: _sort,
             onSelected: (s) => setState(() => _sort = s), // STATE: 정렬 → 순서
@@ -214,88 +357,82 @@ class _SectionListViewState extends State<SectionListView> {
               ),
             ),
           ),
-        ),
-        Expanded(
-          child: visible.isEmpty
-              ? EmptyView(
-                  // O-8
-                  icon: Icons.search_off,
-                  message: widget.query.isEmpty ? '이 작품의 상품이 없어요' : '「${widget.query}」 결과가 ${widget.title}에 없어요',
-                  detail: widget.query.isEmpty ? '' : '전체 상품에서 찾으려면 아래 검색 탭을 쓰세요',
-                  action: _work.isEmpty
-                      ? null
-                      : OutlinedButton(onPressed: () => setState(() => _work = ''), child: const Text('작품 전체 보기')),
-                )
-              : _grid
-              ? _kitGrid(visible)
-              : _kitList(visible),
-        ),
-      ],
+        ],
+      ),
     );
-  }
-
-  Widget _marks(Kit k) =>
-      QuickMarks(name: k.name, liked: k.status == CollectStatus.wanted, owned: k.status == CollectStatus.owned);
-
-  Widget _kitGrid(List<Kit> kits) {
+    final empty = EmptyView(
+      // O-8
+      icon: Icons.search_off,
+      message: _filter.count > 0 ? '이 조건의 상품이 없어요' : '「${widget.query}」 결과가 ${widget.title}에 없어요',
+      action: _filter.count > 0
+          ? OutlinedButton(onPressed: () => setState(() => _filter = KitFilter()), child: const Text('필터 초기화'))
+          : null,
+    );
     return LayoutBuilder(
       builder: (context, box) {
         final cols = (box.maxWidth / 170).floor().clamp(2, 5);
         final cell = (box.maxWidth - 32 - (cols - 1) * 12) / cols;
-        return GridView.builder(
-          // O-4
-          padding: EdgeInsets.fromLTRB(16, 4, 16, navClearance(context)),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: cols,
-            mainAxisSpacing: 16,
-            crossAxisSpacing: 12,
-            mainAxisExtent: cell + 80, // 사진 + 이름 두 줄 + 가격 · 날짜 한 줄
-          ),
-          itemCount: kits.length,
-          itemBuilder: (context, i) {
-            final k = kits[i];
-            return ProductTile(
-              image: k.image,
-              title: k.name,
-              titleLines: 2,
-              subtitle: joinDot([yen(k.priceJpy), dateLabel(k.date)]),
-              marks: _marks(k),
-              onTap: () => openKitDetail(context, k, loaders: widget.loaders),
-            );
-          },
+        return CustomScrollView(
+          slivers: [
+            if (widget.header case final h?) SliverToBoxAdapter(child: h),
+            SliverToBoxAdapter(child: bar),
+            if (visible.isEmpty)
+              SliverFillRemaining(hasScrollBody: false, child: empty)
+            else if (_grid)
+              SliverPadding(
+                // O-4
+                padding: EdgeInsets.fromLTRB(16, 4, 16, navClearance(context)),
+                sliver: SliverGrid.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: cols,
+                    mainAxisSpacing: 16,
+                    crossAxisSpacing: 12,
+                    mainAxisExtent: cell + 80, // 사진 + 이름 두 줄 + 가격 · 날짜 한 줄
+                  ),
+                  itemCount: visible.length,
+                  itemBuilder: (context, i) => _tile(visible[i]),
+                ),
+              )
+            else
+              SliverPadding(
+                padding: EdgeInsets.only(top: 4, bottom: navClearance(context)),
+                sliver: SliverList.builder(itemCount: visible.length, itemBuilder: (context, i) => _row(visible[i])),
+              ),
+          ],
         );
       },
     );
   }
 
-  Widget _kitList(List<Kit> kits) {
-    return ListView(
-      padding: EdgeInsets.only(top: 4, bottom: navClearance(context)),
+  Widget _tile(Kit k) => ProductTile(
+    image: k.image,
+    title: k.name,
+    titleLines: 2,
+    subtitle: joinDot([yen(k.priceJpy), dateLabel(k.date)]),
+    marks: QuickMarks(name: k.name, liked: k.status == CollectStatus.wanted, owned: k.status == CollectStatus.owned),
+    onTap: () => openKitDetail(context, k, loaders: widget.loaders),
+  );
+
+  Widget _row(Kit k) => ThumbRow(
+    image: k.image,
+    title: k.name,
+    titleLines: 2,
+    size: 64,
+    subtitle: joinDot([channelOf(k.franchiseId).label, kitWork(k), k.line]),
+    tag: switch (k.status) {
+      CollectStatus.wanted => '좋아요',
+      CollectStatus.owned => '구매함',
+      CollectStatus.none => '',
+    },
+    trailing: Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        for (final k in kits)
-          ThumbRow(
-            image: k.image,
-            title: k.name,
-            titleLines: 2,
-            size: 64,
-            subtitle: joinDot([channelOf(k.franchiseId).label, kitWork(k), k.line]),
-            tag: switch (k.status) {
-              CollectStatus.wanted => '좋아요',
-              CollectStatus.owned => '구매함',
-              CollectStatus.none => '',
-            },
-            trailing: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(yen(k.priceJpy), style: const TextStyle(fontSize: 13)),
-                Text(dateLabel(k.date), style: const TextStyle(fontSize: 11.5, color: Gp.faint)),
-              ],
-            ),
-            onTap: () => openKitDetail(context, k, loaders: widget.loaders),
-          ),
+        Text(yen(k.priceJpy), style: const TextStyle(fontSize: 13)),
+        Text(dateLabel(k.date), style: const TextStyle(fontSize: 11.5, color: Gp.faint)),
       ],
-    );
-  }
+    ),
+    onTap: () => openKitDetail(context, k, loaders: widget.loaders),
+  );
 
   // ---------- 공식 예고 ----------
 
@@ -313,16 +450,24 @@ class _SectionListViewState extends State<SectionListView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        FilterChipBar(
-          options: [
-            for (final s in ['', ...statuses])
-              (
-                label: s.isEmpty ? '전체' : s,
-                count: s.isEmpty ? all.length : all.where((a) => a.status == s).length,
-                selected: _annStatus == s,
-              ),
-          ],
-          onSelect: (i) => setState(() => _annStatus = i == 0 ? '' : statuses[i - 1]), // STATE: 거르기 → 목록
+        Padding(
+          // O-5 밑줄 탭 (채널 바 · 컬렉션과 같은 부품)
+          padding: const EdgeInsets.fromLTRB(8, 0, 8, 6),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                for (final s in ['', ...statuses])
+                  UnderlineTab(
+                    label: s.isEmpty ? '전체' : s,
+                    count: s.isEmpty ? all.length : all.where((a) => a.status == s).length,
+                    fontSize: 14,
+                    selected: _annStatus == s,
+                    onTap: () => setState(() => _annStatus = s), // STATE: 상태 → 목록
+                  ),
+              ],
+            ),
+          ),
         ),
         Expanded(
           child: list.isEmpty
@@ -332,7 +477,6 @@ class _SectionListViewState extends State<SectionListView> {
                     final cols = box.maxWidth >= 720 ? 2 : 1;
                     final cell = (box.maxWidth - 32 - (cols - 1) * 14) / cols;
                     return GridView.builder(
-                      // O-5
                       padding: EdgeInsets.fromLTRB(16, 4, 16, navClearance(context)),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: cols,
@@ -381,5 +525,184 @@ class _SectionListViewState extends State<SectionListView> {
         ),
       ],
     );
+  }
+}
+
+/// O-2 필터 패널 — 오른쪽에서 나와 화면의 85%를 덮는다. 접히는 칸마다 체크, 아래 초기화 · n개 보기.
+class _FilterPanel extends StatefulWidget {
+  const _FilterPanel({required this.kits, required this.initial});
+  final List<Kit> kits;
+  final KitFilter initial;
+
+  @override
+  State<_FilterPanel> createState() => _FilterPanelState();
+}
+
+class _FilterPanelState extends State<_FilterPanel> {
+  late final KitFilter _draft = widget.initial.copy();
+
+  /// 펼친 칸 (처음엔 작품만)
+  final Set<String> _open = {'작품'};
+
+  void _toggle(Set<String> set, String v) => setState(() => set.contains(v) ? set.remove(v) : set.add(v));
+
+  @override
+  Widget build(BuildContext context) {
+    final kits = widget.kits;
+    final hits = kits.where(_draft.matches).length;
+    final width = MediaQuery.sizeOf(context).width;
+
+    Widget section(String title, String summary, List<Widget> children) {
+      final open = _open.contains(title);
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          InkWell(
+            onTap: () => setState(() => open ? _open.remove(title) : _open.add(title)), // STATE: 칸 접기
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 16, 16, 16),
+              child: Row(
+                children: [
+                  Text(title, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15)),
+                  const Spacer(),
+                  Text(summary, style: const TextStyle(fontSize: 13, color: Gp.accent)),
+                  const SizedBox(width: 6),
+                  AnimatedRotation(
+                    turns: open ? 0.5 : 0,
+                    duration: const Duration(milliseconds: 150),
+                    child: const Icon(Icons.expand_more, color: Gp.muted),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          if (open)
+            ColoredBox(
+              color: Gp.bg,
+              child: Column(children: children),
+            ),
+          const Divider(height: 1),
+        ],
+      );
+    }
+
+    Widget check(String label, int n, bool on, VoidCallback onTap) => InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(28, 11, 18, 11),
+        child: Row(
+          children: [
+            Expanded(child: Text(label, style: const TextStyle(fontSize: 14))),
+            Text('$n', style: const TextStyle(fontSize: 12, color: Gp.faint)),
+            const SizedBox(width: 12),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 120),
+              width: 22,
+              height: 22,
+              decoration: BoxDecoration(
+                color: on ? Gp.accent : Gp.panel,
+                borderRadius: BorderRadius.circular(4),
+                border: Border.all(color: on ? Gp.accent : Gp.line),
+              ),
+              child: on ? const Icon(Icons.check, size: 16, color: Colors.white) : null,
+            ),
+          ],
+        ),
+      ),
+    );
+
+    String summary(Set<String> s) => s.isEmpty ? '전체' : (s.length == 1 ? s.first : '${s.first} 외 ${s.length - 1}');
+
+    Widget checks(Set<String> set, List<(String, int)> values) =>
+        Column(children: [for (final (v, n) in values) check(v, n, set.contains(v), () => _toggle(set, v))]);
+
+    Widget radios<T>(List<T> values, T current, String Function(T) label, ValueChanged<T> onPick) => Column(
+      children: [for (final v in values) check(label(v), _countFor(v), current == v, () => setState(() => onPick(v)))],
+    );
+
+    return Align(
+      alignment: Alignment.centerRight,
+      child: Material(
+        color: Gp.panel,
+        child: SizedBox(
+          width: width < 480 ? width * 0.85 : 400,
+          height: double.infinity,
+          child: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 8, 8, 8),
+                  child: Row(
+                    children: [
+                      const Text('필터', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w700)),
+                      const Spacer(),
+                      IconButton(tooltip: '닫기', onPressed: () => Navigator.pop(context), icon: const Icon(Icons.close)),
+                    ],
+                  ),
+                ),
+                const Divider(height: 1, thickness: 1.2, color: Gp.ink),
+                Expanded(
+                  child: ListView(
+                    padding: EdgeInsets.zero,
+                    children: [
+                      section('작품', summary(_draft.works), [checks(_draft.works, _counts(kits.map(kitWork)))]),
+                      section('종류', summary(_draft.types), [checks(_draft.types, _counts(kits.map((k) => k.type)))]),
+                      section('라인', summary(_draft.lines), [checks(_draft.lines, _counts(kits.map((k) => k.line)))]),
+                      section('가격', _draft.price.label, [
+                        radios(PriceBand.values, _draft.price, (p) => p.label, (p) => _draft.price = p),
+                      ]),
+                      section('발매', _draft.release.label, [
+                        radios(ReleaseState.values, _draft.release, (r) => r.label, (r) => _draft.release = r),
+                      ]),
+                    ],
+                  ),
+                ),
+                const Divider(height: 1),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: () => setState(() {
+                            final empty = KitFilter(); // STATE: 초기화 → 모두 전체
+                            _draft.works.clear();
+                            _draft.types.clear();
+                            _draft.lines.clear();
+                            _draft.price = empty.price;
+                            _draft.release = empty.release;
+                          }),
+                          style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(46)),
+                          icon: const Icon(Icons.refresh, size: 18),
+                          label: const Text('초기화'),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        flex: 2,
+                        child: FilledButton(
+                          onPressed: hits == 0 ? null : () => Navigator.pop(context, _draft),
+                          style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(46)),
+                          child: Text(hits == 0 ? '맞는 상품 없음' : '$hits개 보기'), // P01 고르는 동안 개수
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// 가격 · 발매 한 칸을 골랐을 때 개수 (다른 조건은 그대로)
+  int _countFor(Object? v) {
+    final f = _draft.copy();
+    if (v is PriceBand) f.price = v;
+    if (v is ReleaseState) f.release = v;
+    return widget.kits.where(f.matches).length;
   }
 }

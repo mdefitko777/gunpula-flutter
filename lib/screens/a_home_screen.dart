@@ -4,18 +4,19 @@
 // │ 번호 │ Flutter 위젯명                     │ 비즈니스 명칭(한글)                    │ 원칙(P번호)   │
 // │ A-1  │ ChannelHeader                      │ 아바타 줄 + 내 채널 바 (C-0 공용)       │ P04 · P06     │
 // │ A-2  │ GpSearchBar 입구 (탭하면 검색 탭)   │ 검색창(검색 화면과 같은 모양) · 카메라  │ P07 · P04     │
-// │ A-3  │ PageView(화면 끝까지) + 점 표시     │ 공식 예고 배너 (완성된 홍보 이미지)     │ P08 · P02     │
+// │ A-3  │ PageView(화면 끝까지) + 점 표시     │ 공식 예고 배너 (4초마다 다음 장, 끝없이) │ P08 · P02     │
 // │ A-4  │ 배너 아래 상태 · 제목               │ 예고 상태(공식 발표·상품화 확정·예약)   │ P01           │
 // │ A-5  │ SectionHeader (색 막대 + ›)         │ 줄 이름 · 전체 보기 → O 전체 목록(홈 안)  │ P06 · P07     │
-// │ A-10 │ FilterChipBar (검색창 아래)          │ 전체 상품 · 작품별 입구 → O 전체 목록     │ P06 · P07     │
 // │ A-6  │ 가로 ListView + ProductTile         │ 최근 추가 · 10월 발매 · 공식 예고 · 최근 본 │ P08        │
 // │ A-7  │ LoadingView / ErrorView / EmptyView │ 불러오는 중 · 오류 · 빈 채널           │ P01 · P09     │
 // │ A-8  │ 흰 띠(섹션마다) + 회백색 틈          │ 줄과 줄 사이 층 구분                   │ P08 · P04     │
 // │ A-9  │ ProductTile 의 QuickMarks ♡ +       │ 좋아요 · 구매함 바로 담기 (가짜 저장)     │ P07           │
 // └──────────────────────────────────────────────────────────────────────────────────┘
-// 전환: A-2 → 검색 탭(옆으로). › · 작품 알약 → 같은 탭 안에서 O 전체 목록(위쪽 머리 · 검색창은 그대로, 뒤로 = 홈). 상품 카드 → D 상품 상세(쌓기). 배너 · 예고 카드 → J 공식 예고 상세(쌓기).
+// 전환: A-2 → 검색 탭(옆으로). › → 같은 탭 안에서 O 전체 목록(위쪽 머리 · 검색창은 그대로, 뒤로 = 홈). 상품 카드 → D 상품 상세(쌓기). 배너 · 예고 카드 → J 공식 예고 상세(쌓기).
 // 줄 안에는 날짜·가격을 쓰지 않는다 — 궁금하면 눌러서 상세에서 본다 (P08).
 // 현행 앱 문제: 홈 = 버전 번호·총 개수·IP 입구 카드 → v2 홈 = "내 채널의 새 소식"만.
+import 'dart:async' show Timer;
+
 import 'package:flutter/material.dart';
 
 import '../api.dart';
@@ -78,7 +79,6 @@ class _Item {
 
 /// 전체 목록 제목
 String _titleOf(HomeSection s) => switch (s) {
-  HomeSection.all => '전체 상품',
   HomeSection.recent => '최근 추가',
   HomeSection.month => currentMonthTitle,
   HomeSection.announcements => '공식 예고',
@@ -103,16 +103,12 @@ class _HomeScreenState extends State<HomeScreen> with ChannelScope {
   /// null = 홈, 아니면 홈 안에서 펼친 전체 목록 (O)
   HomeSection? _section;
 
-  /// 작품 알약으로 들어왔을 때 처음 고른 작품
-  String _work = '';
-
   /// 전체 목록일 때 검색창 = 그 목록 안에서만 찾기 (O-7)
   final _searchCtrl = TextEditingController();
   String _query = '';
 
-  void _openSection(HomeSection s, {String work = ''}) => setState(() {
-    _section = s; // STATE: › · 알약 → 홈 아래쪽이 전체 목록으로
-    _work = work;
+  void _openSection(HomeSection s) => setState(() {
+    _section = s; // STATE: › → 홈 아래쪽이 전체 목록으로
     _searchCtrl.clear();
     _query = '';
   });
@@ -245,12 +241,7 @@ class _HomeScreenState extends State<HomeScreen> with ChannelScope {
         if (k.month) k,
     ];
     final viewed = [for (final id in recentViewedIds) ?byId[id]];
-    final lists = {
-      HomeSection.all: data.kits,
-      HomeSection.recent: recent,
-      HomeSection.month: month,
-      HomeSection.viewed: viewed,
-    };
+    final lists = {HomeSection.recent: recent, HomeSection.month: month, HomeSection.viewed: viewed};
 
     // O 전체 목록 (홈 위쪽은 그대로, 아래만 바뀜)
     if (_section case final sec?) {
@@ -270,7 +261,6 @@ class _HomeScreenState extends State<HomeScreen> with ChannelScope {
               announcements: sec == HomeSection.announcements ? data.announcements : null,
               history: sec == HomeSection.viewed,
               sort: sec == HomeSection.month ? KitSort.release : KitSort.newest,
-              work: _work,
               query: _query,
               onBack: _closeSection,
               loaders: widget.loaders,
@@ -296,23 +286,12 @@ class _HomeScreenState extends State<HomeScreen> with ChannelScope {
       ),
       _Row('최근 본', [for (final k in viewed) kitItem(k)], onMore: () => _openSection(HomeSection.viewed)),
     ];
-    final works = workCounts(data.kits);
     final heroes = data.announcements.where((a) => a.hero).toList();
 
     return ListView(
       padding: EdgeInsets.only(bottom: navClearance(context)),
       children: [
         search,
-        if (data.kits.isNotEmpty)
-          FilterChipBar(
-            // A-10 전체 상품 · 작품별 입구
-            padding: const EdgeInsets.only(bottom: 12),
-            options: [
-              (label: '전체 상품', count: data.kits.length, selected: false),
-              for (final (w, n) in works.take(8)) (label: w, count: n, selected: false),
-            ],
-            onSelect: (i) => _openSection(HomeSection.all, work: i == 0 ? '' : works[i - 1].$1),
-          ),
         if (heroes.isNotEmpty)
           ColoredBox(
             color: Gp.panel,
@@ -356,11 +335,32 @@ class _HeroBanner extends StatefulWidget {
 }
 
 class _HeroBannerState extends State<_HeroBanner> {
-  final _controller = PageController();
+  /// 끝없이 넘기기: 아주 큰 쪽 번호에서 시작해 % 개수
+  static const _loops = 1000;
+  late final _controller = PageController(initialPage: widget.items.length * _loops);
   int _page = 0;
+  Timer? _timer;
+
+  /// 4초마다 다음 장 (손으로 넘기면 그때부터 다시 4초)
+  void _restart() {
+    _timer?.cancel();
+    if (widget.items.length < 2) return;
+    _timer = Timer.periodic(const Duration(seconds: 4), (_) {
+      if (_controller.hasClients) {
+        _controller.nextPage(duration: const Duration(milliseconds: 450), curve: Curves.easeOutCubic);
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _restart();
+  }
 
   @override
   void dispose() {
+    _timer?.cancel();
     _controller.dispose();
     super.dispose();
   }
@@ -376,46 +376,53 @@ class _HeroBannerState extends State<_HeroBanner> {
           children: [
             SizedBox(
               height: imageHeight + 78,
-              child: PageView.builder(
-                controller: _controller,
-                itemCount: widget.items.length,
-                onPageChanged: (i) => setState(() => _page = i), // STATE: 넘긴 쪽 → 점 표시
-                itemBuilder: (context, i) {
-                  final a = widget.items[i];
-                  return GestureDetector(
-                    onTap: () => widget.onTap(a),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: imageHeight, width: double.infinity, child: AppImage(a.image)),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '${a.status} · ${channelOf(a.franchiseId).label}', // A-4 P01
-                                style: const TextStyle(
-                                  fontSize: 11.5,
-                                  letterSpacing: 0.8,
-                                  color: Gp.muted,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(height: 5),
-                              Text(
-                                a.title,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(fontSize: 19, fontWeight: FontWeight.w500),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
+              child: NotificationListener<ScrollNotification>(
+                onNotification: (n) {
+                  if (n is ScrollStartNotification && n.dragDetails != null) _timer?.cancel();
+                  if (n is ScrollEndNotification) _restart();
+                  return false;
                 },
+                child: PageView.builder(
+                  controller: _controller,
+                  itemCount: widget.items.length < 2 ? widget.items.length : null, // null = 끝없이
+                  onPageChanged: (i) => setState(() => _page = i % widget.items.length), // STATE: 넘긴 쪽 → 점 표시
+                  itemBuilder: (context, i) {
+                    final a = widget.items[i % widget.items.length];
+                    return GestureDetector(
+                      onTap: () => widget.onTap(a),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: imageHeight, width: double.infinity, child: AppImage(a.image)),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '${a.status} · ${channelOf(a.franchiseId).label}', // A-4 P01
+                                  style: const TextStyle(
+                                    fontSize: 11.5,
+                                    letterSpacing: 0.8,
+                                    color: Gp.muted,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const SizedBox(height: 5),
+                                Text(
+                                  a.title,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(fontSize: 19, fontWeight: FontWeight.w500),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
             Padding(
