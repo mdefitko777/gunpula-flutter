@@ -4,18 +4,21 @@
 // │ 번호 │ Flutter 위젯명                     │ 비즈니스 명칭(한글)                    │ 원칙(P번호)   │
 // │ D-1  │ RaisedCircleButton(‹)              │ 뒤로 (보던 화면 그대로)                 │ P03           │
 // │ D-2  │ PageView + 점 표시                 │ 공식 사진 (여러 장 넘기기)              │ P02 · P08     │
-// │ D-4  │ 제목 + 복사 · 일본어 원래 이름 · 공식 링크 │ 상품명 (공식 사이트 검색용 원문 · 출처) │ P02 · P07 │
+// │ D-4  │ 제목 + 일본어 원래 이름              │ 상품명 (공식 사이트 검색용 원문)        │ P02           │
 // │ D-5  │ Text(¥) + 발매일 + 한정 표시         │ 일본 정가 · 발매 · 한정/PB              │ P02 · P01     │
-// │ D-6  │ 두 토글 버튼 + 토스트(되돌리기)       │ 원함 · 구매함 (따로 켜고 끔, 가짜 저장)  │ P03 · P01     │
-// │ D-7  │ 수량 − n +                         │ 원하는 수량 (원함일 때만)               │ P05           │
+// │ D-5b │ 정가 아래 시세 한 줄 (누르면 시장가로) │ 정가 ↔ 국내 시세 비교                  │ P01 · P07     │
+// │ D-6  │ 하단 고정 바: 원함 · 구매함           │ 원함 · 구매함 (따로 켜고 끔, 가짜 저장)  │ P03 · P07     │
+// │ D-7  │ "원함 ×n" → 바텀 시트 − n + · 해제   │ 원하는 수량 (원함일 때만)               │ P05 · P03     │
 // │ D-8  │ 가로 스크롤 요약 줄 → 바텀 시트       │ 공식 정보 (요약 → 전체 표)              │ P08 · P06     │
-// │ D-9  │ 시세 카드: 가격 범위 · 검색어 복사 · 플랫폼 3칸 │ 시장가 (없으면 이유 + 찾아볼 곳) │ P01 · P07 · P08 │
+// │ D-9  │ 시세 카드: 가격 범위 · 플랫폼 3칸     │ 시장가 (없으면 이유 + 찾아볼 곳)        │ P01 · P08     │
 // │ D-10 │ 가로 ProductTile (GET /kits)        │ 같은 작품의 다른 상품                   │ P06           │
 // │ D-11 │ 세로 사진 목록                      │ 상품 상세 (공식 사진 전부)              │ P02           │
 // │ D-12 │ TextButton → showDialog(확인)       │ 정보 오류 제보 (보내기 전 확인)         │ P05 · P09     │
 // │ D-13 │ LayoutBuilder ≥720dp                │ 넓은 화면: 사진 왼쪽 · 정보 오른쪽      │ 적응형        │
+// │ D-14 │ 하단 고정 바 왼쪽: 복사 · 공식        │ 상품명 복사 · 공식 상품 페이지(출처)    │ P07 · P10     │
 // └──────────────────────────────────────────────────────────────────────────────────┘
-// 전환: 홈 · 검색 · AI 후보에서 쌓기(push, 오른쪽에서). 공식 정보 → 덮기(바텀 시트).
+// 전환: 홈 · 검색 · AI 후보에서 쌓기(push, 오른쪽에서). 공식 정보 · 원하는 수량 → 덮기(바텀 시트).
+// 원함 · 구매함은 화면 아래에 고정 — 길게 내려 읽어도 바로 누를 수 있다 (쇼핑 앱 상세와 같은 위치).
 // 현행 앱 문제: 상세에 내부 코드(GUNDAM_MERCH)·"보완 필요"·수동 수정 폼이 그대로 보임
 //              → v2는 사용자에게 필요한 정가 · 버전 · 출처만, 수정은 "제보" 한 줄로.
 import 'package:flutter/cupertino.dart' show CupertinoPageRoute;
@@ -59,6 +62,61 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
   late final Future<List<Kit>> _related = widget.loaders.kits([widget.kit.franchiseId]);
 
   Kit get k => widget.kit;
+
+  /// 시세 한 줄을 누르면 이 위치로 내려간다
+  final _marketKey = GlobalKey();
+
+  void _scrollToMarket() {
+    final ctx = _marketKey.currentContext;
+    if (ctx != null) {
+      Scrollable.ensureVisible(ctx, duration: const Duration(milliseconds: 350), alignment: 0.1);
+    }
+  }
+
+  /// 원함 버튼: 꺼져 있으면 담기, 켜져 있으면 수량 시트(여기서 해제도)
+  void _tapWanted() {
+    if (!_wanted) {
+      _toggleWanted();
+      return;
+    }
+    showModalBottomSheet<void>( // D-7 덮기
+      context: context,
+      builder: (sheet) => StatefulBuilder(
+        builder: (sheet, setSheet) => SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Text('원하는 수량',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600)),
+                const SizedBox(height: 16),
+                Center(
+                  child: _Stepper( // P05
+                    value: _qty,
+                    onChanged: (v) {
+                      setState(() => _qty = v); // STATE: 수량 → "원함 ×n"
+                      setSheet(() {});
+                    },
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(sheet);
+                    _toggleWanted(); // 해제 + 되돌리기 토스트
+                  },
+                  child: const Text('원함에서 빼기', style: TextStyle(color: Gp.muted)),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
 
   void _toggleWanted() {
@@ -123,6 +181,15 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: _BottomActions( // D-6 · D-14
+        wanted: _wanted,
+        owned: _owned,
+        qty: _qty,
+        onWanted: _tapWanted,
+        onOwned: _toggleOwned,
+        onCopy: () => _copy(k.name, '상품명'),
+        onOfficial: () => _external('공식 상품 페이지'),
+      ),
       body: LayoutBuilder(
         builder: (context, box) {
           final wide = box.maxWidth >= detailWideBreakpoint; // D-13
@@ -171,95 +238,70 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
 
   List<Widget> _info(BuildContext context) {
     return [
-      // 기본 정보
+      // 기본 정보: 이름 → 정가 → 시세 한 줄
       _Panel(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text(
+              k.name, // D-4 P02
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600, height: 1.3),
+            ),
+            if (k.nameJa.isNotEmpty && k.nameJa != k.name) ...[
+              const SizedBox(height: 3),
+              Text(k.nameJa, style: const TextStyle(fontSize: 12.5, color: Gp.faint)),
+            ],
+            const SizedBox(height: 14),
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Expanded(
-                  child: Text(
-                    k.name, // D-4 P02
-                    style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600, height: 1.3),
-                  ),
+                Text(
+                  yen(k.priceJpy), // D-5 P02
+                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
                 ),
-                _CopyButton(onTap: () => _copy(k.name, '상품명')), // D-4 P07
+                const SizedBox(width: 10),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 3),
+                  child: Text('발매 ${k.date}', style: const TextStyle(color: Gp.muted, fontSize: 13)),
+                ),
+                const Spacer(),
+                if (k.limited) const _Badge('한정'),
+                if (k.pb) const _Badge('PB'),
               ],
             ),
-            if (k.nameJa.isNotEmpty && k.nameJa != k.name)
-              Text(k.nameJa, style: const TextStyle(fontSize: 12.5, color: Gp.faint)),
-            const SizedBox(height: 6),
+            const SizedBox(height: 10),
+            // D-5b 정가 바로 아래 국내 시세 — 누르면 시장가 카드로 내려감
             InkWell(
-              onTap: () => _external('공식 상품 페이지'), // D-4 출처 P10
-              child: const Padding(
-                padding: EdgeInsets.symmetric(vertical: 4),
+              onTap: _scrollToMarket,
+              borderRadius: BorderRadius.circular(Gp.radius),
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(12, 10, 6, 10),
+                decoration: BoxDecoration(
+                  color: Gp.bg,
+                  borderRadius: BorderRadius.circular(Gp.radius),
+                ),
                 child: Row(
-                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text('공식 상품 페이지',
-                        style: TextStyle(fontSize: 12.5, color: Gp.muted, decoration: TextDecoration.underline)),
-                    SizedBox(width: 3),
-                    Icon(Icons.north_east, size: 13, color: Gp.muted),
+                    const Text('국내 시세', style: TextStyle(fontSize: 13, color: Gp.muted)),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        switch (k.market) {
+                          final m? => '${won(m.normalKrw).replaceAll('원', '')} ~ ${won(m.conservativeKrw)}',
+                          null => '아직 모인 시세가 없어요',
+                        },
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: k.market == null ? FontWeight.w400 : FontWeight.w600,
+                          color: k.market == null ? Gp.muted : Gp.ink,
+                        ),
+                      ),
+                    ),
+                    const Icon(Icons.chevron_right, size: 20, color: Gp.muted),
                   ],
                 ),
               ),
             ),
-            const SizedBox(height: 14),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        yen(k.priceJpy), // D-5 P02
-                        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
-                      ),
-                      const SizedBox(height: 2),
-                      Row(
-                        children: [
-                          Text('발매 ${k.date}', style: const TextStyle(color: Gp.muted, fontSize: 13)),
-                          if (k.limited) const _Badge('한정'),
-                          if (k.pb) const _Badge('PB'),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                // D-6 원함 · 구매함 — 가격 오른쪽의 작은 알약 두 개 (P03)
-                _StatusButton(
-                  label: '원함',
-                  icon: Icons.bookmark_border,
-                  activeIcon: Icons.bookmark,
-                  active: _wanted,
-                  onTap: _toggleWanted,
-                ),
-                const SizedBox(width: 6),
-                _StatusButton(
-                  label: '구매함',
-                  icon: Icons.check_circle_outline,
-                  activeIcon: Icons.check_circle,
-                  active: _owned,
-                  onTap: _toggleOwned,
-                ),
-              ],
-            ),
-            if (_wanted) ...[
-              const SizedBox(height: 10),
-              Row(
-                children: [
-                  const Text('원하는 수량', style: TextStyle(color: Gp.muted)),
-                  const Spacer(),
-                  _Stepper( // D-7 P05
-                    value: _qty,
-                    onChanged: (v) => setState(() => _qty = v), // STATE: 수량 → 숫자
-                  ),
-                ],
-              ),
-            ],
           ],
         ),
       ),
@@ -268,18 +310,14 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
         padding: EdgeInsets.zero,
         child: _SpecStrip(specs: _specs, onTap: _openSpecs), // D-8 P08
       ),
-      // 시장가: 한 장의 카드 (가격 범위 → 검색어 복사 → 플랫폼 3칸)
+      // 시장가: 한 덩어리 (가격 범위 → 플랫폼 3칸), 겹 상자 없이
       _Panel(
+        key: _marketKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SectionHeader('시장가', padding: EdgeInsets.fromLTRB(0, 0, 0, 12)), // D-9 P01
-            _MarketCard(
-              market: k.market,
-              name: k.name,
-              onCopy: () => _copy(k.name, '검색어'), // P07 플랫폼 앱에 그대로 붙여 넣기
-              onOpen: _external,
-            ),
+            const SectionHeader('시장가', padding: EdgeInsets.fromLTRB(0, 0, 0, 10)), // D-9 P01
+            _MarketCard(market: k.market, onOpen: _external),
           ],
         ),
       ),
@@ -360,7 +398,11 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
 
 /// 흰 띠 섹션 (홈과 같은 층 구분: 위 회백색 틈 10)
 class _Panel extends StatelessWidget {
-  const _Panel({required this.child, this.padding = const EdgeInsets.fromLTRB(16, 18, 16, 18)});
+  const _Panel({
+    super.key,
+    required this.child,
+    this.padding = const EdgeInsets.fromLTRB(16, 18, 16, 18),
+  });
   final Widget child;
   final EdgeInsets padding;
 
@@ -372,22 +414,6 @@ class _Panel extends StatelessWidget {
         color: Gp.panel,
         child: SizedBox(width: double.infinity, child: Padding(padding: padding, child: child)),
       ),
-    );
-  }
-}
-
-/// 작은 복사 아이콘 버튼
-class _CopyButton extends StatelessWidget {
-  const _CopyButton({required this.onTap});
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      tooltip: '복사',
-      visualDensity: VisualDensity.compact,
-      onPressed: onTap,
-      icon: const Icon(Icons.content_copy_rounded, size: 18, color: Gp.muted),
     );
   }
 }
@@ -608,22 +634,22 @@ class _StatusButton extends StatelessWidget {
       selected: active,
       child: GestureDetector(
         onTap: onTap,
-        // 작은 알약 (높이 34) — 가격 줄 오른쪽에 들어가게
+        // 하단 고정 바의 알약 버튼
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 180),
-          height: 34,
-          padding: const EdgeInsets.symmetric(horizontal: 11),
+          height: 44,
+          padding: const EdgeInsets.symmetric(horizontal: 12),
           decoration: BoxDecoration(
             color: active ? Gp.accent.withValues(alpha: 0.07) : Gp.panel,
             borderRadius: BorderRadius.circular(99),
             border: Border.all(color: active ? Gp.accent : Gp.line, width: active ? 1.3 : 1),
           ),
           child: Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(active ? activeIcon : icon, size: 16, color: active ? Gp.accent : Gp.ink),
-              const SizedBox(width: 4),
-              Text(label, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+              Icon(active ? activeIcon : icon, size: 18, color: active ? Gp.accent : Gp.ink),
+              const SizedBox(width: 5),
+              Text(label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
             ],
           ),
         ),
@@ -648,6 +674,7 @@ class _Stepper extends StatelessWidget {
       style: IconButton.styleFrom(side: const BorderSide(color: Gp.line)),
     );
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
         btn(Icons.remove, '줄이기', value > 1 ? value - 1 : null), // P05 1 아래로는 못 내림
         SizedBox(
@@ -661,122 +688,141 @@ class _Stepper extends StatelessWidget {
   }
 }
 
-/// D-9 시세 카드 — 나열 대신 한 덩어리: 가격 범위 · 검색어 · 플랫폼
+/// D-9 시세 카드 — 가격 범위 → (가는 선) → 플랫폼 3칸
 class _MarketCard extends StatelessWidget {
-  const _MarketCard({
-    required this.market,
-    required this.name,
-    required this.onCopy,
-    required this.onOpen,
-  });
+  const _MarketCard({required this.market, required this.onOpen});
 
   final Market? market;
-  final String name;
-  final VoidCallback onCopy;
   final ValueChanged<String> onOpen;
 
   @override
   Widget build(BuildContext context) {
     final m = market;
-    return Container(
-      decoration: BoxDecoration(
-        color: Gp.bg,
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // 가격 범위
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
-            child: m == null
-                ? const Text(
-                    '아직 모인 시세가 없어요 · 아래에서 지금 가격을 찾아보세요', // P09
-                    style: TextStyle(color: Gp.muted),
-                  )
-                : Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              '${won(m.normalKrw).replaceAll('원', '')} ~ ${won(m.conservativeKrw)}',
-                              style: const TextStyle(fontSize: 21, fontWeight: FontWeight.w700),
-                            ),
-                            const SizedBox(height: 3),
-                            const Text(
-                              '국내 중고·신품 시세 (일반 ~ 보수 추정)',
-                              style: TextStyle(fontSize: 12, color: Gp.muted),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                        decoration: BoxDecoration(
-                          color: Gp.panel,
-                          borderRadius: BorderRadius.circular(99),
-                          border: Border.all(color: Gp.line),
-                        ),
-                        child: Text(
-                          '거래 ${m.samples}건',
-                          style: const TextStyle(fontSize: 11.5, color: Gp.muted),
-                        ),
-                      ),
-                    ],
-                  ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (m == null)
+          const Text(
+            '아직 모인 시세가 없어요 · 아래에서 지금 가격을 찾아보세요', // P09
+            style: TextStyle(color: Gp.muted),
+          )
+        else ...[
+          Text(
+            '${won(m.normalKrw).replaceAll('원', '')} ~ ${won(m.conservativeKrw)}',
+            style: const TextStyle(fontSize: 21, fontWeight: FontWeight.w700),
           ),
-          const Divider(height: 1, indent: 16, endIndent: 16),
-          // 검색어 복사
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 4, 4, 4),
-            child: Row(
-              children: [
-                const Text('이 이름으로 찾기', style: TextStyle(fontSize: 12.5, color: Gp.muted)),
-                const SizedBox(width: 10),
+          const SizedBox(height: 3),
+          Text('국내 시세 · 거래 ${m.samples}건', style: const TextStyle(fontSize: 12.5, color: Gp.muted)),
+        ],
+        const SizedBox(height: 12),
+        const Divider(height: 1),
+        IntrinsicHeight(
+          child: Row(
+            children: [
+              for (final (i, p) in marketPlatforms.indexed) ...[
+                if (i > 0) const VerticalDivider(width: 1, indent: 12, endIndent: 12),
                 Expanded(
-                  child: Text(name, maxLines: 1, overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontSize: 13.5)),
-                ),
-                IconButton(
-                  tooltip: '검색어 복사',
-                  visualDensity: VisualDensity.compact,
-                  onPressed: onCopy,
-                  icon: const Icon(Icons.content_copy_rounded, size: 17, color: Gp.muted),
-                ),
-              ],
-            ),
-          ),
-          const Divider(height: 1, indent: 16, endIndent: 16),
-          // 플랫폼 3칸
-          IntrinsicHeight(
-            child: Row(
-              children: [
-                for (final (i, p) in marketPlatforms.indexed) ...[
-                  if (i > 0) const VerticalDivider(width: 1, indent: 12, endIndent: 12),
-                  Expanded(
-                    child: InkWell(
-                      onTap: () => onOpen(p),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 13),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(p, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
-                            const SizedBox(width: 2),
-                            const Icon(Icons.north_east, size: 12, color: Gp.muted),
-                          ],
-                        ),
+                  child: InkWell(
+                    onTap: () => onOpen(p),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 13),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(p, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+                          const SizedBox(width: 2),
+                          const Icon(Icons.north_east, size: 12, color: Gp.muted),
+                        ],
                       ),
                     ),
                   ),
-                ],
+                ),
+              ],
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// D-6 · D-14 하단 고정 바 — 왼쪽: 복사 · 공식 / 오른쪽: 원함 · 구매함
+class _BottomActions extends StatelessWidget {
+  const _BottomActions({
+    required this.wanted,
+    required this.owned,
+    required this.qty,
+    required this.onWanted,
+    required this.onOwned,
+    required this.onCopy,
+    required this.onOfficial,
+  });
+
+  final bool wanted;
+  final bool owned;
+  final int qty;
+  final VoidCallback onWanted;
+  final VoidCallback onOwned;
+  final VoidCallback onCopy;
+  final VoidCallback onOfficial;
+
+  @override
+  Widget build(BuildContext context) {
+    Widget small(IconData icon, String label, VoidCallback onTap) => InkResponse(
+      onTap: onTap,
+      radius: 28,
+      child: SizedBox(
+        width: 52,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 21, color: Gp.ink),
+            const SizedBox(height: 2),
+            Text(label, style: const TextStyle(fontSize: 10.5, color: Gp.muted)),
+          ],
+        ),
+      ),
+    );
+    return DecoratedBox(
+      decoration: const BoxDecoration(
+        color: Gp.panel,
+        border: Border(top: BorderSide(color: Gp.line)),
+      ),
+      child: SafeArea(
+        top: false,
+        child: SizedBox(
+          height: 64,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Row(
+              children: [
+                small(Icons.content_copy_rounded, '복사', onCopy), // P07
+                small(Icons.north_east, '공식', onOfficial), // P10 출처
+                const SizedBox(width: 6),
+                Expanded(
+                  child: _StatusButton( // P03
+                    label: wanted ? '원함 ×$qty' : '원함',
+                    icon: Icons.bookmark_border,
+                    activeIcon: Icons.bookmark,
+                    active: wanted,
+                    onTap: onWanted,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: _StatusButton(
+                    label: '구매함',
+                    icon: Icons.check_circle_outline,
+                    activeIcon: Icons.check_circle,
+                    active: owned,
+                    onTap: onOwned,
+                  ),
+                ),
+                const SizedBox(width: 6),
               ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }
