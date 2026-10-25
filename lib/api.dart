@@ -1,10 +1,9 @@
 // 데이터 가져오기 — GET만 쓴다 (중간고사 안내 5장: POST/PUT/DELETE·저장은 감점)
-// 화면 코드는 이 파일의 fetchKits() · fetchKitsOfUnit() · fetchPrices() · fetchSeries()만 부른다. (관심사 분리)
+// 화면 코드는 이 파일의 fetch…() 함수만 부른다. (관심사 분리)
 //
 // 서버 주소 (코드 수정 없이 실행할 때 바꾼다):
 //   기본값  Android 에뮬레이터 → http://10.0.2.2:3000   그 외(Chrome·macOS·iOS 시뮬레이터) → http://localhost:3000
 //   실기기  flutter run --dart-define=API_BASE=http://192.168.0.10:3000   (같은 Wi-Fi의 PC IP)
-//   배포    flutter build web --dart-define=API_BASE=https://<프로젝트>.vercel.app/api   (가산점)
 //
 // 발표·데모용 상태 스위치 (로딩·오류·빈 상태를 눈으로 보여 주기):
 //   --dart-define=DEMO_STATE=loading → 3초 늦게 응답 (로딩 상태)
@@ -41,15 +40,15 @@ class ApiException implements Exception {
   String toString() => message;
 }
 
-/// GET {apiBase}/{path} → JSON 배열
-Future<List<Object?>> _getList(String path) async {
+/// GET {apiBase}/{path} → JSON (배열 또는 객체)
+Future<Object?> _get(String path) async {
   switch (demoState) {
     case 'loading' || 'slow':
       await Future<void>.delayed(const Duration(seconds: 3));
     case 'error':
       throw const ApiException('DEMO_STATE=error 로 일부러 낸 오류입니다.');
     case 'empty':
-      return const [];
+      return const <Object?>[];
   }
   final url = '$apiBase/$path';
   final http.Response res;
@@ -63,60 +62,89 @@ Future<List<Object?>> _getList(String path) async {
     throw ApiException('서버 응답 오류 (HTTP ${res.statusCode})\n$url');
   }
   // 한글이 깨지지 않도록 bytes를 UTF-8로 직접 디코딩
-  final decoded = jsonDecode(utf8.decode(res.bodyBytes));
+  return jsonDecode(utf8.decode(res.bodyBytes));
+}
+
+Future<List<T>> _getList<T extends Object>(String path, T? Function(Object?) parse) async {
+  final decoded = await _get(path);
   if (decoded is! List) {
-    throw ApiException('$url 의 응답이 배열이 아닙니다. db.json을 확인하세요.');
+    throw ApiException('$path 의 응답이 배열이 아닙니다. db.json을 확인하세요.');
   }
-  return decoded;
+  return decoded.map(parse).nonNulls.toList();
 }
 
-// db.json 최상위 키: series · units · kits · prices · collection
-// _embed / _expand / _sort 는 json-server의 GET 쿼리 — 서버가 묶어서 내려 줄 뿐 쓰기 요청이 아니다.
+/// 채널(IP) 여러 개 → json-server 쿼리 `franchiseId=a&franchiseId=b` (OR)
+String _byChannels(List<String> ids) => ids.map((id) => 'franchiseId=$id').join('&');
 
-/// A 카탈로그 · F 내 컬렉션: GET /kits (내 소장 상태 + 기체 포함)
-Future<List<Kit>> fetchKits() async {
-  final list = await _getList('kits?_embed=collection&_expand=unit');
-  return list.map(Kit.fromJson).nonNulls.toList();
+/// 홈 · 검색 · 캘린더: 내 채널의 상품. 채널이 없으면 요청하지 않는다.
+Future<List<Kit>> fetchKits(List<String> channelIds) async {
+  if (channelIds.isEmpty) return const [];
+  return _getList('kits?${_byChannels(channelIds)}&_sort=date&_order=desc', Kit.fromJson);
 }
 
-/// E 기체 상세의 대응 키트: GET /kits?unitId=
-Future<List<Kit>> fetchKitsOfUnit(int unitId) async {
-  final list = await _getList(
-    'kits?unitId=$unitId&_embed=collection&_expand=unit',
+/// 컬렉션: 원함 · 구매함 상품 (모든 채널)
+Future<List<Kit>> fetchCollection() =>
+    _getList('kits?status_ne=none&_sort=date&_order=desc', Kit.fromJson);
+
+/// 도감 대화상자의 대응 모델: GET /kits?id=a&id=b
+Future<List<Kit>> fetchKitsByIds(List<String> ids) async {
+  if (ids.isEmpty) return const [];
+  return _getList('kits?${ids.map((id) => 'id=$id').join('&')}', Kit.fromJson);
+}
+
+/// 도감(포켓몬 세대 · Fate 작품 · AC 세대 · BBX 라인) · 홈 진행도
+Future<List<World>> fetchWorlds(String channelId) =>
+    _getList('worlds?franchiseId=$channelId&_sort=order', World.fromJson);
+
+/// 도감 > 건담: 작품 목록
+Future<List<GuideWork>> fetchGuideWorks() => _getList('guideWorks', GuideWork.fromJson);
+
+/// 도감 > 건담 > 작품: 기체 칸
+Future<List<GuideUnit>> fetchGuideUnits(String workId) =>
+    _getList('guideUnits?workId=$workId', GuideUnit.fromJson);
+
+/// 도감 > 베이블레이드 X
+Future<List<BbxTop>> fetchBbxTops() => _getList('bbxTops', BbxTop.fromJson);
+
+/// 캘린더 · 홈: 공식 예고
+Future<List<Announcement>> fetchAnnouncements(List<String> channelIds) async {
+  if (channelIds.isEmpty) return const [];
+  return _getList(
+    'announcements?${_byChannels(channelIds)}&_sort=date&_order=desc',
+    Announcement.fromJson,
   );
-  return list.map(Kit.fromJson).nonNulls.toList();
 }
 
-/// B 키트 상세 '시세 기록' 탭: GET /prices?kitId= (최신이 위)
-Future<List<PricePoint>> fetchPrices(int kitId) async {
-  final list = await _getList('prices?kitId=$kitId&_sort=date&_order=desc');
-  return list.map(PricePoint.fromJson).nonNulls.toList();
+/// 내 정보: GET /profile (객체 하나)
+Future<Profile> fetchProfile() async {
+  final decoded = await _get('profile');
+  final p = Profile.fromJson(decoded);
+  if (p == null) throw const ApiException('profile 응답 모양이 맞지 않습니다.');
+  return p;
 }
-
-/// D 도감: GET /series (작품마다 기체 목록 포함)
-Future<List<Series>> fetchSeries() async {
-  final list = await _getList('series?_embed=units');
-  return list.map(Series.fromJson).nonNulls.toList();
-}
-
-/// 화면이 데이터를 받는 함수 모양 — 테스트에서는 가짜 함수를 넣는다.
-typedef KitsLoader = Future<List<Kit>> Function();
-typedef UnitKitsLoader = Future<List<Kit>> Function(int unitId);
-typedef PricesLoader = Future<List<PricePoint>> Function(int kitId);
-typedef SeriesLoader = Future<List<Series>> Function();
 
 /// 화면 사이에 그대로 넘겨 주는 데이터 함수 묶음 (상태관리가 아니라 의존성 주입).
 /// 앱은 기본값(실제 GET)을, 테스트는 가짜 함수를 넣는다.
 class Loaders {
   const Loaders({
     this.kits = fetchKits,
-    this.kitsOfUnit = fetchKitsOfUnit,
-    this.prices = fetchPrices,
-    this.series = fetchSeries,
+    this.collection = fetchCollection,
+    this.kitsByIds = fetchKitsByIds,
+    this.worlds = fetchWorlds,
+    this.guideWorks = fetchGuideWorks,
+    this.guideUnits = fetchGuideUnits,
+    this.bbxTops = fetchBbxTops,
+    this.announcements = fetchAnnouncements,
+    this.profile = fetchProfile,
   });
 
-  final KitsLoader kits;
-  final UnitKitsLoader kitsOfUnit;
-  final PricesLoader prices;
-  final SeriesLoader series;
+  final Future<List<Kit>> Function(List<String> channelIds) kits;
+  final Future<List<Kit>> Function() collection;
+  final Future<List<Kit>> Function(List<String> ids) kitsByIds;
+  final Future<List<World>> Function(String channelId) worlds;
+  final Future<List<GuideWork>> Function() guideWorks;
+  final Future<List<GuideUnit>> Function(String workId) guideUnits;
+  final Future<List<BbxTop>> Function() bbxTops;
+  final Future<List<Announcement>> Function(List<String> channelIds) announcements;
+  final Future<Profile> Function() profile;
 }

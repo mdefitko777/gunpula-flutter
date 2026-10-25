@@ -2,12 +2,10 @@
 //   LoadingView  불러오는 중          P01 시스템 상태의 가시성
 //   ErrorView    오류 안내·다시 시도   P09 오류 인식·진단·복구
 //   EmptyView    빈 목록 안내(+ 할 일) P01 · P09
-// 그리고 여러 화면이 같은 모양으로 쓰는 조각 (P04 일관성):
-//   CollectColors 상태 색(소장 초록 · 위시 주황) · StatusBadge 소장 상태 배지
-//   AppImage 박스아트·기체 아이콘 · KitCard 키트 카드
+// 그리고 여러 화면이 같은 모양으로 쓰는 조각 (P04 일관성): AppImage · SectionTitle · 가격 표기
 import 'package:flutter/material.dart';
 
-import 'models.dart';
+import 'theme.dart';
 
 /// 로딩 상태
 class LoadingView extends StatelessWidget {
@@ -18,13 +16,19 @@ class LoadingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const CircularProgressIndicator(),
-          const SizedBox(height: 12),
-          Text(label),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox.square(
+              dimension: 22,
+              child: CircularProgressIndicator(strokeWidth: 2.4, color: Gp.ink),
+            ),
+            const SizedBox(height: 12),
+            Text(label, style: const TextStyle(color: Gp.muted)),
+          ],
+        ),
       ),
     );
   }
@@ -34,7 +38,7 @@ class LoadingView extends StatelessWidget {
 class ErrorView extends StatelessWidget {
   const ErrorView({
     super.key,
-    this.title = '정보를 불러오지 못했습니다.',
+    this.title = '정보를 불러오지 못했어요',
     this.message = '',
     required this.onRetry,
   });
@@ -47,21 +51,21 @@ class ErrorView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.wifi_off, size: 48),
+            const Icon(Icons.cloud_off_outlined, size: 40, color: Gp.ink),
             const SizedBox(height: 12),
-            Text(title, style: Theme.of(context).textTheme.titleMedium),
+            Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
             if (message.isNotEmpty) ...[
-              const SizedBox(height: 4),
-              Text(message, textAlign: TextAlign.center),
+              const SizedBox(height: 6),
+              Text(message, textAlign: TextAlign.center, style: const TextStyle(color: Gp.muted)),
             ],
             const SizedBox(height: 16),
             FilledButton.icon(
               onPressed: onRetry,
-              icon: const Icon(Icons.refresh),
+              icon: const Icon(Icons.refresh, size: 18),
               label: const Text('다시 시도'),
             ),
           ],
@@ -75,29 +79,35 @@ class ErrorView extends StatelessWidget {
 class EmptyView extends StatelessWidget {
   const EmptyView({
     super.key,
-    this.message = '표시할 항목이 없습니다.',
+    this.message = '표시할 항목이 없어요',
+    this.detail = '',
     this.icon = Icons.inbox_outlined,
     this.action,
   });
 
   final String message;
+  final String detail;
   final IconData icon;
 
-  /// 빈 화면에서 바로 할 수 있는 일 (예: 필터 초기화, 누락 제보)
+  /// 예: 필터 초기화 · 채널 추가 버튼
   final Widget? action;
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 48),
+            Icon(icon, size: 40, color: Gp.faint),
             const SizedBox(height: 12),
-            Text(message, textAlign: TextAlign.center),
-            if (action != null) ...[const SizedBox(height: 16), action!],
+            Text(message, textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.w700)),
+            if (detail.isNotEmpty) ...[
+              const SizedBox(height: 4),
+              Text(detail, textAlign: TextAlign.center, style: const TextStyle(color: Gp.muted)),
+            ],
+            if (action != null) ...[const SizedBox(height: 14), action!],
           ],
         ),
       ),
@@ -105,197 +115,124 @@ class EmptyView extends StatelessWidget {
   }
 }
 
-/// 상태 색 — 소장 = 초록, 위시 = 주황. 모든 화면이 이 두 색만 쓴다 (S-2 P04)
-abstract final class CollectColors {
-  static const owned = Color(0xFF2E9E6B);
-  static const wanted = Color(0xFFE0A63A);
-
-  static Color? of(CollectStatus status) => switch (status) {
-    CollectStatus.owned => owned,
-    CollectStatus.wanted => wanted,
-    CollectStatus.none => null,
-  };
-}
-
-String collectLabel(CollectStatus status) => switch (status) {
-  CollectStatus.owned => '소장',
-  CollectStatus.wanted => '위시',
-  CollectStatus.none => '미등록',
-};
-
-/// 소장 상태 배지 — 색 + 기호를 같이 써서 색만으로 구분하지 않는다
-class StatusBadge extends StatelessWidget {
-  const StatusBadge(this.status, {super.key, this.noneLabel});
-
-  final CollectStatus status;
-
-  /// 미등록일 때 보여 줄 글자. null이면 미등록 배지는 그리지 않는다.
-  final String? noneLabel;
-
-  @override
-  Widget build(BuildContext context) {
-    final color = CollectColors.of(status);
-    if (color == null && noneLabel == null) return const SizedBox.shrink();
-    final symbol = switch (status) {
-      CollectStatus.owned => '✓',
-      CollectStatus.wanted => '★',
-      CollectStatus.none => '·',
-    };
-    final fill = color ?? Theme.of(context).colorScheme.outline;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        color: fill,
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Text(
-        '$symbol ${status == CollectStatus.none ? noneLabel : collectLabel(status)}',
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-    );
-  }
-}
-
-/// 이미지 — 앱에 넣어 둔 자산(assets/…) 또는 주소(http…). 실패해도 화면은 그대로.
+/// 상품·로고 이미지. 경로가 비었거나 못 읽으면 회색 칸 + 글자.
+/// [grayscale] = 도감에서 아직 모으지 않은 칸 (불 꺼짐)
 class AppImage extends StatelessWidget {
   const AppImage(
     this.path, {
     super.key,
-    this.width,
-    this.height,
     this.fit = BoxFit.cover,
+    this.placeholder = '',
+    this.grayscale = false,
   });
 
   final String path;
-  final double? width;
-  final double? height;
   final BoxFit fit;
+  final String placeholder;
+  final bool grayscale;
 
   @override
   Widget build(BuildContext context) {
-    Widget fallback(BuildContext context, Object error, StackTrace? stack) =>
-        SizedBox(
-          width: width,
-          height: height,
-          child: const Icon(Icons.image_not_supported_outlined, size: 32),
-        );
-    if (path.startsWith('http')) {
-      return Image.network(
-        path,
-        width: width,
-        height: height,
-        fit: fit,
-        errorBuilder: fallback,
-      );
-    }
-    return Image.asset(
-      path,
-      width: width,
-      height: height,
-      fit: fit,
-      errorBuilder: fallback,
-    );
-  }
-}
-
-/// 엔화 정가 표시 (천 단위 쉼표) — 계산이 아니라 글자 모양 바꾸기
-String yen(int value) => '¥${_comma(value)}';
-String won(int value) => '${_comma(value)}원';
-String _comma(int value) => value.toString().replaceAllMapped(
-  RegExp(r'\B(?=(\d{3})+(?!\d))'),
-  (_) => ',',
-);
-
-/// 키트 카드 — 카탈로그 · 기체 상세 · 내 컬렉션이 같은 카드를 쓴다 (P04 · P08)
-/// 순서: 사진 → 이름 → 등급·발매 → 정가, 오른쪽 위에 소장 상태 배지
-class KitCard extends StatelessWidget {
-  const KitCard(this.kit, {super.key, this.onTap, this.vertical = false});
-
-  final Kit kit;
-  final VoidCallback? onTap;
-
-  /// true: 넓은 화면 격자용(사진 위, 글 아래) · false: 폰 목록용(사진 왼쪽)
-  final bool vertical;
-
-  @override
-  Widget build(BuildContext context) {
-    final text = Theme.of(context).textTheme;
-    final info = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          kit.name,
-          style: text.titleSmall,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-        ),
-        const SizedBox(height: 2),
-        Text(
-          '${kit.grade} · ${kit.releaseDate} 발매',
-          style: text.bodySmall,
-          maxLines: 1,
-        ),
-        const SizedBox(height: 2),
-        Text(yen(kit.priceJpy), style: text.bodyMedium),
-      ],
-    );
-    final badge = StatusBadge(kit.myStatus); // A-7 P04 P01
-    return Card(
-      margin: vertical
-          ? EdgeInsets.zero
-          : const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        child: vertical
-            ? Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        ColoredBox(
-                          color: Colors.white,
-                          child: AppImage(kit.image, fit: BoxFit.contain),
-                        ),
-                        Positioned(top: 8, right: 8, child: badge),
-                      ],
-                    ),
-                  ),
-                  Padding(padding: const EdgeInsets.all(12), child: info),
-                ],
-              )
-            : Row(
-                children: [
-                  ColoredBox(
-                    color: Colors.white,
-                    child: AppImage(
-                      kit.image,
-                      width: 96,
-                      height: 96,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: info,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: badge,
-                  ),
-                ],
-              ),
+    Widget fallback(BuildContext _, Object _, StackTrace? _) => _Placeholder(placeholder);
+    if (path.isEmpty) return _Placeholder(placeholder);
+    final Widget img = path.startsWith('http')
+        ? Image.network(path, fit: fit, errorBuilder: fallback)
+        : Image.asset(path, fit: fit, errorBuilder: fallback);
+    if (!grayscale) return img;
+    return Opacity(
+      opacity: 0.55,
+      child: ColorFiltered(
+        colorFilter: const ColorFilter.matrix([
+          0.2126, 0.7152, 0.0722, 0, 0,
+          0.2126, 0.7152, 0.0722, 0, 0,
+          0.2126, 0.7152, 0.0722, 0, 0,
+          0, 0, 0, 1, 0,
+        ]),
+        child: img,
       ),
     );
   }
 }
+
+class _Placeholder extends StatelessWidget {
+  const _Placeholder(this.text);
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return ColoredBox(
+      color: Gp.soft,
+      child: Center(
+        child: Text(
+          text,
+          textAlign: TextAlign.center,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(color: Gp.faint, fontWeight: FontWeight.w700),
+        ),
+      ),
+    );
+  }
+}
+
+/// 원 안에 사진(또는 첫 글자) — 채널 아이콘 · 아바타
+class CircleThumb extends StatelessWidget {
+  const CircleThumb({super.key, required this.image, required this.label, this.size = 40});
+
+  final String image;
+  final String label;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: size,
+      height: size,
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: Gp.soft,
+        border: Border.all(color: Gp.line),
+      ),
+      child: image.isEmpty
+          ? Center(
+              child: Text(
+                label.characters.first,
+                style: TextStyle(fontSize: size * 0.4, fontWeight: FontWeight.w800),
+              ),
+            )
+          : AppImage(image),
+    );
+  }
+}
+
+/// 섹션 제목 줄: 제목 + 오른쪽 작은 글자/버튼
+class SectionTitle extends StatelessWidget {
+  const SectionTitle(this.title, {super.key, this.trailing});
+
+  final String title;
+  final Widget? trailing;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 20, 8, 8),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
+          ),
+          ?trailing,
+        ],
+      ),
+    );
+  }
+}
+
+String _comma(int v) => v.toString().replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (_) => ',');
+
+/// 일본 정가: ¥3,850 (없으면 '가격 미정')
+String yen(int? v) => v == null ? '가격 미정' : '¥${_comma(v)}';
+
+/// 원화: 41,000원
+String won(int v) => '${_comma(v)}원';
