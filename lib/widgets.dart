@@ -3,7 +3,7 @@
 //   ErrorView    오류 안내·다시 시도   P09 오류 인식·진단·복구
 //   EmptyView    빈 목록 안내(+ 할 일) P01 · P09
 // 그리고 여러 화면이 같은 모양으로 쓰는 조각 (P04 일관성):
-//   GpSearchBar 검색창 · SectionHeader 색 막대 제목 · ProductTile 상품 카드 · PhotoThumb 둥근 사진 · AddSlot
+//   GpSearchBar 검색창 · SectionHeader 색 막대 제목 · ProductTile 상품 카드 · PhotoThumb 둥근 사진 · MarkButtons/QuickMarks ♡ +
 //   UnderlineTab 밑줄 탭 · PageDots 넘김 점 · ThumbRow 사진 줄 · TagPill 알약 글자 · TogglePill 켜고 끄는 버튼
 //   AccentBar 진행 막대 · SectionPanel 흰 띠 섹션 · AccentRing 브랜드 색 고리(돌아가는 것 포함) · joinDot
 //   AppImage · CircleThumb · RaisedCircleButton · ChannelGlyph · showSoon · showToast · navClearance · 가격 표기
@@ -509,7 +509,7 @@ class PhotoThumb extends StatelessWidget {
   }
 }
 
-/// 상품 카드: 사진(+ 왼쪽 위 좋아요 담기) · 이름 · 보조 한 줄
+/// 상품 카드: 사진(오른쪽 위 ♡ +) · 이름 · 보조 한 줄
 /// 홈 가로 줄 · 검색 결과가 같이 쓴다. [imageWidth]가 있으면 고정 너비(가로 줄), 없으면 칸 너비.
 class ProductTile extends StatelessWidget {
   const ProductTile({
@@ -518,7 +518,7 @@ class ProductTile extends StatelessWidget {
     required this.title,
     required this.onTap,
     this.subtitle = '',
-    this.onAdd,
+    this.marks,
     this.imageWidth,
     this.imageAspect = 1,
     this.titleLines = 1,
@@ -529,8 +529,8 @@ class ProductTile extends StatelessWidget {
   final String subtitle;
   final VoidCallback onTap;
 
-  /// 주면 사진 왼쪽 위에 + (좋아요 담기) 자리
-  final VoidCallback? onAdd;
+  /// 주면 사진 오른쪽 위에 ♡ 좋아요 · + 구매함 (보통 [QuickMarks])
+  final Widget? marks;
   final double? imageWidth;
 
   /// 가로 / 세로 (1 = 정사각형, 공식 예고 배너는 16:9 쯤)
@@ -545,7 +545,7 @@ class ProductTile extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           PhotoThumb(image),
-          if (onAdd != null) Positioned(left: 6, top: 6, child: AddSlot(onTap: onAdd!)),
+          if (marks != null) Positioned(right: 6, top: 6, child: marks!),
         ],
       ),
     );
@@ -578,36 +578,103 @@ class ProductTile extends StatelessWidget {
   }
 }
 
-/// 사진 왼쪽 위 + 자리 — 좋아요 담기 (컬렉션과 연결할 때 동작을 정한다)
-class AddSlot extends StatelessWidget {
-  const AddSlot({super.key, required this.onTap});
-  final VoidCallback onTap;
+/// 사진 위 작은 버튼 두 개 — ♡ 좋아요 · + 구매함 (켜지면 ✓)
+/// 좋아요 = 갖고 싶다, 구매함 = 이미 가졌다. 둘 다 켤 수 있다.
+class MarkButtons extends StatelessWidget {
+  const MarkButtons({
+    super.key,
+    required this.liked,
+    required this.owned,
+    required this.onLike,
+    required this.onOwn,
+    this.size = 28,
+  });
+
+  final bool liked;
+  final bool owned;
+  final VoidCallback onLike;
+  final VoidCallback onOwn;
+  final double size;
 
   @override
   Widget build(BuildContext context) {
-    return Semantics(
+    Widget dot({
+      required IconData icon,
+      required String label,
+      required bool on,
+      required bool filled,
+      required VoidCallback onTap,
+    }) => Semantics(
       button: true,
-      label: '좋아요에 담기',
+      selected: on,
+      label: label,
       child: GestureDetector(
         onTap: onTap,
-        child: Container(
-          width: 28,
-          height: 28,
+        behavior: HitTestBehavior.opaque,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 160),
+          width: size,
+          height: size,
           decoration: BoxDecoration(
-            color: const Color(0xD9FFFFFF),
+            color: filled ? Gp.accent : const Color(0xE6FFFFFF),
             shape: BoxShape.circle,
-            border: Border.all(color: Gp.line),
+            border: Border.all(color: on ? Gp.accent : Gp.line),
           ),
-          child: const Icon(Icons.add, size: 18, color: Gp.ink),
+          child: Icon(icon, size: size * 0.58, color: filled ? Colors.white : (on ? Gp.accent : Gp.ink)),
         ),
       ),
+    );
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        dot(
+          icon: liked ? Icons.favorite : Icons.favorite_border,
+          label: '좋아요',
+          on: liked,
+          filled: false,
+          onTap: onLike,
+        ),
+        SizedBox(width: size * 0.18),
+        dot(icon: owned ? Icons.check : Icons.add, label: '구매함', on: owned, filled: owned, onTap: onOwn),
+      ],
     );
   }
 }
 
-/// 좋아요 담기 자리를 눌렀을 때 (컬렉션 화면과 연결 전)
-void showAddSoon(BuildContext context) =>
-    showToast(context, '좋아요 담기는 컬렉션 화면과 함께 연결할 예정이에요');
+/// 상품 카드용 ♡ + (스스로 켜고 끔 — 가짜 저장, 토스트 + 되돌리기)
+class QuickMarks extends StatefulWidget {
+  const QuickMarks({super.key, required this.name, this.liked = false, this.owned = false, this.size = 28});
+  final String name;
+  final bool liked;
+  final bool owned;
+  final double size;
+
+  @override
+  State<QuickMarks> createState() => _QuickMarksState();
+}
+
+class _QuickMarksState extends State<QuickMarks> {
+  late bool _liked = widget.liked;
+  late bool _owned = widget.owned;
+
+  void _like() {
+    final before = _liked;
+    setState(() => _liked = !before); // STATE: 좋아요 → 하트 채움
+    showToast(context, before ? '좋아요를 취소했어요' : '「${widget.name}」 좋아요',
+        onUndo: () => setState(() => _liked = before));
+  }
+
+  void _own() {
+    final before = _owned;
+    setState(() => _owned = !before); // STATE: 구매함 → + 가 ✓ 로
+    showToast(context, before ? '구매함에서 뺐어요' : '「${widget.name}」 구매함에 넣었어요',
+        onUndo: () => setState(() => _owned = before));
+  }
+
+  @override
+  Widget build(BuildContext context) =>
+      MarkButtons(liked: _liked, owned: _owned, onLike: _like, onOwn: _own, size: widget.size);
+}
 
 /// "a · b · c" — 빈 칸은 빼고 가운뎃점으로 잇는다
 String joinDot(Iterable<String> parts) => parts.where((s) => s.isNotEmpty).join(' · ');

@@ -151,7 +151,7 @@ class _AnnouncementScreenState extends State<AnnouncementScreen> {
                               title: kits[i].name,
                               imageWidth: 148,
                               onTap: () => openKitDetail(context, kits[i], loaders: widget.loaders),
-                              onAdd: () => showAddSoon(context),
+                              marks: QuickMarks(name: kits[i].name, liked: kits[i].status == CollectStatus.wanted, owned: kits[i].status == CollectStatus.owned),
                             ),
                           ),
                         ),

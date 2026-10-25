@@ -10,7 +10,7 @@
 // │ A-6  │ 가로 ListView + ProductTile         │ 최근 추가 · 10월 발매 · 공식 예고 · 최근 본 │ P08        │
 // │ A-7  │ LoadingView / ErrorView / EmptyView │ 불러오는 중 · 오류 · 빈 채널           │ P01 · P09     │
 // │ A-8  │ 흰 띠(섹션마다) + 회백색 틈          │ 줄과 줄 사이 층 구분                   │ P08 · P04     │
-// │ A-9  │ ProductTile 의 AddSlot              │ 좋아요 담기 (컬렉션 연결 예정 자리)       │ P07           │
+// │ A-9  │ ProductTile 의 QuickMarks ♡ +       │ 좋아요 · 구매함 바로 담기 (가짜 저장)     │ P07           │
 // └──────────────────────────────────────────────────────────────────────────────────┘
 // 전환: A-2 → 검색 탭(옆으로). 상품 카드 → D 상품 상세(쌓기). 배너 · 예고 카드 → J 공식 예고 상세(쌓기).
 // 줄 안에는 날짜·가격을 쓰지 않는다 — 궁금하면 눌러서 상세에서 본다 (P08).
@@ -340,7 +340,7 @@ class _HorizontalRow extends StatelessWidget {
                 openAnnouncement(context, ann, loaders: loaders);
               }
             },
-            onAdd: kit == null ? null : () => showAddSoon(context), // A-9 P07
+            marks: kit == null ? null : QuickMarks(name: kit.name, liked: kit.status == CollectStatus.wanted, owned: kit.status == CollectStatus.owned), // A-9 P07
           );
         },
       ),

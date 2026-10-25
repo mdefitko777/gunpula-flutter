@@ -355,7 +355,7 @@ class _SearchScreenState extends State<SearchScreen> with ChannelScope {
                     titleLines: 2,
                     subtitle: joinDot([k.line, k.series, year]),
                     onTap: () => openKitDetail(context, k, loaders: widget.loaders),
-                    onAdd: () => showAddSoon(context),
+                    marks: QuickMarks(name: k.name, liked: k.status == CollectStatus.wanted, owned: k.status == CollectStatus.owned),
                   );
                 },
               ),

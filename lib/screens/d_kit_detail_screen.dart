@@ -386,7 +386,7 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
                       title: rest[i].name,
                       imageWidth: 148,
                       onTap: () => openKitDetail(context, rest[i], loaders: widget.loaders),
-                      onAdd: () => showAddSoon(context),
+                      marks: QuickMarks(name: rest[i].name, liked: rest[i].status == CollectStatus.wanted, owned: rest[i].status == CollectStatus.owned),
                     ),
                   ),
                 ),
