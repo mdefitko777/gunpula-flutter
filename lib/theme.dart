@@ -1,5 +1,5 @@
-// 흑백 테마 — 색은 상품 사진에만 남기고 UI는 검정·회색·흰색만 쓴다.
-// 상태(원함·구매함)도 색이 아니라 채움/테두리로 구분한다. (P08 미니멀 · P04 일관성)
+// 흑백 테마 — UI는 검정·회색·흰색, 브랜드 하늘색(Gp.accent)은 몇 군데에만 포인트로.
+// 상태(원함·구매함)는 색이 아니라 채움/테두리로 구분한다. (P08 미니멀 · P04 일관성)
 import 'package:flutter/material.dart';
 
 abstract final class Gp {
@@ -16,6 +16,13 @@ abstract final class Gp {
   static const panel = Color(0xFFFFFFFF);
   static const danger = Color(0xFFC0392B);
   static const radius = 12.0;
+
+  /// 브랜드 포인트 색: 라이징 프리덤 · 엑시아의 하늘색. 흑백 화면에 "가끔만" 쓴다
+  /// (줄 제목 앞 막대 · 선택 채널 밑줄 · 배너 점 · 아바타 고리 · 기간 글자).
+  static const accent = Color(0xFF1C86D9);
+
+  /// 아바타 고리 그라데이션의 끝 색(민트 그린)
+  static const accent2 = Color(0xFF2CC6A0);
 
   /// 떠 있는 흰 버튼(아바타 · + · 채널 타일): 흰→옅은 회색 그라데이션 + 부드러운 그림자
   static BoxDecoration raised({BoxShape shape = BoxShape.rectangle, double radius = 14}) =>

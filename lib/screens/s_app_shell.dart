@@ -2,7 +2,7 @@
 //
 // ┌──────── 디자인 가이드 대응표: S 앱 셸 ───────────────────────────────────────────┐
 // │ 번호 │ Flutter 위젯명                  │ 비즈니스 명칭(한글)                    │ 원칙(P번호)   │
-// │ S-1  │ RaisedCircleButton (맨 위 줄)   │ 내 정보 열기 (아바타, 채널 바 위)      │ P04 · P06     │
+// │ S-1  │ RaisedCircleButton + 색 고리    │ 내 정보 열기 (아바타, 채널 바 위)      │ P04 · P06     │
 // │ S-2  │ BackdropFilter 떠 있는 탭 바    │ 반투명 하단 탭 바                      │ P08           │
 // │ S-3  │ 하단 탭 4개 (<840dp)            │ 홈 · 검색 · 캘린더 · 컬렉션            │ P06 · P04     │
 // │ S-4  │ 가운데 떠 있는 + 버튼           │ 추가 (사진으로 찾기 · 바코드 · 앨범)   │ P07           │
@@ -144,13 +144,25 @@ class _AvatarButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RaisedCircleButton(
-      tooltip: '내 정보',
-      size: 38,
-      onTap: onTap,
-      child: const Text(
-        'A',
-        style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15, color: Gp.ink),
+    // 브랜드 색 고리(하늘색 → 민트) — 인스타그램 프로필 고리처럼
+    return Container(
+      padding: const EdgeInsets.all(2),
+      decoration: const BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: SweepGradient(colors: [Gp.accent, Gp.accent2, Gp.accent]),
+      ),
+      child: Container(
+        padding: const EdgeInsets.all(2),
+        decoration: const BoxDecoration(shape: BoxShape.circle, color: Gp.bg),
+        child: RaisedCircleButton(
+          tooltip: '내 정보',
+          size: 34,
+          onTap: onTap,
+          child: const Text(
+            'A',
+            style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14, color: Gp.ink),
+          ),
+        ),
       ),
     );
   }

@@ -120,7 +120,7 @@ class _ChannelTab extends StatelessWidget {
               duration: const Duration(milliseconds: 150),
               height: 2,
               width: selected ? 14 : 0,
-              color: Gp.ink,
+              color: Gp.accent, // 브랜드 포인트 색
             ),
           ],
         ),
