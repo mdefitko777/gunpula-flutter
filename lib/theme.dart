@@ -1,5 +1,5 @@
 // 흑백 테마 — UI는 검정·회색·흰색, 브랜드 하늘색(Gp.accent)은 몇 군데에만 포인트로.
-// 상태(원함·구매함)는 색이 아니라 채움/테두리로 구분한다. (P08 미니멀 · P04 일관성)
+// 상태(좋아요·구매함)는 색이 아니라 채움/테두리로 구분한다. (P08 미니멀 · P04 일관성)
 import 'package:flutter/material.dart';
 
 abstract final class Gp {

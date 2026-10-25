@@ -1,11 +1,11 @@
-// 화면 F: 컬렉션 — 원함 · 구매함 (목록 | 도감)
+// 화면 F: 컬렉션 — 좋아요 · 구매함 (목록 | 도감)
 //
 // ┌──────── 디자인 가이드 대응표: F 컬렉션 ────────────────────────────────────────────┐
 // │ 번호 │ Flutter 위젯명                     │ 비즈니스 명칭(한글)                    │ 원칙(P번호)   │
 // │ F-1  │ ChannelHeader                      │ 아바타 줄 + 내 채널 바 (C-0 공용)       │ P04 · P06     │
-// │ F-2  │ 밑줄 탭 2개 + 개수                   │ 원함 · 구매함                          │ P06 · P01     │
+// │ F-2  │ 밑줄 탭 2개 + 개수                   │ 좋아요 · 구매함                          │ P06 · P01     │
 // │ F-3  │ 아이콘 두 개 (목록 · 도감)            │ 보기 방식 전환                          │ P07           │
-// │ F-4  │ Text(합계)                         │ 원함 예산(정가×수량) · 구매함 지출 합계 │ P01           │
+// │ F-4  │ Text(합계)                         │ 좋아요 예산(정가×수량) · 구매함 지출 합계 │ P01           │
 // │ F-5  │ ListView 줄 (사진 · 이름 · ×n)        │ 컬렉션 목록 → 상품 상세                 │ P08           │
 // │ F-6  │ 편집 → 체크박스 + 선택 삭제           │ 정리하기 (편집 모드에서만 삭제 보임)     │ P05 · P03     │
 // │ F-7  │ showDialog(확인) → 토스트(되돌리기)   │ 삭제 전 확인 · 바로 되돌리기             │ P05 · P03     │
@@ -49,7 +49,7 @@ class CollectionScreen extends StatefulWidget {
 class _CollectionScreenState extends State<CollectionScreen> with ChannelScope {
   late Future<List<Kit>> _future;
 
-  /// true = 구매함 탭, false = 원함 탭
+  /// true = 구매함 탭, false = 좋아요 탭
   bool _ownedTab = false;
 
   /// true = 도감 보기, false = 목록 보기
@@ -65,7 +65,7 @@ class _CollectionScreenState extends State<CollectionScreen> with ChannelScope {
 
   @override
   void loadScope(List<String> ids) {
-    _future = widget.loaders.collection(); // STATE: GET /kits?status_ne=none → 원함 · 구매함
+    _future = widget.loaders.collection(); // STATE: GET /kits?status_ne=none → 좋아요 · 구매함
   }
 
   @override
@@ -93,11 +93,11 @@ class _CollectionScreenState extends State<CollectionScreen> with ChannelScope {
     final ok = await showDialog<bool>( // F-7 P05
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('$n개를 ${_ownedTab ? '구매함' : '원함'}에서 뺄까요?'),
+        title: Text('$n개를 ${_ownedTab ? '구매함' : '좋아요'}에서 삭제할까요?'),
         content: const Text('상품 자체는 지워지지 않고, 내 컬렉션에서만 빠져요.'),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('취소')),
-          FilledButton(onPressed: () => Navigator.pop(context, true), child: const Text('빼기')),
+          FilledButton(onPressed: () => Navigator.pop(context, true), child: const Text('삭제')),
         ],
       ),
     );
@@ -108,7 +108,7 @@ class _CollectionScreenState extends State<CollectionScreen> with ChannelScope {
       _selected.clear();
       _editing = false;
     });
-    showToast(context, '$n개를 뺐어요', onUndo: () => setState(() => _removed.removeAll(gone))); // P03
+    showToast(context, '$n개를 삭제했어요', onUndo: () => setState(() => _removed.removeAll(gone))); // P03
   }
 
   @override
@@ -177,9 +177,9 @@ class _CollectionScreenState extends State<CollectionScreen> with ChannelScope {
     if (kits.isEmpty) {
       return EmptyView( // F-9 P09
         icon: _ownedTab ? Icons.check_circle_outline : Icons.bookmark_border,
-        message: _ownedTab ? '아직 구매함에 넣은 상품이 없어요' : '아직 원함에 담은 상품이 없어요',
+        message: _ownedTab ? '아직 구매함에 넣은 상품이 없어요' : '아직 좋아요에 담은 상품이 없어요',
         detail: channel == allChannelId
-            ? '상품 상세에서 원함 · 구매함을 누르면 여기에 모여요'
+            ? '상품 상세에서 좋아요 · 구매함을 누르면 여기에 모여요'
             : '${channelOf(channel).label} 채널에는 아직 없어요',
         action: OutlinedButton.icon(
           onPressed: widget.onGoSearch,
@@ -188,8 +188,8 @@ class _CollectionScreenState extends State<CollectionScreen> with ChannelScope {
         ),
       );
     }
-    final total = kits.fold<int>(0, (s, k) => s + (k.priceJpy ?? 0) * (k.wantedQty < 1 ? 1 : k.wantedQty));
-    final pieces = kits.fold<int>(0, (s, k) => s + (k.wantedQty < 1 ? 1 : k.wantedQty));
+    final total = kits.fold<int>(0, (s, k) => s + (k.priceJpy ?? 0));
+    final pieces = kits.length;
     final spent = kits.fold<int>(0, (s, k) => s + (k.purchaseKrw ?? 0)); // 구매함: 내가 낸 돈 합
     return Stack(
       children: [
@@ -250,9 +250,6 @@ class _CollectionScreenState extends State<CollectionScreen> with ChannelScope {
                       Text('정가 ${yen(k.priceJpy)}', style: const TextStyle(fontSize: 11.5, color: Gp.faint)),
                     ] else
                       Text(yen(k.priceJpy), style: const TextStyle(fontSize: 13)),
-                    if (!_ownedTab && k.wantedQty > 1)
-                      Text('×${k.wantedQty}',
-                          style: const TextStyle(fontSize: 12.5, color: Gp.accent, fontWeight: FontWeight.w600)),
                   ],
                 ),
               ),
@@ -283,7 +280,7 @@ class _CollectionScreenState extends State<CollectionScreen> with ChannelScope {
                     foregroundColor: Gp.danger,
                     side: BorderSide(color: _selected.isEmpty ? Gp.line : Gp.danger),
                   ),
-                  child: Text('선택 빼기 (${_selected.length})'),
+                  child: Text('삭제 (${_selected.length})'),
                 ),
               ],
             ),
@@ -293,7 +290,7 @@ class _CollectionScreenState extends State<CollectionScreen> with ChannelScope {
   }
 }
 
-/// F-2 · F-3 원함 | 구매함 탭 + 목록/도감 전환
+/// F-2 · F-3 좋아요 | 구매함 탭 + 목록/도감 전환
 class _TopRow extends StatelessWidget {
   const _TopRow({
     required this.wantedCount,
@@ -335,7 +332,7 @@ class _TopRow extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(6, 2, 6, 2),
       child: Row(
         children: [
-          tab('원함', wantedCount, false), // F-2 P06
+          tab('좋아요', wantedCount, false), // F-2 P06
           tab('구매함', ownedCount, true),
           const Spacer(),
           icon(Icons.view_agenda_outlined, '목록', !guide, () => onGuide(false)), // F-3 P07

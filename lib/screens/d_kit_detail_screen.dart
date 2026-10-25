@@ -1,4 +1,4 @@
-// 화면 D: 상품 상세 — 공식 사진 · 정가 · 정확한 버전 · 출처, 그리고 원함/구매함
+// 화면 D: 상품 상세 — 공식 사진 · 정가 · 정확한 버전 · 출처, 그리고 좋아요/구매함
 //
 // ┌──────── 디자인 가이드 대응표: D 상품 상세 ─────────────────────────────────────────┐
 // │ 번호 │ Flutter 위젯명                     │ 비즈니스 명칭(한글)                    │ 원칙(P번호)   │
@@ -8,8 +8,7 @@
 // │ D-5  │ Text(¥) + 발매일 + 한정 표시         │ 일본 정가 · 발매 · 한정/PB              │ P02 · P01     │
 // │ D-5b │ 정가 아래 시세 한 줄 → 바텀 시트      │ 정가 ↔ 국내 시세 (시세는 이 한 곳에만)   │ P01 · P08     │
 // │ D-5c │ 구매함일 때 "내 구매가" 줄 → 입력 시트 │ 내가 낸 돈 기록 (가짜 저장)             │ P01 · P03     │
-// │ D-6  │ 하단 고정 바: 원함 · 구매함           │ 원함 · 구매함 (따로 켜고 끔, 가짜 저장)  │ P03 · P07     │
-// │ D-7  │ "원함 ×n" → 바텀 시트 − n + · 해제   │ 원하는 수량 (원함일 때만)               │ P05 · P03     │
+// │ D-6  │ 하단 고정 바: 좋아요 · 구매함           │ 좋아요 · 구매함 (따로 켜고 끔, 가짜 저장)  │ P03 · P07     │
 // │ D-8  │ 가로 스크롤 요약 줄 → 바텀 시트       │ 공식 정보 (요약 → 전체 표)              │ P08 · P06     │
 // │ D-9  │ 시세 시트: 가격 범위 · 플랫폼 3칸     │ 국내 시세 자세히 (없으면 이유 + 찾아볼 곳) │ P01 · P08   │
 // │ D-10 │ 가로 ProductTile (GET /kits)        │ 같은 작품의 다른 상품                   │ P06           │
@@ -18,8 +17,8 @@
 // │ D-13 │ LayoutBuilder ≥720dp                │ 넓은 화면: 사진 왼쪽 · 정보 오른쪽      │ 적응형        │
 // │ D-14 │ 하단 고정 바 왼쪽: 복사 · 공식        │ 상품명 복사 · 공식 상품 페이지(출처)    │ P07 · P10     │
 // └──────────────────────────────────────────────────────────────────────────────────┘
-// 전환: 홈 · 검색 · AI 후보에서 쌓기(push, 오른쪽에서). 공식 정보 · 원하는 수량 → 덮기(바텀 시트).
-// 원함 · 구매함은 화면 아래에 고정 — 길게 내려 읽어도 바로 누를 수 있다 (쇼핑 앱 상세와 같은 위치).
+// 전환: 홈 · 검색 · AI 후보에서 쌓기(push, 오른쪽에서). 공식 정보 · 시세 · 구매가 → 덮기(바텀 시트).
+// 좋아요 · 구매함은 화면 아래에 고정 — 길게 내려 읽어도 바로 누를 수 있다 (쇼핑 앱 상세와 같은 위치).
 // 현행 앱 문제: 상세에 내부 코드(GUNDAM_MERCH)·"보완 필요"·수동 수정 폼이 그대로 보임
 //              → v2는 사용자에게 필요한 정가 · 버전 · 출처만, 수정은 "제보" 한 줄로.
 import 'package:flutter/cupertino.dart' show CupertinoPageRoute;
@@ -56,10 +55,9 @@ class KitDetailScreen extends StatefulWidget {
 }
 
 class _KitDetailScreenState extends State<KitDetailScreen> {
-  // 원함 · 구매함은 따로 켜고 끈다 (둘 다 켤 수 있음)
+  // 좋아요 · 구매함은 따로 켜고 끈다 (둘 다 켤 수 있음)
   late bool _wanted = widget.kit.status == CollectStatus.wanted;
   late bool _owned = widget.kit.status == CollectStatus.owned;
-  late int _qty = widget.kit.wantedQty < 1 ? 1 : widget.kit.wantedQty;
   late final Future<List<Kit>> _related = widget.loaders.kits([widget.kit.franchiseId]);
 
   Kit get k => widget.kit;
@@ -128,56 +126,10 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
     );
   }
 
-  /// 원함 버튼: 꺼져 있으면 담기, 켜져 있으면 수량 시트(여기서 해제도)
-  void _tapWanted() {
-    if (!_wanted) {
-      _toggleWanted();
-      return;
-    }
-    showModalBottomSheet<void>( // D-7 덮기
-      context: context,
-      builder: (sheet) => StatefulBuilder(
-        builder: (sheet, setSheet) => SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const Text('원하는 수량',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600)),
-                const SizedBox(height: 16),
-                Center(
-                  child: _Stepper( // P05
-                    value: _qty,
-                    onChanged: (v) {
-                      setState(() => _qty = v); // STATE: 수량 → "원함 ×n"
-                      setSheet(() {});
-                    },
-                  ),
-                ),
-                const SizedBox(height: 16),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(sheet);
-                    _toggleWanted(); // 해제 + 되돌리기 토스트
-                  },
-                  child: const Text('원함에서 빼기', style: TextStyle(color: Gp.muted)),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-
   void _toggleWanted() {
     final before = _wanted;
-    setState(() => _wanted = !before); // STATE: 원함 → 버튼 · 수량 줄
-    showToast(context, before ? '원함에서 뺐어요' : '원함에 담았어요',
+    setState(() => _wanted = !before); // STATE: 좋아요 → 하트 채움
+    showToast(context, before ? '좋아요를 취소했어요' : '좋아요를 눌렀어요',
         onUndo: () => setState(() => _wanted = before));
   }
 
@@ -239,8 +191,7 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
       bottomNavigationBar: _BottomActions( // D-6 · D-14
         wanted: _wanted,
         owned: _owned,
-        qty: _qty,
-        onWanted: _tapWanted,
+        onWanted: _toggleWanted,
         onOwned: _toggleOwned,
         onCopy: () => _copy(k.name, '상품명'),
         onOfficial: () => _external('공식 상품 페이지'),
@@ -636,36 +587,6 @@ class _SpecSheet extends StatelessWidget {
   }
 }
 
-/// 수량 − n + (1–99)
-class _Stepper extends StatelessWidget {
-  const _Stepper({required this.value, required this.onChanged});
-  final int value;
-  final ValueChanged<int> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    Widget btn(IconData icon, String tip, int? next) => IconButton(
-      tooltip: tip,
-      visualDensity: VisualDensity.compact,
-      onPressed: next == null ? null : () => onChanged(next),
-      icon: Icon(icon, size: 16),
-      style: IconButton.styleFrom(side: const BorderSide(color: Gp.line)),
-    );
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        btn(Icons.remove, '줄이기', value > 1 ? value - 1 : null), // P05 1 아래로는 못 내림
-        SizedBox(
-          width: 30,
-          child: Text('$value', textAlign: TextAlign.center,
-              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
-        ),
-        btn(Icons.add, '늘리기', value < 99 ? value + 1 : null),
-      ],
-    );
-  }
-}
-
 /// D-9 시세 카드 — 가격 범위 → (가는 선) → 플랫폼 3칸
 class _MarketCard extends StatelessWidget {
   const _MarketCard({required this.market, required this.onOpen});
@@ -724,12 +645,11 @@ class _MarketCard extends StatelessWidget {
   }
 }
 
-/// D-6 · D-14 하단 고정 바 — 왼쪽: 복사 · 공식 / 오른쪽: 원함 · 구매함
+/// D-6 · D-14 하단 고정 바 — 왼쪽: 복사 · 공식 / 오른쪽: 좋아요 · 구매함
 class _BottomActions extends StatelessWidget {
   const _BottomActions({
     required this.wanted,
     required this.owned,
-    required this.qty,
     required this.onWanted,
     required this.onOwned,
     required this.onCopy,
@@ -738,7 +658,6 @@ class _BottomActions extends StatelessWidget {
 
   final bool wanted;
   final bool owned;
-  final int qty;
   final VoidCallback onWanted;
   final VoidCallback onOwned;
   final VoidCallback onCopy;
@@ -779,9 +698,9 @@ class _BottomActions extends StatelessWidget {
                 const SizedBox(width: 6),
                 Expanded(
                   child: TogglePill( // P03
-                    label: wanted ? '원함 ×$qty' : '원함',
-                    icon: Icons.bookmark_border,
-                    activeIcon: Icons.bookmark,
+                    label: '좋아요',
+                    icon: Icons.favorite_border,
+                    activeIcon: Icons.favorite,
                     active: wanted,
                     onTap: onWanted,
                   ),

@@ -509,7 +509,7 @@ class PhotoThumb extends StatelessWidget {
   }
 }
 
-/// 상품 카드: 사진(+ 왼쪽 위 원함 담기) · 이름 · 보조 한 줄
+/// 상품 카드: 사진(+ 왼쪽 위 좋아요 담기) · 이름 · 보조 한 줄
 /// 홈 가로 줄 · 검색 결과가 같이 쓴다. [imageWidth]가 있으면 고정 너비(가로 줄), 없으면 칸 너비.
 class ProductTile extends StatelessWidget {
   const ProductTile({
@@ -529,7 +529,7 @@ class ProductTile extends StatelessWidget {
   final String subtitle;
   final VoidCallback onTap;
 
-  /// 주면 사진 왼쪽 위에 + (원함 담기) 자리
+  /// 주면 사진 왼쪽 위에 + (좋아요 담기) 자리
   final VoidCallback? onAdd;
   final double? imageWidth;
 
@@ -578,7 +578,7 @@ class ProductTile extends StatelessWidget {
   }
 }
 
-/// 사진 왼쪽 위 + 자리 — 원함 담기 (컬렉션과 연결할 때 동작을 정한다)
+/// 사진 왼쪽 위 + 자리 — 좋아요 담기 (컬렉션과 연결할 때 동작을 정한다)
 class AddSlot extends StatelessWidget {
   const AddSlot({super.key, required this.onTap});
   final VoidCallback onTap;
@@ -587,7 +587,7 @@ class AddSlot extends StatelessWidget {
   Widget build(BuildContext context) {
     return Semantics(
       button: true,
-      label: '원함에 담기',
+      label: '좋아요에 담기',
       child: GestureDetector(
         onTap: onTap,
         child: Container(
@@ -605,14 +605,14 @@ class AddSlot extends StatelessWidget {
   }
 }
 
-/// 원함 담기 자리를 눌렀을 때 (컬렉션 화면과 연결 전)
+/// 좋아요 담기 자리를 눌렀을 때 (컬렉션 화면과 연결 전)
 void showAddSoon(BuildContext context) =>
-    showToast(context, '원함 담기는 컬렉션 화면과 함께 연결할 예정이에요');
+    showToast(context, '좋아요 담기는 컬렉션 화면과 함께 연결할 예정이에요');
 
 /// "a · b · c" — 빈 칸은 빼고 가운뎃점으로 잇는다
 String joinDot(Iterable<String> parts) => parts.where((s) => s.isNotEmpty).join(' · ');
 
-/// 글자 + 브랜드 색 밑줄 탭 (채널 바 · 원함/구매함 · 사진/바코드)
+/// 글자 + 브랜드 색 밑줄 탭 (채널 바 · 좋아요/구매함 · 사진/바코드)
 class UnderlineTab extends StatelessWidget {
   const UnderlineTab({
     super.key,
@@ -808,7 +808,7 @@ class TagPill extends StatelessWidget {
   }
 }
 
-/// 켜고 끄는 버튼 (원함 · 구매함) — 켜지면 옅은 하늘색 바탕 + 브랜드 색 테두리·아이콘
+/// 켜고 끄는 버튼 (좋아요 · 구매함) — 켜지면 옅은 하늘색 바탕 + 브랜드 색 테두리·아이콘
 class TogglePill extends StatelessWidget {
   const TogglePill({
     super.key,

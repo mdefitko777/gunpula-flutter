@@ -8,7 +8,7 @@
 // │ E-4  │ 틀 안 "비교하는 중…"                 │ 분석 중 표시 (약 1초, 가짜)             │ P01           │
 // │ E-5  │ showModalBottomSheet 사진 격자       │ 앨범에서 선택                          │ P07           │
 // │ E-6  │ 큰 카드 + 일치도 막대 + 이유          │ 가장 닮은 상품 (AI 가짜 응답)           │ P01 · P10     │
-// │ E-7  │ 상세 보기 · 원함에 담기               │ 다음 할 일 (상세로 / 바로 원함)          │ P07 · P03     │
+// │ E-7  │ 상세 보기 · 좋아요에 담기               │ 다음 할 일 (상세로 / 바로 좋아요)          │ P07 · P03     │
 // │ E-8  │ 작은 줄 목록                         │ 다른 후보                              │ P06           │
 // │ E-9  │ 이름으로 검색 · 다시 찍기             │ 못 찾았을 때 빠져나갈 길                │ P09 · P03     │
 // │ E-10 │ LoadingView / ErrorView / EmptyView  │ 후보 불러오기 3상태 (GET /kits?id=)      │ P01 · P09     │
@@ -430,8 +430,8 @@ class _CameraResultScreenState extends State<CameraResultScreen> {
 
   void _toggleWant() {
     final before = _wanted;
-    setState(() => _wanted = !before); // STATE: 원함 → 버튼 채움
-    showToast(context, before ? '원함에서 뺐어요' : '원함에 담았어요',
+    setState(() => _wanted = !before); // STATE: 좋아요 → 버튼 채움
+    showToast(context, before ? '좋아요를 취소했어요' : '좋아요를 눌렀어요',
         onUndo: () => setState(() => _wanted = before));
   }
 
@@ -552,10 +552,10 @@ class _CameraResultScreenState extends State<CameraResultScreen> {
                         ),
                         const SizedBox(width: 10),
                         Expanded(
-                          child: TogglePill( // E-7 P03 — 상세의 원함 버튼과 같은 부품
-                            label: _wanted ? '원함에 담김' : '원함에 담기',
-                            icon: Icons.bookmark_border,
-                            activeIcon: Icons.bookmark,
+                          child: TogglePill( // E-7 P03 — 상세의 좋아요 버튼과 같은 부품
+                            label: '좋아요',
+                            icon: Icons.favorite_border,
+                            activeIcon: Icons.favorite,
                             active: _wanted,
                             onTap: _toggleWant,
                           ),

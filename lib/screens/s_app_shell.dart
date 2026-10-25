@@ -243,7 +243,7 @@ class _AvatarButton extends StatelessWidget {
   }
 }
 
-/// S-4 카메라 버튼 — 홈 카드의 +(원함 담기)와 구분되게 카메라 모양
+/// S-4 카메라 버튼 — 홈 카드의 +(좋아요 담기)와 구분되게 카메라 모양
 class _CameraButton extends StatelessWidget {
   const _CameraButton({required this.onTap});
   final VoidCallback onTap;

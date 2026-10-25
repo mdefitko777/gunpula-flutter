@@ -6,7 +6,7 @@
 // │ J-2  │ TagPill(단계) · IP · 날짜 · 출처     │ 예고 요약                              │ P01 · P02     │
 // │ J-3  │ 4단계 진행 줄 (현재 = 브랜드 색)      │ 공식 발표 → 상품화 확정 → 예약 시작 → 발매 │ P01 · P06 │
 // │ J-4  │ TogglePill(알림 받기) + 토스트       │ 다음 단계가 되면 알림 (가짜)            │ P03 · P07     │
-// │ J-5  │ 원문 보기 ↗                         │ 출처 (반다이 공식)                      │ P10           │
+// │ J-5  │ 공식으로 가기 ↗                        │ 출처 (반다이 공식)                      │ P10           │
 // │ J-6  │ 가로 ProductTile (GET /kits)        │ 같은 IP의 상품                          │ P06           │
 // └──────────────────────────────────────────────────────────────────────────────────┘
 // 전환: 홈 배너 · 홈 공식 예고 줄 · 캘린더 예고 줄에서 쌓기(push, 오른쪽에서).
@@ -105,7 +105,7 @@ class _AnnouncementScreenState extends State<AnnouncementScreen> {
                               shape: const StadiumBorder(),
                             ),
                             icon: const Icon(Icons.north_east, size: 16),
-                            label: const Text('원문 보기'),
+                            label: const Text('공식으로 가기'),
                           ),
                         ),
                       ],

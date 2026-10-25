@@ -5,7 +5,7 @@
 // │ I-1  │ 색 고리 큰 아바타 · 이름 · @아이디    │ 내 프로필                              │ P04           │
 // │ I-2  │ TagPill 줄                          │ 내 취향 태그                           │ P06           │
 // │ I-3  │ 프로필 편집 → 바텀 시트(액션 목록)    │ 아바타 · 배경 · 닉네임 · 태그 바꾸기 (가짜) │ P03 · P07  │
-// │ I-4  │ 숫자 3칸                            │ 원함 · 구매함 · 구매 지출              │ P01           │
+// │ I-4  │ 숫자 3칸                            │ 좋아요 · 구매함 · 구매 지출              │ P01           │
 // │ I-5  │ 초대 코드 + 복사 · 멤버 줄           │ 공유 공간과 친구                        │ P07           │
 // │ I-8  │ LoadingView / ErrorView             │ 프로필 불러오기 (GET /profile)          │ P01 · P09     │
 // └──────────────────────────────────────────────────────────────────────────────────┘
@@ -108,7 +108,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: IntrinsicHeight(
                   child: Row(
                     children: [
-                      Expanded(child: _Stat('원함', '$wanted')), // I-4 P01
+                      Expanded(child: _Stat('좋아요', '$wanted')), // I-4 P01
                       const VerticalDivider(width: 1, indent: 6, endIndent: 6),
                       Expanded(child: _Stat('구매함', '$owned')),
                       const VerticalDivider(width: 1, indent: 6, endIndent: 6),

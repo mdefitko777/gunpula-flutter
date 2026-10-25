@@ -3,7 +3,7 @@
 // ┌──────── 디자인 가이드 대응표: G 도감 ──────────────────────────────────────────────┐
 // │ 번호 │ Flutter 위젯명                     │ 비즈니스 명칭(한글)                    │ 원칙(P번호)   │
 // │ G-1  │ 채널 타일 격자                      │ '전체'일 때: 도감을 볼 IP 고르기         │ P06           │
-// │ G-2  │ 범례 (컬러 · 하늘색 테두리 · 흑백)    │ 구매함 · 원함 · 미수집 읽는 법           │ P10 · P04     │
+// │ G-2  │ 범례 (컬러 · 하늘색 테두리 · 흑백)    │ 구매함 · 좋아요 · 미수집 읽는 법           │ P10 · P04     │
 // │ G-3  │ 섹션별 작품 카드 + 진행 막대          │ 건담 작품 도감 (수집 n/전체)            │ P01 · P06     │
 // │ G-4  │ 기체 칸 격자 (불 켜짐/꺼짐)           │ 작품 안의 기체                          │ P01 · P02     │
 // │ G-5  │ 바텀 시트: 기체 → 대응 상품           │ 이 기체의 상품 → 상품 상세              │ P07           │
@@ -137,7 +137,7 @@ class _Legend extends StatelessWidget {
         runSpacing: 6,
         children: [
           item(box(fill: const Color(0xFF8FB8DE)), '구매함 (컬러)'), // G-2 P10
-          item(box(fill: const Color(0xFFDDE7F0), border: Gp.accent, w: 1.6), '원함'),
+          item(box(fill: const Color(0xFFDDE7F0), border: Gp.accent, w: 1.6), '좋아요'),
           item(box(fill: const Color(0xFF8FB8DE), border: Gp.ink, w: 1.2), '수동 점등'),
           item(const AccentRing(width: 1.6, radius: 4, child: SizedBox.square(dimension: 9)), '내 사진 인증 (도는 고리)'),
           item(box(fill: Gp.soft), '미수집 (흑백)'),
@@ -492,7 +492,7 @@ class _WorkGuideScreenState extends State<WorkGuideScreen> {
   }
 }
 
-/// 불 켜짐 칸: 구매함 = 컬러 · 원함 = 하늘색 테두리 · 수동 점등 = 검정 테두리
+/// 불 켜짐 칸: 구매함 = 컬러 · 좋아요 = 하늘색 테두리 · 수동 점등 = 검정 테두리
 /// · 내 사진 = 돌아가는 색 고리 · 미수집 = 흑백
 class _LitCell extends StatelessWidget {
   const _LitCell({
@@ -603,7 +603,7 @@ class _UnitSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final status = switch (unit.status) {
       CollectStatus.owned => '구매함',
-      CollectStatus.wanted => '원함',
+      CollectStatus.wanted => '좋아요',
       CollectStatus.none => '미수집',
     };
     return SafeArea(

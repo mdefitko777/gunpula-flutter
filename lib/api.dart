@@ -82,7 +82,7 @@ Future<List<Kit>> fetchKits(List<String> channelIds) async {
   return _getList('kits?${_byChannels(channelIds)}&_sort=date&_order=desc', Kit.fromJson);
 }
 
-/// 컬렉션: 원함 · 구매함 상품 (모든 채널)
+/// 컬렉션: 좋아요 · 구매함 상품 (모든 채널)
 Future<List<Kit>> fetchCollection() =>
     _getList('kits?status_ne=none&_sort=date&_order=desc', Kit.fromJson);
 
