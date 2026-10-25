@@ -11,6 +11,8 @@
 // │ F-7  │ showDialog(확인) → 토스트(되돌리기)   │ 삭제 전 확인 · 바로 되돌리기             │ P05 · P03     │
 // │ F-8  │ GuideView (g_guide_view.dart)       │ 도감 — 모은 만큼 불이 켜지는 칸          │ P01 · P06     │
 // │ F-9  │ LoadingView / ErrorView / EmptyView │ 불러오는 중 · 오류 · 빈 컬렉션           │ P01 · P09     │
+// │ F-10 │ 🗑 아이콘(개수 배지) → 바텀 시트      │ 휴지통: 지운 상품 복원 (손 미끄러짐 대비)  │ P03 · P05     │
+// │ F-11 │ jumpTick (내 정보 숫자에서)          │ 좋아요 · 구매함 · 도감으로 바로 이동       │ P07           │
 // └──────────────────────────────────────────────────────────────────────────────────┘
 // 전환: 줄 → D 상품 상세(쌓기). 빈 상태 "검색하러 가기" → 검색 탭(옆으로).
 // 현행 앱 문제: 컬렉션 화면에 빨간 "전체 삭제"가 늘 보임(실수 위험) · 도감이 따로 떨어진 화면
@@ -26,6 +28,9 @@ import 'c_channel_screen.dart';
 import 'd_kit_detail_screen.dart';
 import 'g_guide_view.dart';
 
+/// 내 정보 숫자를 눌렀을 때 열 곳
+enum CollectionJump { liked, owned, guide }
+
 class CollectionScreen extends StatefulWidget {
   const CollectionScreen({
     super.key,
@@ -34,6 +39,8 @@ class CollectionScreen extends StatefulWidget {
     required this.onGoSearch,
     this.leading,
     this.loaders = const Loaders(),
+    this.jump = CollectionJump.liked,
+    this.jumpTick = 0,
   });
 
   final List<String> myChannels;
@@ -41,6 +48,10 @@ class CollectionScreen extends StatefulWidget {
   final VoidCallback onGoSearch;
   final Widget? leading;
   final Loaders loaders;
+
+  /// [jumpTick]이 바뀔 때마다 [jump] 로 이동 (F-11)
+  final CollectionJump jump;
+  final int jumpTick;
 
   @override
   State<CollectionScreen> createState() => _CollectionScreenState();
@@ -78,6 +89,82 @@ class _CollectionScreenState extends State<CollectionScreen> with ChannelScope {
   void didUpdateWidget(CollectionScreen old) {
     super.didUpdateWidget(old);
     syncScope();
+    if (widget.jumpTick != old.jumpTick) {
+      // STATE: 내 정보 숫자 → 전체 채널 + 그 탭/보기
+      _ownedTab = widget.jump == CollectionJump.owned;
+      _guide = widget.jump == CollectionJump.guide;
+      _editing = false;
+      _selected.clear();
+      if (channel != allChannelId) selectChannel(allChannelId);
+    }
+  }
+
+  /// F-10 휴지통 — 이 화면에서 지운 상품 (앱을 끄면 비워진다)
+  void _openTrash(List<Kit> all) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (sheet) => StatefulBuilder(
+        builder: (sheet, setSheet) {
+          final gone = all.where((k) => _removed.contains(k.id)).toList();
+          void restore(Iterable<String> ids, String msg) {
+            final list = [...ids];
+            setState(() => _removed.removeAll(list)); // STATE: 복원 → 목록에 다시
+            setSheet(() {});
+            showToast(context, msg);
+          }
+
+          return SafeArea(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(sheet).height * 0.7),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  SectionHeader(
+                    '휴지통',
+                    subtitle: '지운 상품은 30일 동안 여기서 되살릴 수 있어요',
+                    padding: const EdgeInsets.fromLTRB(16, 0, 8, 8),
+                    trailing: gone.isEmpty
+                        ? null
+                        : TextButton(
+                            onPressed: () => restore(gone.map((k) => k.id), '${gone.length}개를 모두 복원했어요'),
+                            child: const Text('모두 복원'),
+                          ),
+                  ),
+                  if (gone.isEmpty)
+                    const Padding(
+                      padding: EdgeInsets.fromLTRB(16, 8, 16, 28),
+                      child: Text('지운 상품이 없어요', style: TextStyle(color: Gp.muted)),
+                    )
+                  else
+                    Flexible(
+                      child: ListView(
+                        shrinkWrap: true,
+                        padding: const EdgeInsets.only(bottom: 12),
+                        children: [
+                          for (final k in gone)
+                            ThumbRow(
+                              image: k.image,
+                              title: k.name,
+                              size: 52,
+                              tag: k.status == CollectStatus.owned ? '구매함' : '좋아요',
+                              onTap: () => restore([k.id], '「${k.name}」을(를) 복원했어요'),
+                              trailing: const Text(
+                                '복원',
+                                style: TextStyle(color: Gp.accent, fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
   }
 
   List<Kit> _visible(List<Kit> all) {
@@ -94,7 +181,7 @@ class _CollectionScreenState extends State<CollectionScreen> with ChannelScope {
       context: context,
       builder: (context) => AlertDialog(
         title: Text('$n개를 ${_ownedTab ? '구매함' : '좋아요'}에서 삭제할까요?'),
-        content: const Text('상품 자체는 지워지지 않고, 내 컬렉션에서만 빠져요.'),
+        content: const Text('내 컬렉션에서만 빠져요. 실수로 지웠다면 휴지통(🗑)에서 30일 동안 되살릴 수 있어요.'),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('취소')),
           FilledButton(onPressed: () => Navigator.pop(context, true), child: const Text('삭제')),
@@ -162,7 +249,7 @@ class _CollectionScreenState extends State<CollectionScreen> with ChannelScope {
                             onPickChannel: selectChannel,
                             loaders: widget.loaders,
                           )
-                        : _list(_visible(all)),
+                        : _list(_visible(all), all),
                   ),
                 ],
               );
@@ -173,7 +260,17 @@ class _CollectionScreenState extends State<CollectionScreen> with ChannelScope {
     );
   }
 
-  Widget _list(List<Kit> kits) {
+  Widget _list(List<Kit> kits, List<Kit> all) {
+    final trash = IconButton( // F-10
+      tooltip: '휴지통',
+      onPressed: () => _openTrash(all),
+      icon: Badge(
+        isLabelVisible: _removed.isNotEmpty,
+        backgroundColor: Gp.accent,
+        label: Text('${_removed.length}'),
+        child: const Icon(Icons.delete_outline, color: Gp.muted, size: 22),
+      ),
+    );
     if (kits.isEmpty) {
       return EmptyView( // F-9 P09
         icon: _ownedTab ? Icons.check_circle_outline : Icons.bookmark_border,
@@ -181,11 +278,17 @@ class _CollectionScreenState extends State<CollectionScreen> with ChannelScope {
         detail: channel == allChannelId
             ? '상품 상세에서 좋아요 · 구매함을 누르면 여기에 모여요'
             : '${channelOf(channel).label} 채널에는 아직 없어요',
-        action: OutlinedButton.icon(
-          onPressed: widget.onGoSearch,
-          icon: const Icon(Icons.search, size: 18),
-          label: const Text('검색하러 가기'),
-        ),
+        action: _removed.isEmpty
+            ? OutlinedButton.icon(
+                onPressed: widget.onGoSearch,
+                icon: const Icon(Icons.search, size: 18),
+                label: const Text('검색하러 가기'),
+              )
+            : OutlinedButton.icon(
+                onPressed: () => _openTrash(all), // 다 지웠어도 휴지통은 열 수 있게
+                icon: const Icon(Icons.delete_outline, size: 18),
+                label: Text('휴지통 (${_removed.length})'),
+              ),
       );
     }
     final total = kits.fold<int>(0, (s, k) => s + (k.priceJpy ?? 0));
@@ -208,6 +311,7 @@ class _CollectionScreenState extends State<CollectionScreen> with ChannelScope {
                       style: const TextStyle(color: Gp.muted, fontSize: 13),
                     ),
                   ),
+                  trash,
                   TextButton(
                     onPressed: () => setState(() {
                       _editing = !_editing; // STATE: 편집 → 체크박스 · 삭제 바

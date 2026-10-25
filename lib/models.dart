@@ -360,6 +360,7 @@ class Profile {
     required this.workspace,
     required this.inviteCode,
     required this.members,
+    required this.showcase,
   });
 
   final String name;
@@ -369,11 +370,15 @@ class Profile {
   final int spendKrw;
   final String workspace;
   final String inviteCode;
-  final List<({String name, String role, bool self})> members;
+  final List<Member> members;
+
+  /// 사진 벽 (나 + 친구). [ShowcasePhoto.owner] = 올린 사람 아이디
+  final List<ShowcasePhoto> showcase;
 
   static Profile? fromJson(Object? json) {
     if (json is! Map<String, Object?>) return null;
     final members = json['members'];
+    final showcase = json['showcase'];
     return Profile(
       name: _s(json, 'name'),
       handle: _s(json, 'handle'),
@@ -385,8 +390,73 @@ class Profile {
       members: [
         if (members is List)
           for (final m in members.whereType<Map<String, Object?>>())
-            (name: _s(m, 'name'), role: _s(m, 'role'), self: _b(m, 'self')),
+            Member(
+              name: _s(m, 'name'),
+              handle: _s(m, 'handle'),
+              role: _s(m, 'role'),
+              self: _b(m, 'self'),
+              liked: _i(m, 'liked'),
+              lit: _i(m, 'lit'),
+              owned: _i(m, 'owned'),
+            ),
+      ],
+      showcase: [
+        if (showcase is List)
+          for (final m in showcase.whereType<Map<String, Object?>>())
+            ShowcasePhoto(
+              id: _s(m, 'id'),
+              owner: _s(m, 'owner'),
+              image: _s(m, 'image'),
+              unit: _s(m, 'unit'),
+              work: _s(m, 'work'),
+              watermark: _b(m, 'watermark'),
+            ),
       ],
     );
   }
 }
+
+/// 공유 공간 멤버 (친구). 숫자는 그 사람의 좋아요 · 도감 점등 · 구매함
+class Member {
+  const Member({
+    required this.name,
+    required this.handle,
+    required this.role,
+    required this.self,
+    required this.liked,
+    required this.lit,
+    required this.owned,
+  });
+
+  final String name;
+  final String handle;
+  final String role;
+  final bool self;
+  final int liked;
+  final int lit;
+  final int owned;
+}
+
+/// 사진 벽 한 장 — 도감에서 인증한 기체와 이어져 있다
+class ShowcasePhoto {
+  const ShowcasePhoto({
+    required this.id,
+    required this.owner,
+    required this.image,
+    required this.unit,
+    required this.work,
+    required this.watermark,
+  });
+
+  final String id;
+  final String owner;
+  final String image;
+  final String unit;
+  final String work;
+
+  /// 다른 사람이 저장할 때 오른쪽 아래 "GP · @아이디" 를 넣을지
+  final bool watermark;
+}
+
+/// 워터마크 글자: 앱 이름 줄임(GP) + 올린 사람 아이디
+String watermarkText(String handle) => 'GP · @$handle';

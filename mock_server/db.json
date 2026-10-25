@@ -3813,14 +3813,32 @@
     "members": [
       {
         "name": "건프라러",
+        "handle": "gunpula_me",
         "role": "Owner",
-        "self": true
+        "self": true,
+        "liked": 9,
+        "lit": 4,
+        "owned": 8
       },
       {
         "name": "동생",
+        "handle": "gp_dongsaeng",
         "role": "Editor",
-        "self": false
+        "self": false,
+        "liked": 5,
+        "lit": 7,
+        "owned": 4
       }
+    ],
+    "showcase": [
+      { "id": "ph1", "owner": "gunpula_me", "image": "assets/gp/kits/gu12.jpg", "unit": "스트라이크 건담", "work": "건담 SEED", "watermark": true },
+      { "id": "ph2", "owner": "gunpula_me", "image": "assets/gp/kits/gu02.jpg", "unit": "스트라이크 프리덤 건담", "work": "SEED DESTINY", "watermark": true },
+      { "id": "ph3", "owner": "gunpula_me", "image": "assets/gp/kits/gu05.jpg", "unit": "건담 캘리번", "work": "수성의 마녀", "watermark": false },
+      { "id": "ph4", "owner": "gunpula_me", "image": "assets/gp/kits/be43.png", "unit": "드랜 소드 3-60F", "work": "베이블레이드 X", "watermark": true },
+      { "id": "ph5", "owner": "gunpula_me", "image": "assets/gp/kits/fa30.jpg", "unit": "세이버 얼터", "work": "Fate/stay night", "watermark": true },
+      { "id": "ph6", "owner": "gp_dongsaeng", "image": "assets/gp/kits/gu01.jpg", "unit": "RX-78-2 건담", "work": "기동전사 건담", "watermark": true },
+      { "id": "ph7", "owner": "gp_dongsaeng", "image": "assets/gp/kits/po19.png", "unit": "이브이", "work": "포켓몬", "watermark": false },
+      { "id": "ph8", "owner": "gp_dongsaeng", "image": "assets/gp/kits/ar37.jpg", "unit": "화이트 글린트", "work": "ACfA", "watermark": true }
     ]
   }
 }

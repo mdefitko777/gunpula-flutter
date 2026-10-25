@@ -63,6 +63,10 @@ class _AppShellState extends State<AppShell> {
   int _searchFocusTick = 0;
   List<String> _myChannels = [...defaultMyChannels]; // S-7 P04
 
+  /// 내 정보 숫자 → 컬렉션 탭의 그 목록 (F-11)
+  CollectionJump _jump = CollectionJump.liked;
+  int _jumpTick = 0;
+
   void _setChannels(List<String> ids) {
     setState(() => _myChannels = ids); // STATE: 내 채널 → 네 화면의 채널 바와 목록
   }
@@ -94,7 +98,17 @@ class _AppShellState extends State<AppShell> {
     );
   }
 
-  void _openProfile() => openProfile(context, loaders: widget.loaders); // S-1 → I 내 정보
+  void _openProfile() => openProfile( // S-1 → I 내 정보
+    context,
+    loaders: widget.loaders,
+    myChannels: _myChannels,
+    onJump: (j) => setState(() {
+      _tab = 3; // STATE: 내 정보 숫자 → 컬렉션 탭 + 그 목록
+      _jump = j;
+      _jumpTick++;
+      _barShown = true;
+    }),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -154,6 +168,8 @@ class _AppShellState extends State<AppShell> {
             onMyChannelsChanged: _setChannels,
             onGoSearch: _goSearch,
             loaders: widget.loaders,
+            jump: _jump,
+            jumpTick: _jumpTick,
           );
     final body = IndexedStack(
       // S-6 P03
