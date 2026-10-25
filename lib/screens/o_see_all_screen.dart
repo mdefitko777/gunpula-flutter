@@ -331,8 +331,8 @@ class _SectionListViewState extends State<SectionListView> {
                       ),
                       InkWell(
                         onTap: () => setState(() => _filter = KitFilter()), // STATE: 필터 초기화
-                        child: const Padding(
-                          padding: EdgeInsets.all(4),
+                        child: const SizedBox.square( // 누르는 자리 40
+                          dimension: 40,
                           child: Icon(Icons.close, size: 16, color: Gp.muted),
                         ),
                       ),
@@ -655,7 +655,7 @@ class _FilterPanelState extends State<_FilterPanel> {
                     ],
                   ),
                 ),
-                const Divider(height: 1, thickness: 1.2, color: Gp.ink),
+                const Divider(height: 1), // 다른 화면과 같은 옅은 실선
                 Expanded(
                   child: ListView(
                     padding: EdgeInsets.zero,

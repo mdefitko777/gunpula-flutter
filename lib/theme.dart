@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 abstract final class Gp {
   static const ink = Color(0xFF111111);
   static const muted = Color(0xFF6B6B6B);
-  static const faint = Color(0xFFA3A3A3);
+  /// 보조 글자 — 흰 바탕 대비 4.5:1 (WCAG AA) 을 넘기는 가장 옅은 회색
+  static const faint = Color(0xFF767676);
   static const line = Color(0xFFE6E6E6);
   static const soft = Color(0xFFF0F0EE);
 
