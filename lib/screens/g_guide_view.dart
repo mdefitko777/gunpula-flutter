@@ -17,10 +17,10 @@
 // └──────────────────────────────────────────────────────────────────────────────────┘
 // 전환: 작품 카드 → 작품 도감(쌓기) → 기체 시트(덮기) → D 상품 상세(쌓기). 베이 → 부품 시트(덮기).
 //       기체 시트 → 사진 고르기(덮기) → 확인 중(대화 상자) → 토스트.
-import 'package:flutter/cupertino.dart' show CupertinoPageRoute;
 import 'package:flutter/material.dart';
 
 import '../api.dart';
+import '../detail_pane.dart';
 import '../channels.dart';
 import '../models.dart';
 import '../theme.dart';
@@ -399,11 +399,7 @@ class _GundamGuideState extends State<_GundamGuide> {
                           name: w.name,
                           owned: w.owned,
                           total: w.total,
-                          onTap: () => Navigator.of(context, rootNavigator: true).push(
-                            CupertinoPageRoute<void>(
-                              builder: (_) => WorkGuideScreen(work: w, loaders: widget.loaders),
-                            ),
-                          ),
+                          onTap: () => openPage(context, WorkGuideScreen(work: w, loaders: widget.loaders)),
                         ),
                     ],
                   ),

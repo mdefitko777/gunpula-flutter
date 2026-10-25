@@ -10,10 +10,10 @@
 // │ J-6  │ 가로 ProductTile (GET /kits)        │ 같은 IP의 상품                          │ P06           │
 // └──────────────────────────────────────────────────────────────────────────────────┘
 // 전환: 홈 배너 · 홈 공식 예고 줄 · 캘린더 예고 줄에서 쌓기(push, 오른쪽에서).
-import 'package:flutter/cupertino.dart' show CupertinoPageRoute;
 import 'package:flutter/material.dart';
 
 import '../api.dart';
+import '../detail_pane.dart';
 import '../channels.dart';
 import '../models.dart';
 import '../theme.dart';
@@ -24,9 +24,7 @@ import 'd_kit_detail_screen.dart';
 const announcementStages = ['공식 발표', '상품화 확정', '예약 시작', '발매'];
 
 void openAnnouncement(BuildContext context, Announcement a, {Loaders loaders = const Loaders()}) {
-  Navigator.of(context, rootNavigator: true).push(
-    CupertinoPageRoute<void>(builder: (_) => AnnouncementScreen(item: a, loaders: loaders)),
-  );
+  openPage(context, AnnouncementScreen(item: a, loaders: loaders));
 }
 
 class AnnouncementScreen extends StatefulWidget {

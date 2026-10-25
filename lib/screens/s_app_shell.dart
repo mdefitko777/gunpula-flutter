@@ -12,17 +12,19 @@
 // │ S-9  │ 오른쪽 위 🔔 (새 알림 점)         │ 알림 열기                              │ P01           │
 // │ S-10 │ 오른쪽 위 ⚙                     │ 설정 열기 (K)                          │ P04 · P06     │
 // │ S-11 │ Drawer (홈 가장자리 밀기)          │ 친구 서랍 (M)                          │ P07           │
+// │ S-12 │ Row(왼쪽 폰 화면 | 오른쪽 Navigator)│ 반반 화면 (폴드 · 태블릿 · 넓은 창 ≥700dp) │ 적응형      │
 // │ S-8  │ AnimatedSlide · AnimatedPositioned │ 아래로 스크롤하면 탭 바 숨김, 카메라만 오른쪽 아래 │ P08 · P07 │
 // └────────────────────────────────────────────────────────────────────────────────┘
 // 전환: S-3 옆으로(탭) · S-4 덮기(bottom sheet) · S-1 쌓기(push).
 // S-8: X · Threads처럼 내용을 내려 읽는 동안 탭 바를 숨겨 화면을 넓히고, 카메라 버튼만 남긴다.
 // 현행 앱 문제: 위 5개 IP + 아래 5개 화면 + 도감 안 탭 → v2는 아래 탭 하나 + 화면 안 채널 바 하나.
-import 'dart:ui' show ImageFilter;
+import 'dart:ui' show DisplayFeatureType, ImageFilter;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show ScrollDirection;
 
 import '../api.dart';
+import '../detail_pane.dart';
 import '../channels.dart';
 import '../theme.dart';
 import '../widgets.dart';
@@ -37,7 +39,8 @@ import 'm_friends_drawer.dart';
 import 'n_notifications_screen.dart';
 
 /// 넓은 화면 기준 (Material 3 window size class: expanded ≥ 840dp)
-const railBreakpoint = 840.0;
+/// 이만큼 넓으면(폴드 펼침 · 태블릿 · 넓은 창) 반반 화면: 왼쪽 = 폰 화면 그대로, 오른쪽 = 자세히 칸
+const twoPaneBreakpoint = 700.0;
 
 class AppShell extends StatefulWidget {
   const AppShell({super.key, this.loaders = const Loaders()});
@@ -67,6 +70,9 @@ class _AppShellState extends State<AppShell> {
   List<String> _myChannels = [...defaultMyChannels]; // S-7 P04
 
   final _scaffold = GlobalKey<ScaffoldState>();
+
+  /// 탭 묶음 (화면 모양이 바뀌어도 유지)
+  final _bodyKey = GlobalKey();
 
   /// 내 정보 숫자 → 컬렉션 탭의 그 목록 (F-11)
   CollectionJump _jump = CollectionJump.liked;
@@ -119,9 +125,11 @@ class _AppShellState extends State<AppShell> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
-    // 넓은 창 · 가로로 눕힌 폰(높이가 낮음) → 측면 탭: 위 아바타 줄과 아래 탭 바를 빼서 내용 높이를 확보
+    // 가로로 눕힌 폰(높이가 낮음) → 측면 탭: 위 아바타 줄과 아래 탭 바를 빼서 내용 높이를 확보
     final shortLandscape = size.width > size.height && size.height < 520;
-    final wide = size.width >= railBreakpoint || shortLandscape;
+    final wide = shortLandscape;
+    // 폴드 펼침 · 태블릿 · 넓은 창 → 반반 화면 (QQ 처럼, S-12)
+    final twoPane = !shortLandscape && size.width >= twoPaneBreakpoint;
     // S-1 P04 아바타 → 친구 서랍(M). 서랍 머리의 아바타를 한 번 더 누르면 내 정보(I)
     final avatar = RingAvatar(
       text: 'A',
@@ -189,10 +197,29 @@ class _AppShellState extends State<AppShell> {
             jump: _jump,
             jumpTick: _jumpTick,
           );
-    final body = IndexedStack(
-      // S-6 P03
-      index: _tab,
-      children: [for (var i = 0; i < _tabs.length; i++) page(i)],
+    // 화면 모양이 바뀌어도(폴드 접기/펴기) 탭들의 상태가 그대로 옮겨 가게 GlobalKey
+    final body = KeyedSubtree(
+      key: _bodyKey,
+      child: IndexedStack(
+        // S-6 P03
+        index: _tab,
+        children: [for (var i = 0; i < _tabs.length; i++) page(i)],
+      ),
+    );
+    final narrow = _NarrowLayout(
+      body: body,
+      barShown: _barShown,
+      bar: _BottomBar(
+        index: _tab,
+        onSelect: (i) => setState(() {
+          _tab = i; // STATE: 탭 번호 → IndexedStack
+          _barShown = true;
+        }),
+      ),
+      camera: _CameraButton(onTap: _openAdd),
+      onScroll: (shown) {
+        if (shown != _barShown) setState(() => _barShown = shown); // STATE: 스크롤 방향 → 탭 바 숨김/표시
+      },
     );
     return Scaffold(
       key: _scaffold,
@@ -260,22 +287,44 @@ class _AppShellState extends State<AppShell> {
                   Expanded(child: body),
                 ],
               )
-            : _NarrowLayout(
-                body: body,
-                barShown: _barShown,
-                bar: _BottomBar(
-                  index: _tab,
-                  onSelect: (i) => setState(() {
-                    _tab = i; // STATE: 탭 번호 → IndexedStack
-                    _barShown = true;
-                  }),
-                ),
-                camera: _CameraButton(onTap: _openAdd),
-                onScroll: (shown) {
-                  if (shown != _barShown) setState(() => _barShown = shown); // STATE: 스크롤 방향 → 탭 바 숨김/표시
-                },
-              ),
+            : twoPane
+            ? _TwoPane(left: narrow)
+            : narrow,
       ),
+    );
+  }
+}
+
+/// S-12 반반 화면 — 폴드 접힘선(힌지)이 있으면 거기서, 없으면 왼쪽 45% (320–460)
+class _TwoPane extends StatelessWidget {
+  const _TwoPane({required this.left});
+  final Widget left;
+
+  @override
+  Widget build(BuildContext context) {
+    final mq = MediaQuery.of(context);
+    return LayoutBuilder(
+      builder: (context, box) {
+        // 세로로 긴 접힘선 · 힌지 (화면을 좌우로 나누는 것)
+        final fold = mq.displayFeatures
+            .where((f) => f.type != DisplayFeatureType.cutout && f.bounds.height > box.maxHeight / 2)
+            .firstOrNull;
+        final leftW = fold != null ? fold.bounds.left : (box.maxWidth * 0.45).clamp(320.0, 460.0);
+        final gap = fold != null ? fold.bounds.width : 1.0;
+        final rightW = box.maxWidth - leftW - gap;
+        // 각 칸 안의 화면이 자기 칸 너비를 화면 너비로 알게 (폰 화면 · 상세 화면 배치가 그대로 동작)
+        MediaQuery sized(double w, Widget child) => MediaQuery(
+          data: mq.copyWith(size: Size(w, mq.size.height)),
+          child: child,
+        );
+        return Row(
+          children: [
+            SizedBox(width: leftW, child: sized(leftW, left)),
+            if (fold != null) SizedBox(width: gap) else const VerticalDivider(width: 1),
+            SizedBox(width: rightW, child: sized(rightW, const DetailPaneView())),
+          ],
+        );
+      },
     );
   }
 }

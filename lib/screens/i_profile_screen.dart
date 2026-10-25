@@ -23,6 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 
 import '../api.dart';
+import '../detail_pane.dart';
 import '../models.dart';
 import '../theme.dart';
 import '../widgets.dart';
@@ -35,20 +36,12 @@ void openProfile(
   ValueChanged<CollectionJump>? onJump,
   List<String>? myChannels,
 }) {
-  Navigator.of(context, rootNavigator: true).push(
-    CupertinoPageRoute<void>(
-      builder: (_) => ProfileScreen(loaders: loaders, onJump: onJump, myChannels: myChannels),
-    ),
-  );
+  openPage(context, ProfileScreen(loaders: loaders, onJump: onJump, myChannels: myChannels));
 }
 
 /// 친구 프로필 (같은 화면, 보기 전용)
 void openFriend(BuildContext context, Member friend, {Loaders loaders = const Loaders()}) {
-  Navigator.of(context).push(
-    CupertinoPageRoute<void>(
-      builder: (_) => ProfileScreen(loaders: loaders, friend: friend),
-    ),
-  );
+  openPage(context, ProfileScreen(loaders: loaders, friend: friend));
 }
 
 class _ProfileData {

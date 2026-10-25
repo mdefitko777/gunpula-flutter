@@ -7,6 +7,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mid_project_template/api.dart';
+import 'package:mid_project_template/detail_pane.dart';
+import 'package:mid_project_template/widgets.dart';
 import 'package:mid_project_template/models.dart';
 import 'package:mid_project_template/screens/d_kit_detail_screen.dart';
 import 'package:mid_project_template/screens/f_collection_screen.dart';
@@ -47,6 +49,8 @@ const sizes = <String, Size>{
   '작은 폰 320×568': Size(320, 568),
   '보통 폰 390×844': Size(390, 844),
   '가로 폰 844×390': Size(844, 390),
+  '폴드 펼침 세로 690×830': Size(690, 830),
+  '폴드 펼침 가로 830×690': Size(830, 690),
   '태블릿 768×1024': Size(768, 1024),
   '넓은 창 1280×800': Size(1280, 800),
 };
@@ -97,4 +101,26 @@ void main() {
       });
     });
   }
+
+  // 반반 화면: 왼쪽에서 상품을 누르면 오른쪽 칸에 상세 (왼쪽 앱은 그대로)
+  for (final size in const [Size(830, 690), Size(1280, 800)]) {
+    testWidgets('반반 화면 ${size.width.toInt()}×${size.height.toInt()} · 상품 → 오른쪽 칸', (tester) async {
+      await _show(tester, size, AppShell(loaders: fakeLoaders));
+      expect(find.byType(DetailPaneView), findsOneWidget);
+      expect(find.text('상품 · 공고 · 친구를 고르면 여기에 보여요'), findsOneWidget);
+      tester.widget<ProductTile>(find.byType(ProductTile).first).onTap(); // 탭 바에 가려질 수 있어 직접 호출
+      for (var i = 0; i < 4; i++) {
+        await tester.pump(const Duration(milliseconds: 300));
+      }
+      expect(find.byType(KitDetailScreen), findsOneWidget);
+      expect(find.descendant(of: find.byType(DetailPaneView), matching: find.byType(KitDetailScreen)), findsOneWidget);
+      expect(find.byType(GpSearchBar), findsWidgets); // 왼쪽 홈은 그대로
+      expect(tester.takeException(), isNull);
+    });
+  }
+
+  testWidgets('폰(390×844)에서는 칸 없이 쌓기', (tester) async {
+    await _show(tester, const Size(390, 844), AppShell(loaders: fakeLoaders));
+    expect(find.byType(DetailPaneView), findsNothing);
+  });
 }

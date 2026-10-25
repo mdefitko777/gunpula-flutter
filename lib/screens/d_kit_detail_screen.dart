@@ -21,23 +21,19 @@
 // 좋아요 · 구매함은 화면 아래에 고정 — 길게 내려 읽어도 바로 누를 수 있다 (쇼핑 앱 상세와 같은 위치).
 // 현행 앱 문제: 상세에 내부 코드(GUNDAM_MERCH)·"보완 필요"·수동 수정 폼이 그대로 보임
 //              → v2는 사용자에게 필요한 정가 · 버전 · 출처만, 수정은 "제보" 한 줄로.
-import 'package:flutter/cupertino.dart' show CupertinoPageRoute;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 
 import '../api.dart';
+import '../detail_pane.dart';
 import '../channels.dart';
 import '../models.dart';
 import '../theme.dart';
 import '../widgets.dart';
 
-/// 상품 상세 열기 — 어느 화면에서든 같은 방식(오른쪽에서 밀려 들어옴)
+/// 상품 상세 열기 — 폰: 오른쪽에서 밀려 들어옴 / 넓은 화면: 오른쪽 칸 (detail_pane.dart)
 void openKitDetail(BuildContext context, Kit kit, {Loaders loaders = const Loaders()}) {
-  Navigator.of(context, rootNavigator: true).push(
-    CupertinoPageRoute<void>(
-      builder: (_) => KitDetailScreen(kit: kit, loaders: loaders),
-    ),
-  );
+  openPage(context, KitDetailScreen(kit: kit, loaders: loaders));
 }
 
 /// 넓은 화면 기준 (사진 왼쪽 · 정보 오른쪽)

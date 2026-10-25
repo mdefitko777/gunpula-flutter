@@ -10,14 +10,14 @@
 // └──────────────────────────────────────────────────────────────────────────────────┘
 // 전환: 앱 셸 ⚙ → 쌓기(push, 오른쪽에서). 언어 → 덮기(바텀 시트). 데이터 GET 없음(화면 안 상수).
 // 현행 앱 문제: 설정 안에 콘솔 · GitHub Token · 소스 상태 같은 관리자 기능이 섞여 있음 → v2는 사용자 설정만.
-import 'package:flutter/cupertino.dart' show CupertinoPageRoute;
 import 'package:flutter/material.dart';
 
+import '../detail_pane.dart';
 import '../theme.dart';
 import '../widgets.dart';
 
 void openSettings(BuildContext context) {
-  Navigator.of(context, rootNavigator: true).push(CupertinoPageRoute<void>(builder: (_) => const SettingsScreen()));
+  openPage(context, const SettingsScreen());
 }
 
 class SettingsScreen extends StatefulWidget {

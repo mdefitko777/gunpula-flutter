@@ -13,10 +13,10 @@
 // └──────────────────────────────────────────────────────────────────────────────────┘
 // 전환: 🔔 → 쌓기(push, 오른쪽에서). 줄 → 각 화면 쌓기. 요청 → 덮기(바텀 시트).
 // 범위: 내 채널의 상품 · 예고 알림 + 친구 알림 (채널과 무관). 읽음 · 삭제는 저장하지 않는다.
-import 'package:flutter/cupertino.dart' show CupertinoPageRoute;
 import 'package:flutter/material.dart';
 
 import '../api.dart';
+import '../detail_pane.dart';
 import '../channels.dart';
 import '../models.dart';
 import '../theme.dart';
@@ -30,11 +30,7 @@ import 'k_settings_screen.dart';
 final noticeNow = DateTime(2026, 10, 25, 21);
 
 void openNotifications(BuildContext context, {required List<String> myChannels, Loaders loaders = const Loaders()}) {
-  Navigator.of(context, rootNavigator: true).push(
-    CupertinoPageRoute<void>(
-      builder: (_) => NotificationsScreen(myChannels: myChannels, loaders: loaders),
-    ),
-  );
+  openPage(context, NotificationsScreen(myChannels: myChannels, loaders: loaders));
 }
 
 enum _Tab { all, goods, announce, friends }
