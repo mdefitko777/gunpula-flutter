@@ -34,6 +34,7 @@ import 'h_calendar_screen.dart';
 import 'i_profile_screen.dart';
 import 'k_settings_screen.dart';
 import 'm_friends_drawer.dart';
+import 'n_notifications_screen.dart';
 
 /// 넓은 화면 기준 (Material 3 window size class: expanded ≥ 840dp)
 const railBreakpoint = 840.0;
@@ -125,9 +126,9 @@ class _AppShellState extends State<AppShell> {
       tooltip: '친구 · 내 정보',
       onTap: () => _scaffold.currentState?.openDrawer(),
     );
-    final bell = IconButton( // S-9 알림 (다음 단계: 알림 화면)
+    final bell = IconButton( // S-9 알림 (N)
       tooltip: '알림',
-      onPressed: () => showSoon(context, '알림'),
+      onPressed: () => openNotifications(context, myChannels: _myChannels, loaders: widget.loaders), // N
       icon: const Badge(
         smallSize: 7,
         backgroundColor: Gp.accent, // 새 알림 있음 = 브랜드 색 점

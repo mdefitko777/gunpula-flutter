@@ -517,6 +517,63 @@ class ShowcasePhoto {
   final bool watermark;
 }
 
+/// 알림 종류 — 탭 묶음: 상품(발매 · 예약 · 시세) · 예고 · 친구(활동 · 요청)
+enum NoticeType { release, reserve, price, announce, friend, request }
+
+/// 알림 한 줄. 누르면 [kitId] → 상품 상세, [annId] → 공고, [friend] → 친구 프로필
+class AppNotice {
+  const AppNotice({
+    required this.id,
+    required this.type,
+    required this.title,
+    required this.body,
+    required this.image,
+    required this.at,
+    required this.read,
+    this.franchiseId = '',
+    this.kitId = '',
+    this.annId = '',
+    this.friend = '',
+  });
+
+  final String id;
+  final NoticeType type;
+  final String title;
+  final String body;
+  final String image;
+  final DateTime at;
+  final bool read;
+
+  /// 비어 있으면 채널과 상관없는 알림(친구)
+  final String franchiseId;
+  final String kitId;
+  final String annId;
+
+  /// 친구 아이디
+  final String friend;
+
+  static AppNotice? fromJson(Object? json) {
+    if (json is! Map<String, Object?>) return null;
+    final id = json['id'];
+    final at = DateTime.tryParse(_s(json, 'at'));
+    final type = NoticeType.values.where((t) => t.name == json['type']).firstOrNull;
+    if (id is! String || at == null || type == null) return null;
+    return AppNotice(
+      id: id,
+      type: type,
+      title: _s(json, 'title'),
+      body: _s(json, 'body'),
+      image: _s(json, 'image'),
+      at: at,
+      read: _b(json, 'read'),
+      franchiseId: _s(json, 'franchiseId'),
+      kitId: _s(json, 'kitId'),
+      annId: _s(json, 'annId'),
+      friend: _s(json, 'friend'),
+    );
+  }
+}
+
 /// 작품 도감 전체의 점등 칸 수
 int litCount(Iterable<GuideWork> works) => works.fold(0, (s, w) => s + w.owned);
 

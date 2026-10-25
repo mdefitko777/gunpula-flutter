@@ -3786,6 +3786,21 @@
       "hero": true
     }
   ],
+  "notifications": [
+    {"id": "n01", "type": "release", "franchiseId": "gundam", "title": "좋아요한 상품이 오늘 발매돼요", "body": "HG 1/144 레전드 건담 · 정가 ¥3,080", "image": "assets/gp/kits/gu03.jpg", "at": "2026-10-25T09:00", "read": false, "kitId": "gu03"},
+    {"id": "n02", "type": "friend", "title": "미나님이 새 게시물을 올렸어요", "body": "수성의 마녀 · 건담 에어리얼 🏅 인증", "image": "assets/gp/kits/gu04.jpg", "at": "2026-10-25T18:20", "read": false, "friend": "mina_plamo"},
+    {"id": "n03", "type": "request", "title": "타카님이 친구 요청을 보냈어요", "body": "함께 아는 친구 3명", "image": "", "at": "2026-10-25T12:05", "read": false, "friend": "taka_gpl"},
+    {"id": "n04", "type": "announce", "franchiseId": "gundam", "title": "선발 선거 투표 마감 D-5", "body": "건프라 재판 회의 2026 겨울 · 『0083』", "image": "assets/gp/ann/yt_Ninhgtydeiw.jpg", "at": "2026-10-25T10:00", "read": false, "annId": "ann01"},
+    {"id": "n05", "type": "reserve", "franchiseId": "gundam", "title": "예약이 시작됐어요", "body": "카르라 전용 이펙트 파츠 세트", "image": "assets/gp/ann/-10-05-16192.webp", "at": "2026-10-24T11:00", "read": false, "annId": "ann06"},
+    {"id": "n06", "type": "price", "franchiseId": "gundam", "title": "구매함 상품의 시세가 올랐어요", "body": "MGEX 스트라이크 프리덤 · 189,000원 → 205,000원", "image": "assets/gp/kits/gu02.jpg", "at": "2026-10-24T20:00", "read": true, "kitId": "gu02"},
+    {"id": "n07", "type": "friend", "title": "동생님이 사진으로 인증했어요", "body": "RX-78-2 건담 🏅 · 공유 공간", "image": "assets/gp/kits/gu01.jpg", "at": "2026-10-23T21:40", "read": true, "friend": "gp_dongsaeng"},
+    {"id": "n08", "type": "friend", "franchiseId": "gundam", "title": "동생님이 이미 산 상품이에요", "body": "HG 1/144 건담 캘리번 · 겹쳐 사지 않게 확인하세요", "image": "assets/gp/kits/gu05.jpg", "at": "2026-10-21T15:10", "read": true, "kitId": "gu05", "friend": "gp_dongsaeng"},
+    {"id": "n09", "type": "friend", "title": "건담덕후님이 회원님의 게시물을 저장했어요", "body": "스트라이크 건담 · 워터마크 GP · @gunpula_me 포함", "image": "assets/gp/kits/gu12.jpg", "at": "2026-10-22T08:30", "read": true, "friend": "gundam_otaku"},
+    {"id": "n10", "type": "release", "franchiseId": "fate", "title": "좋아요한 상품 발매 D-6", "body": "제일복권 FGO 칼데아 픽업", "image": "assets/gp/kits/fa34.webp", "at": "2026-10-25T08:00", "read": false, "kitId": "fa34"},
+    {"id": "n11", "type": "announce", "franchiseId": "pokemon", "title": "상품화가 확정됐어요", "body": "포켓프라 Quick!! 불꽃숭이 신등장", "image": "assets/gp/ann/yt_Sr30ILcabUc.jpg", "at": "2026-10-16T12:00", "read": true, "annId": "ann02"},
+    {"id": "n12", "type": "announce", "franchiseId": "gundam", "title": "상품화가 확정됐어요", "body": "SEED FREEDOM 블랙 나이트 스쿼드 카르라", "image": "assets/gp/ann/-10-05-16191.webp", "at": "2026-10-05T12:00", "read": true, "annId": "ann05"},
+    {"id": "n13", "type": "release", "franchiseId": "pokemon", "title": "오늘 발매", "body": "포켓몬 스토어 「빗속의 고라파덕」 피카츄 대형 피규어", "image": "assets/gp/kits/po24.png", "at": "2026-10-05T09:00", "read": true, "kitId": "po24"}
+  ],
   "profile": {
     "id": 1,
     "name": "건프라러",

@@ -115,6 +115,10 @@ Future<List<Announcement>> fetchAnnouncements(List<String> channelIds) async {
   );
 }
 
+/// 알림: 최근 것부터
+Future<List<AppNotice>> fetchNotifications() =>
+    _getList('notifications?_sort=at&_order=desc', AppNotice.fromJson);
+
 /// 내 정보: GET /profile (객체 하나)
 Future<Profile> fetchProfile() async {
   final decoded = await _get('profile');
@@ -136,6 +140,7 @@ class Loaders {
     this.bbxTops = fetchBbxTops,
     this.announcements = fetchAnnouncements,
     this.profile = fetchProfile,
+    this.notifications = fetchNotifications,
   });
 
   final Future<List<Kit>> Function(List<String> channelIds) kits;
@@ -147,4 +152,5 @@ class Loaders {
   final Future<List<BbxTop>> Function() bbxTops;
   final Future<List<Announcement>> Function(List<String> channelIds) announcements;
   final Future<Profile> Function() profile;
+  final Future<List<AppNotice>> Function() notifications;
 }
