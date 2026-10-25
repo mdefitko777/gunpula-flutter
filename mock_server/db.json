@@ -3827,8 +3827,23 @@
         "self": false,
         "liked": 5,
         "lit": 7,
-        "owned": 4
+        "owned": 4,
+        "verified": 3
       }
+    ],
+    "friends": [
+      { "name": "동생", "handle": "gp_dongsaeng", "role": "공유 공간", "group": "special", "status": "[최근] RX-78-2 건담 인증", "liked": 5, "lit": 7, "owned": 4, "verified": 3,
+        "likedIds": ["gu03", "gu08", "po20", "be46", "fa29"], "ownedIds": ["gu01", "po19", "ar37", "gu10"], "guide": { "w10": 4, "w3000": 2, "w5010": 1 } },
+      { "name": "미나", "handle": "mina_plamo", "role": "친구", "group": "friend", "status": "수성의 마녀 도감 Lv.3", "liked": 6, "lit": 9, "owned": 5, "verified": 2,
+        "likedIds": ["gu04", "gu05", "gu11", "po22", "po24", "fa31"], "ownedIds": ["gu04", "gu12", "gu16", "po21", "be41"], "guide": { "w5010": 6, "w3000": 2, "w4300": 1 } },
+      { "name": "건담덕후", "handle": "gundam_otaku", "role": "친구", "group": "friend", "status": "재판 회의 투표 완료", "liked": 4, "lit": 15, "owned": 7, "verified": 5,
+        "likedIds": ["gu07", "gu09", "gu13", "gu15"], "ownedIds": ["gu01", "gu02", "gu03", "gu06", "gu08", "gu14", "gu18"], "guide": { "w10": 6, "w3000": 4, "w1250": 3, "w3300": 2 } },
+      { "name": "베이블레이더", "handle": "bey_x_kr", "role": "친구", "group": "friend", "status": "BBX 3on3 덱 완성", "liked": 3, "lit": 4, "owned": 6, "verified": 1,
+        "likedIds": ["be42", "be47", "be48"], "ownedIds": ["be41", "be43", "be44", "be45", "be46", "gu12"], "guide": { "w3000": 1 } }
+    ],
+    "suggested": [
+      { "name": "타카", "handle": "taka_gpl", "mutual": 3 },
+      { "name": "Evening", "handle": "evening_29", "mutual": 2 }
     ],
     "showcase": [
       { "id": "ph1", "owner": "gunpula_me", "image": "assets/gp/kits/gu12.jpg", "unit": "스트라이크 건담", "work": "건담 SEED", "watermark": true },
@@ -3838,7 +3853,12 @@
       { "id": "ph5", "owner": "gunpula_me", "image": "assets/gp/kits/fa30.jpg", "unit": "세이버 얼터", "work": "Fate/stay night", "watermark": true },
       { "id": "ph6", "owner": "gp_dongsaeng", "image": "assets/gp/kits/gu01.jpg", "unit": "RX-78-2 건담", "work": "기동전사 건담", "watermark": true },
       { "id": "ph7", "owner": "gp_dongsaeng", "image": "assets/gp/kits/po19.png", "unit": "이브이", "work": "포켓몬", "watermark": false },
-      { "id": "ph8", "owner": "gp_dongsaeng", "image": "assets/gp/kits/ar37.jpg", "unit": "화이트 글린트", "work": "ACfA", "watermark": true }
+      { "id": "ph8", "owner": "gp_dongsaeng", "image": "assets/gp/kits/ar37.jpg", "unit": "화이트 글린트", "work": "ACfA", "watermark": true },
+      { "id": "ph9", "owner": "mina_plamo", "image": "assets/gp/kits/gu04.jpg", "unit": "건담 에어리얼", "work": "수성의 마녀", "watermark": true },
+      { "id": "ph10", "owner": "mina_plamo", "image": "assets/gp/kits/gu16.jpg", "unit": "Ξ건담", "work": "섬광의 하사웨이", "watermark": true },
+      { "id": "ph11", "owner": "gundam_otaku", "image": "assets/gp/kits/gu08.jpg", "unit": "Hi-ν 건담", "work": "역습의 샤아", "watermark": false },
+      { "id": "ph12", "owner": "gundam_otaku", "image": "assets/gp/kits/gu14.jpg", "unit": "아카츠키 건담", "work": "SEED DESTINY", "watermark": true },
+      { "id": "ph13", "owner": "bey_x_kr", "image": "assets/gp/kits/be41.png", "unit": "티가 레이지", "work": "베이블레이드 X", "watermark": true }
     ]
   }
 }

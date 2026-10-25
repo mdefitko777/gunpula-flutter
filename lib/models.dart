@@ -361,6 +361,8 @@ class Profile {
     required this.inviteCode,
     required this.members,
     required this.showcase,
+    required this.friends,
+    required this.suggested,
   });
 
   final String name;
@@ -375,10 +377,18 @@ class Profile {
   /// 사진 벽 (나 + 친구). [ShowcasePhoto.owner] = 올린 사람 아이디
   final List<ShowcasePhoto> showcase;
 
+  /// 친구 목록 (친구 서랍 · 친구 프로필)
+  final List<Member> friends;
+
+  /// 알 수도 있는 친구 (이름, 아이디, 함께 아는 친구 수)
+  final List<({String name, String handle, int mutual})> suggested;
+
   static Profile? fromJson(Object? json) {
     if (json is! Map<String, Object?>) return null;
     final members = json['members'];
     final showcase = json['showcase'];
+    final friends = json['friends'];
+    final suggested = json['suggested'];
     return Profile(
       name: _s(json, 'name'),
       handle: _s(json, 'handle'),
@@ -389,17 +399,16 @@ class Profile {
       inviteCode: _s(json, 'inviteCode'),
       members: [
         if (members is List)
-          for (final m in members.whereType<Map<String, Object?>>())
-            Member(
-              name: _s(m, 'name'),
-              handle: _s(m, 'handle'),
-              role: _s(m, 'role'),
-              self: _b(m, 'self'),
-              liked: _i(m, 'liked'),
-              lit: _i(m, 'lit'),
-              owned: _i(m, 'owned'),
-              verified: _i(m, 'verified'),
-            ),
+          for (final m in members.whereType<Map<String, Object?>>()) Member.fromJson(m),
+      ],
+      friends: [
+        if (friends is List)
+          for (final m in friends.whereType<Map<String, Object?>>()) Member.fromJson(m),
+      ],
+      suggested: [
+        if (suggested is List)
+          for (final m in suggested.whereType<Map<String, Object?>>())
+            (name: _s(m, 'name'), handle: _s(m, 'handle'), mutual: _i(m, 'mutual')),
       ],
       showcase: [
         if (showcase is List)
@@ -428,7 +437,35 @@ class Member {
     required this.lit,
     required this.owned,
     this.verified = 0,
+    this.status = '',
+    this.group = 'friend',
+    this.likedIds = const [],
+    this.ownedIds = const [],
+    this.guide = const {},
   });
+
+  factory Member.fromJson(Map<String, Object?> m) {
+    final guide = m['guide'];
+    return Member(
+      name: _s(m, 'name'),
+      handle: _s(m, 'handle'),
+      role: _s(m, 'role'),
+      self: _b(m, 'self'),
+      liked: _i(m, 'liked'),
+      lit: _i(m, 'lit'),
+      owned: _i(m, 'owned'),
+      verified: _i(m, 'verified'),
+      status: _s(m, 'status'),
+      group: m['group'] is String ? m['group']! as String : 'friend',
+      likedIds: _strs(m['likedIds']),
+      ownedIds: _strs(m['ownedIds']),
+      guide: {
+        if (guide is Map<String, Object?>)
+          for (final e in guide.entries)
+            if (e.value is int) e.key: e.value! as int,
+      },
+    );
+  }
 
   final String name;
   final String handle;
@@ -440,6 +477,17 @@ class Member {
 
   /// 내 사진 인증(배지) 수
   final int verified;
+
+  /// 친구 목록 한 줄 상태 ("[최근] … 인증")
+  final String status;
+
+  /// 'special' = 특별 관심, 'friend' = 친구
+  final String group;
+  final List<String> likedIds;
+  final List<String> ownedIds;
+
+  /// 작품 id → 이 친구가 모은 칸 수
+  final Map<String, int> guide;
 }
 
 /// 사진 벽 한 장 — 도감에서 인증한 기체와 이어져 있다

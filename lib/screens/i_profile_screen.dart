@@ -10,6 +10,9 @@
 // │ I-5  │ 초대 코드 + 복사 · 멤버 줄           │ 공유 공간과 친구 → 친구 프로필          │ P07           │
 // │ I-6  │ 사진 3열 격자                       │ 게시물 (도감에서 인증한 사진 · 친구 공개)  │ P02 · P06    │
 // │ I-7  │ 사진 보기: 미리보기 + 워터마크 스위치  │ 저장 시 "GP · @아이디" 워터마크 (끌 수 있음) │ P05 · P10  │
+// │ I-9  │ 바텀 시트: 스위치 + 친구 체크 목록     │ 게시물 공개 범위 (전체 끄기 · 친구별 숨기기) │ P05 · P07 │
+// │ I-10 │ 사진 보기의 "게시물에 보이기" 스위치  │ 사진 한 장만 숨기기 (흐리게 + 눈 꺼짐 표시) │ P05 · P01  │
+// │ I-11 │ 친구 숫자 → L 친구 컬렉션            │ 친구의 좋아요 · 구매함 · 도감 보기         │ P07        │
 // │ I-8  │ LoadingView / ErrorView             │ 프로필 불러오기 (GET /profile)          │ P01 · P09     │
 // └──────────────────────────────────────────────────────────────────────────────────┘
 // 전환: 앱 셸 아바타 → 쌓기(push, 오른쪽에서). 숫자 → 닫고 컬렉션 탭(옆으로). 게시물 · 친구 → 쌓기. 편집 → 덮기.
@@ -24,6 +27,7 @@ import '../models.dart';
 import '../theme.dart';
 import '../widgets.dart';
 import 'f_collection_screen.dart' show CollectionJump;
+import 'l_friend_collection_screen.dart';
 
 void openProfile(
   BuildContext context, {
@@ -76,6 +80,18 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   late Future<_ProfileData> _future;
 
+  // 게시물 공개 범위 (가짜 — 저장하지 않음)
+  bool _postsPublic = true;
+
+  /// 게시물을 안 보여 줄 친구 아이디
+  final Set<String> _hiddenFrom = {};
+
+  /// 게시물에서 숨긴 사진 id
+  final Set<String> _hiddenPhotos = {};
+
+  /// 사진 id → 워터마크 (바꾼 것만, 나머지는 데이터 값)
+  final Map<String, bool> _watermark = {};
+
   @override
   void initState() {
     super.initState();
@@ -90,6 +106,70 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _fake(String what) => showToast(context, '$what은(는) 프로토타입이라 실제로 바뀌지 않아요');
+
+  /// I-9 게시물 공개 범위
+  void _openPrivacy(Profile p) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (sheet) => StatefulBuilder(
+        builder: (sheet, setSheet) {
+          void change(VoidCallback f) {
+            setState(f); // STATE: 공개 범위 → 게시물 제목 줄 · 친구 체크
+            setSheet(() {});
+          }
+
+          return SafeArea(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(sheet).height * 0.75),
+              child: ListView(
+                shrinkWrap: true,
+                padding: const EdgeInsets.only(bottom: 16),
+                children: [
+                  const SectionHeader('게시물 공개 범위', padding: EdgeInsets.fromLTRB(16, 0, 16, 4)),
+                  SwitchListTile(
+                    title: const Text('친구에게 게시물 보이기'),
+                    subtitle: const Text('끄면 모든 게시물이 나만 보기로 바뀌어요'),
+                    value: _postsPublic,
+                    activeThumbColor: Gp.accent,
+                    onChanged: (v) => change(() => _postsPublic = v),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(16, 10, 16, 2),
+                    child: Text('보여 줄 친구', style: TextStyle(fontSize: 13, color: Gp.muted)),
+                  ),
+                  for (final f in p.friends)
+                    CheckboxListTile(
+                      secondary: CircleThumb(image: '', label: f.name, size: 34),
+                      title: Text(f.name),
+                      subtitle: Text('@${f.handle}', style: const TextStyle(fontSize: 12, color: Gp.muted)),
+                      value: _postsPublic && !_hiddenFrom.contains(f.handle),
+                      activeColor: Gp.accent,
+                      onChanged: _postsPublic // 전체를 끄면 친구별 선택도 잠김 P05
+                          ? (v) => change(() => v == true ? _hiddenFrom.remove(f.handle) : _hiddenFrom.add(f.handle))
+                          : null,
+                    ),
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(16, 8, 16, 0),
+                    child: Text(
+                      '사진 한 장만 숨기려면 그 사진을 눌러 "게시물에 보이기"를 끄세요.',
+                      style: TextStyle(fontSize: 12, color: Gp.muted),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  String _postsSubtitle() {
+    if (!_postsPublic) return '나만 보기 · 친구에게 보이지 않아요';
+    final n = _hiddenFrom.length;
+    return n == 0 ? '도감에서 인증한 사진 · 친구에게 보여요' : '도감에서 인증한 사진 · 친구 $n명에게는 숨김';
+  }
 
   void _jump(CollectionJump j) {
     Navigator.pop(context);
@@ -168,8 +248,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _PhotoWall(
           // I-6
           title: '내 게시물',
-          subtitle: '도감에서 인증한 사진 · 친구에게 보여요',
+          subtitle: _postsSubtitle(),
           photos: photos,
+          hidden: _postsPublic ? _hiddenPhotos : {for (final ph in photos) ph.id},
+          trailing: IconButton( // I-9
+            tooltip: '공개 범위',
+            onPressed: () => _openPrivacy(p),
+            icon: Icon(_postsPublic ? Icons.group_outlined : Icons.lock_outline, color: Gp.muted, size: 21),
+          ),
           onOpen: (ph) => _openPhoto(ph, mine: true),
         ),
         SectionPanel(
@@ -221,7 +307,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             const Icon(Icons.chevron_right, color: Gp.faint),
                           ],
                         ),
-                  onTap: m.self ? null : () => openFriend(context, m, loaders: widget.loaders),
+                  onTap: m.self
+                      ? null
+                      : () => openFriend(
+                          context,
+                          p.friends.where((f) => f.handle == m.handle).firstOrNull ?? m, // 친구 목록의 자세한 정보
+                          loaders: widget.loaders,
+                        ),
                 ),
               ListTile(
                 leading: const Icon(Icons.person_add_alt_1_outlined),
@@ -241,7 +333,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
       padding: const EdgeInsets.only(bottom: 40),
       children: [
         _Header(name: m.name, handle: m.handle, avatarText: m.name.characters.first, tags: [m.role]),
-        _Stats(liked: m.liked, lit: m.lit, verified: photos.length, owned: m.owned),
+        _Stats(
+          liked: m.liked,
+          lit: m.lit,
+          verified: m.verified,
+          owned: m.owned,
+          onJump: (j) => openFriendCollection(context, m, j, loaders: widget.loaders), // I-11
+        ),
         _PhotoWall(
           title: '${m.name}의 게시물',
           subtitle: '저장하면 워터마크가 들어갈 수 있어요',
@@ -255,7 +353,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void _openPhoto(ShowcasePhoto ph, {required bool mine}) {
     Navigator.of(context).push(
       CupertinoPageRoute<void>(
-        builder: (_) => PhotoViewScreen(photo: ph, mine: mine),
+        builder: (_) => PhotoViewScreen(
+          photo: ph,
+          mine: mine,
+          shown: !_hiddenPhotos.contains(ph.id),
+          watermark: _watermark[ph.id] ?? ph.watermark,
+          onShown: (v) => setState(() => v ? _hiddenPhotos.remove(ph.id) : _hiddenPhotos.add(ph.id)),
+          onWatermark: (v) => setState(() => _watermark[ph.id] = v),
+        ),
       ),
     );
   }
@@ -405,11 +510,22 @@ class _Stats extends StatelessWidget {
 
 /// I-6 게시물 3열
 class _PhotoWall extends StatelessWidget {
-  const _PhotoWall({required this.title, required this.subtitle, required this.photos, required this.onOpen});
+  const _PhotoWall({
+    required this.title,
+    required this.subtitle,
+    required this.photos,
+    required this.onOpen,
+    this.hidden = const {},
+    this.trailing,
+  });
   final String title;
   final String subtitle;
   final List<ShowcasePhoto> photos;
   final ValueChanged<ShowcasePhoto> onOpen;
+
+  /// 친구에게 숨긴 사진 (흐리게 + 눈 꺼짐)
+  final Set<String> hidden;
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -418,7 +534,7 @@ class _PhotoWall extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SectionHeader(title, subtitle: subtitle),
+          SectionHeader(title, subtitle: subtitle, trailing: trailing),
           if (photos.isEmpty)
             const Padding(
               padding: EdgeInsets.fromLTRB(16, 0, 16, 4),
@@ -443,8 +559,10 @@ class _PhotoWall extends StatelessWidget {
                       child: Stack(
                         fit: StackFit.expand,
                         children: [
-                          PhotoThumb(ph.image, radius: 10),
+                          Opacity(opacity: hidden.contains(ph.id) ? 0.35 : 1, child: PhotoThumb(ph.image, radius: 10)),
                           const Positioned(right: 5, bottom: 5, child: VerifiedBadge(size: 20)),
+                          if (hidden.contains(ph.id))
+                            const Center(child: Icon(Icons.visibility_off_outlined, color: Gp.ink, size: 26)),
                         ],
                       ),
                     ),
@@ -459,16 +577,33 @@ class _PhotoWall extends StatelessWidget {
 
 /// I-7 사진 한 장 보기 — 다른 사람이 저장할 때의 워터마크 미리보기 + 끄고 켜기(내 사진만)
 class PhotoViewScreen extends StatefulWidget {
-  const PhotoViewScreen({super.key, required this.photo, required this.mine});
+  const PhotoViewScreen({
+    super.key,
+    required this.photo,
+    required this.mine,
+    this.shown = true,
+    this.watermark,
+    this.onShown,
+    this.onWatermark,
+  });
   final ShowcasePhoto photo;
   final bool mine;
+
+  /// 내 게시물에 보이는지 (I-10)
+  final bool shown;
+
+  /// null 이면 데이터 값
+  final bool? watermark;
+  final ValueChanged<bool>? onShown;
+  final ValueChanged<bool>? onWatermark;
 
   @override
   State<PhotoViewScreen> createState() => _PhotoViewScreenState();
 }
 
 class _PhotoViewScreenState extends State<PhotoViewScreen> {
-  late bool _watermark = widget.photo.watermark;
+  late bool _watermark = widget.watermark ?? widget.photo.watermark;
+  late bool _shown = widget.shown;
 
   void _save() {
     final mark = watermarkText(widget.photo.owner);
@@ -527,6 +662,18 @@ class _PhotoViewScreenState extends State<PhotoViewScreen> {
           ),
           const SizedBox(height: 8),
           if (widget.mine)
+            SwitchListTile( // I-10 P05
+              contentPadding: EdgeInsets.zero,
+              title: const Text('게시물에 보이기'),
+              subtitle: Text(_shown ? '친구가 볼 수 있어요' : '나만 볼 수 있어요 (게시물에서 흐리게 보여요)'),
+              value: _shown,
+              activeThumbColor: Gp.accent,
+              onChanged: (v) {
+                setState(() => _shown = v); // STATE: 이 사진 공개 → 게시물 칸
+                widget.onShown?.call(v);
+              },
+            ),
+          if (widget.mine)
             SwitchListTile(
               // I-7 P05
               contentPadding: EdgeInsets.zero,
@@ -534,7 +681,10 @@ class _PhotoViewScreenState extends State<PhotoViewScreen> {
               subtitle: Text('${watermarkText(ph.owner)} 이(가) 오른쪽 아래에 들어가요'),
               value: _watermark,
               activeThumbColor: Gp.accent,
-              onChanged: (v) => setState(() => _watermark = v), // STATE: 워터마크 → 미리보기
+              onChanged: (v) {
+                setState(() => _watermark = v); // STATE: 워터마크 → 미리보기
+                widget.onWatermark?.call(v);
+              },
             )
           else
             Text(
