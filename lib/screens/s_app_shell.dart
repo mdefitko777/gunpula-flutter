@@ -20,6 +20,7 @@ import '../api.dart';
 import '../channels.dart';
 import '../theme.dart';
 import '../widgets.dart';
+import 'a_home_screen.dart';
 import 'c_channel_screen.dart';
 
 /// 넓은 화면 기준 (Material 3 window size class: expanded ≥ 840dp)
@@ -51,30 +52,42 @@ class _AppShellState extends State<AppShell> {
   }
 
   void _openAdd() {
-    showModalBottomSheet<void>( // S-4 P07
+    showModalBottomSheet<void>(
+      // S-4 P07
       context: context,
       builder: (context) => const AddSheet(),
     );
   }
 
   void _openProfile() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('내 정보 화면은 다음 단계에서 만들어요')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('내 정보 화면은 다음 단계에서 만들어요')));
   }
 
   @override
   Widget build(BuildContext context) {
     final wide = MediaQuery.sizeOf(context).width >= railBreakpoint;
     final avatar = _AvatarButton(onTap: _openProfile); // S-1 P04
-    Widget page(int i) => _TabPage(
-      key: ValueKey(i),
-      title: _tabs[i].$3,
-      leading: wide ? null : avatar,
-      myChannels: _myChannels,
-      onMyChannelsChanged: _setChannels,
-    );
-    final body = IndexedStack( // S-6 P03
+    Widget page(int i) => i == 0
+        ? HomeScreen(
+            // A
+            key: const ValueKey(0),
+            leading: wide ? null : avatar,
+            myChannels: _myChannels,
+            onMyChannelsChanged: _setChannels,
+            onOpenSearch: () => setState(() => _tab = 1),
+            loaders: widget.loaders,
+          )
+        : _TabPage(
+            key: ValueKey(i),
+            title: _tabs[i].$3,
+            leading: wide ? null : avatar,
+            myChannels: _myChannels,
+            onMyChannelsChanged: _setChannels,
+          );
+    final body = IndexedStack(
+      // S-6 P03
       index: _tab,
       children: [for (var i = 0; i < _tabs.length; i++) page(i)],
     );
@@ -85,7 +98,8 @@ class _AppShellState extends State<AppShell> {
         child: wide
             ? Row(
                 children: [
-                  NavigationRail( // S-5
+                  NavigationRail(
+                    // S-5
                     selectedIndex: _tab,
                     labelType: NavigationRailLabelType.all,
                     onDestinationSelected: (i) => setState(() => _tab = i),
@@ -134,7 +148,10 @@ class _AvatarButton extends StatelessWidget {
       tooltip: '내 정보',
       size: 38,
       onTap: onTap,
-      child: const Text('A', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15, color: Gp.ink)),
+      child: const Text(
+        'A',
+        style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15, color: Gp.ink),
+      ),
     );
   }
 }
@@ -223,7 +240,9 @@ class _BottomBar extends StatelessWidget {
                   children: [
                     item(0), // S-3 P06
                     item(1),
-                    Expanded(child: Center(child: _PlusButton(onTap: onPlus))), // S-4 P07
+                    Expanded(
+                      child: Center(child: _PlusButton(onTap: onPlus)),
+                    ), // S-4 P07
                     item(2),
                     item(3),
                   ],
@@ -245,9 +264,7 @@ class AddSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     void soon(String what) {
       Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('$what 화면은 다음 단계에서 만들어요')),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$what 화면은 다음 단계에서 만들어요')));
     }
 
     return SafeArea(
