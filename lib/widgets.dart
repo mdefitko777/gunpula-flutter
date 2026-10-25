@@ -753,6 +753,75 @@ class VerifiedBadge extends StatelessWidget {
   }
 }
 
+/// 가로로 넘기는 알약 줄 (+ 오른쪽 끝 [trailing]) — 홈 "전체 상품 / 작품" 입구 · 전체 목록 거르기 공통
+class FilterChipBar extends StatelessWidget {
+  const FilterChipBar({
+    super.key,
+    required this.options,
+    required this.onSelect,
+    this.trailing,
+    this.padding = const EdgeInsets.fromLTRB(0, 4, 8, 8),
+  });
+
+  final List<({String label, int count, bool selected})> options;
+
+  /// 누른 알약의 번호
+  final ValueChanged<int> onSelect;
+  final Widget? trailing;
+  final EdgeInsets padding;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: padding,
+      child: Row(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                children: [
+                  for (final (i, o) in options.indexed)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: ChoiceChip(
+                        label: Text.rich(
+                          TextSpan(
+                            text: o.label,
+                            children: [
+                              TextSpan(
+                                text: ' ${o.count}',
+                                style: TextStyle(color: o.selected ? Gp.accent : Gp.faint),
+                              ),
+                            ],
+                          ),
+                        ),
+                        selected: o.selected,
+                        onSelected: (_) => onSelect(i),
+                        showCheckmark: false,
+                        labelStyle: TextStyle(
+                          fontSize: 13,
+                          color: o.selected ? Gp.accent : Gp.ink,
+                          fontWeight: o.selected ? FontWeight.w600 : FontWeight.w400,
+                        ),
+                        backgroundColor: Gp.panel,
+                        selectedColor: Gp.accent.withValues(alpha: 0.08),
+                        side: BorderSide(color: o.selected ? Gp.accent : Gp.line),
+                        shape: const StadiumBorder(),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+          ?trailing,
+        ],
+      ),
+    );
+  }
+}
+
 /// 작은 돌아가는 원 — 불러오기 · 확인 중 (LoadingView · 시트 · 대화 상자 공통)
 class MiniSpinner extends StatelessWidget {
   const MiniSpinner({super.key, this.size = 22, this.color = Gp.ink});

@@ -278,10 +278,7 @@ class _SearchScreenState extends State<SearchScreen> with ChannelScope {
 
   /// 검색어가 있을 때: AI 후보(있으면) + 결과 격자
   Widget _results(List<Kit> kits) {
-    final q = _query.toLowerCase();
-    bool hit(Kit k) => [k.name, k.nameJa, k.series, k.line, k.type]
-        .any((f) => f.toLowerCase().contains(q));
-    final results = kits.where(hit).toList();
+    final results = kits.where((k) => kitMatches(k, _query)).toList();
     final byId = {for (final k in kits) k.id: k};
     final ai = aiAnswers.where((a) => a.$1.any(_query.contains)).firstOrNull;
     final candidates = [

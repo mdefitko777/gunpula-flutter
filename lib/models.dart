@@ -574,6 +574,25 @@ class AppNotice {
   }
 }
 
+/// 검색어가 이름 · 일본어 이름 · 작품 · 라인 · 종류에 들어 있는지 (검색 탭 · 홈 전체 목록 공통)
+bool kitMatches(Kit k, String query) {
+  final q = query.trim().toLowerCase();
+  if (q.isEmpty) return true;
+  return [k.name, k.nameJa, k.series, k.line, k.type].any((f) => f.toLowerCase().contains(q));
+}
+
+/// 작품 묶음 이름 (홈 전체 목록 거르기). 베이블레이드는 작품이 하나라 series(한정 · UX…) 대신 이름 하나로
+String kitWork(Kit k) => k.franchiseId == 'beyblade' ? 'BEYBLADE X' : k.series;
+
+/// 작품별 개수, 많은 순
+List<(String, int)> workCounts(Iterable<Kit> kits) {
+  final m = <String, int>{};
+  for (final k in kits) {
+    m[kitWork(k)] = (m[kitWork(k)] ?? 0) + 1;
+  }
+  return [for (final e in m.entries) (e.key, e.value)]..sort((a, b) => b.$2.compareTo(a.$2));
+}
+
 /// 작품 도감 전체의 점등 칸 수
 int litCount(Iterable<GuideWork> works) => works.fold(0, (s, w) => s + w.owned);
 

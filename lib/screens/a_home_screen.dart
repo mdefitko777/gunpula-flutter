@@ -6,13 +6,14 @@
 // │ A-2  │ GpSearchBar 입구 (탭하면 검색 탭)   │ 검색창(검색 화면과 같은 모양) · 카메라  │ P07 · P04     │
 // │ A-3  │ PageView(화면 끝까지) + 점 표시     │ 공식 예고 배너 (완성된 홍보 이미지)     │ P08 · P02     │
 // │ A-4  │ 배너 아래 상태 · 제목               │ 예고 상태(공식 발표·상품화 확정·예약)   │ P01           │
-// │ A-5  │ SectionHeader (색 막대 + ›)         │ 줄 이름 · 전체 보기 → O 전체 목록       │ P06 · P07     │
+// │ A-5  │ SectionHeader (색 막대 + ›)         │ 줄 이름 · 전체 보기 → O 전체 목록(홈 안)  │ P06 · P07     │
+// │ A-10 │ FilterChipBar (검색창 아래)          │ 전체 상품 · 작품별 입구 → O 전체 목록     │ P06 · P07     │
 // │ A-6  │ 가로 ListView + ProductTile         │ 최근 추가 · 10월 발매 · 공식 예고 · 최근 본 │ P08        │
 // │ A-7  │ LoadingView / ErrorView / EmptyView │ 불러오는 중 · 오류 · 빈 채널           │ P01 · P09     │
 // │ A-8  │ 흰 띠(섹션마다) + 회백색 틈          │ 줄과 줄 사이 층 구분                   │ P08 · P04     │
 // │ A-9  │ ProductTile 의 QuickMarks ♡ +       │ 좋아요 · 구매함 바로 담기 (가짜 저장)     │ P07           │
 // └──────────────────────────────────────────────────────────────────────────────────┘
-// 전환: A-2 → 검색 탭(옆으로). 상품 카드 → D 상품 상세(쌓기). 배너 · 예고 카드 → J 공식 예고 상세(쌓기).
+// 전환: A-2 → 검색 탭(옆으로). › · 작품 알약 → 같은 탭 안에서 O 전체 목록(위쪽 머리 · 검색창은 그대로, 뒤로 = 홈). 상품 카드 → D 상품 상세(쌓기). 배너 · 예고 카드 → J 공식 예고 상세(쌓기).
 // 줄 안에는 날짜·가격을 쓰지 않는다 — 궁금하면 눌러서 상세에서 본다 (P08).
 // 현행 앱 문제: 홈 = 버전 번호·총 개수·IP 입구 카드 → v2 홈 = "내 채널의 새 소식"만.
 import 'package:flutter/material.dart';
@@ -75,6 +76,15 @@ class _Item {
   final Announcement? ann;
 }
 
+/// 전체 목록 제목
+String _titleOf(HomeSection s) => switch (s) {
+  HomeSection.all => '전체 상품',
+  HomeSection.recent => '최근 추가',
+  HomeSection.month => currentMonthTitle,
+  HomeSection.announcements => '공식 예고',
+  HomeSection.viewed => '최근 본',
+};
+
 /// 가로 줄 하나
 class _Row {
   const _Row(this.title, this.items, {required this.onMore, this.subtitle = '', this.wide = false});
@@ -89,6 +99,35 @@ class _Row {
 
 class _HomeScreenState extends State<HomeScreen> with ChannelScope {
   late Future<_HomeData> _future;
+
+  /// null = 홈, 아니면 홈 안에서 펼친 전체 목록 (O)
+  HomeSection? _section;
+
+  /// 작품 알약으로 들어왔을 때 처음 고른 작품
+  String _work = '';
+
+  /// 전체 목록일 때 검색창 = 그 목록 안에서만 찾기 (O-7)
+  final _searchCtrl = TextEditingController();
+  String _query = '';
+
+  void _openSection(HomeSection s, {String work = ''}) => setState(() {
+    _section = s; // STATE: › · 알약 → 홈 아래쪽이 전체 목록으로
+    _work = work;
+    _searchCtrl.clear();
+    _query = '';
+  });
+
+  void _closeSection() => setState(() {
+    _section = null; // STATE: ‹ · 뒤로 → 홈
+    _searchCtrl.clear();
+    _query = '';
+  });
+
+  @override
+  void dispose() {
+    _searchCtrl.dispose();
+    super.dispose();
+  }
 
   @override
   List<String> get myChannels => widget.myChannels;
@@ -116,6 +155,17 @@ class _HomeScreenState extends State<HomeScreen> with ChannelScope {
 
   @override
   Widget build(BuildContext context) {
+    // 전체 목록을 펼친 상태에서 뒤로 가기 = 홈으로 (앱을 닫지 않음)
+    return PopScope(
+      canPop: _section == null,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) _closeSection();
+      },
+      child: _page(),
+    );
+  }
+
+  Widget _page() {
     return Column(
       children: [
         ChannelHeader(
@@ -150,8 +200,16 @@ class _HomeScreenState extends State<HomeScreen> with ChannelScope {
 
   Widget _body(_HomeData data) {
     final search = Padding(
-      padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
-      child: GpSearchBar(onTap: widget.onOpenSearch, onCamera: widget.onCamera), // A-2 P04
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
+      child: _section == null
+          ? GpSearchBar(onTap: widget.onOpenSearch, onCamera: widget.onCamera) // A-2 P04
+          : GpSearchBar(
+              // O-7 이 목록 안에서만
+              controller: _searchCtrl,
+              hint: '${_titleOf(_section!)}에서 찾기',
+              onChanged: (v) => setState(() => _query = v), // STATE: 검색어 → 목록 거르기
+              onCamera: widget.onCamera,
+            ),
     );
     final ids = scopeIds;
     if (data.kits.isEmpty && data.announcements.isEmpty) {
@@ -187,49 +245,74 @@ class _HomeScreenState extends State<HomeScreen> with ChannelScope {
         if (k.month) k,
     ];
     final viewed = [for (final id in recentViewedIds) ?byId[id]];
-    // 전체 목록 제목 옆: 채널 하나를 보고 있으면 그 이름
-    final scope = channel == allChannelId ? '' : channelOf(channel).label;
-    void seeAll(
-      String title, {
-      List<Kit> kits = const [],
-      List<Announcement> anns = const [],
-      String sub = '',
-      bool history = false,
-      KitSort sort = KitSort.newest,
-    }) => openSeeAll(
-      context,
-      title: title,
-      subtitle: joinDot([scope, sub]),
-      kits: kits,
-      announcements: anns,
-      history: history,
-      sort: sort,
-      loaders: widget.loaders,
-    );
+    final lists = {
+      HomeSection.all: data.kits,
+      HomeSection.recent: recent,
+      HomeSection.month: month,
+      HomeSection.viewed: viewed,
+    };
+
+    // O 전체 목록 (홈 위쪽은 그대로, 아래만 바뀜)
+    if (_section case final sec?) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          search,
+          Expanded(
+            child: SectionListView(
+              key: ValueKey(sec),
+              title: _titleOf(sec),
+              subtitle: joinDot([
+                if (channel != allChannelId) channelOf(channel).label,
+                if (sec == HomeSection.recent) recentRangeLabel,
+              ]),
+              kits: lists[sec] ?? const [],
+              announcements: sec == HomeSection.announcements ? data.announcements : null,
+              history: sec == HomeSection.viewed,
+              sort: sec == HomeSection.month ? KitSort.release : KitSort.newest,
+              work: _work,
+              query: _query,
+              onBack: _closeSection,
+              loaders: widget.loaders,
+            ),
+          ),
+        ],
+      );
+    }
+
     final rows = [
       _Row(
         '최근 추가',
         [for (final k in recent) kitItem(k)],
         subtitle: recentRangeLabel,
-        onMore: () => seeAll('최근 추가', kits: recent, sub: recentRangeLabel),
+        onMore: () => _openSection(HomeSection.recent),
       ),
-      _Row(currentMonthTitle, [
-        for (final k in month) kitItem(k),
-      ], onMore: () => seeAll(currentMonthTitle, kits: month, sort: KitSort.release)),
+      _Row(currentMonthTitle, [for (final k in month) kitItem(k)], onMore: () => _openSection(HomeSection.month)),
       _Row(
         '공식 예고',
         [for (final a in data.announcements) _Item(a.image, a.title, ann: a)],
         wide: true,
-        onMore: () => seeAll('공식 예고', anns: data.announcements),
+        onMore: () => _openSection(HomeSection.announcements),
       ),
-      _Row('최근 본', [for (final k in viewed) kitItem(k)], onMore: () => seeAll('최근 본', kits: viewed, history: true)),
+      _Row('최근 본', [for (final k in viewed) kitItem(k)], onMore: () => _openSection(HomeSection.viewed)),
     ];
+    final works = workCounts(data.kits);
     final heroes = data.announcements.where((a) => a.hero).toList();
 
     return ListView(
       padding: EdgeInsets.only(bottom: navClearance(context)),
       children: [
         search,
+        if (data.kits.isNotEmpty)
+          FilterChipBar(
+            // A-10 전체 상품 · 작품별 입구
+            padding: const EdgeInsets.only(bottom: 12),
+            options: [
+              (label: '전체 상품', count: data.kits.length, selected: false),
+              for (final (w, n) in works.take(8)) (label: w, count: n, selected: false),
+            ],
+            onSelect: (i) => _openSection(HomeSection.all, work: i == 0 ? '' : works[i - 1].$1),
+          ),
         if (heroes.isNotEmpty)
           ColoredBox(
             color: Gp.panel,
