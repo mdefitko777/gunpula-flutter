@@ -181,7 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _Item kitItem(Kit k) => _Item(k.image, k.name);
     final recent = [for (final k in data.kits.where((k) => k.recent)) kitItem(k)];
     final rows = [
-      _Row('최근 추가', recent, subtitle: '$recentRangeLabel · ${recent.length}건'),
+      _Row('최근 추가', recent, subtitle: recentRangeLabel),
       _Row(currentMonthTitle, [for (final k in data.kits.where((k) => k.month)) kitItem(k)]),
       _Row('공식 예고', [
         for (final a in data.announcements) _Item(a.image, a.title, canAdd: false),

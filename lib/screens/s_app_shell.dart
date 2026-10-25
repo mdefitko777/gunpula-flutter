@@ -1,20 +1,23 @@
-// 화면 S: 앱 셸 — 위: 아바타 줄 → 채널 바 / 아래: 떠 있는 반투명 탭 바 (홈 · 검색 · (+) · 캘린더 · 컬렉션)
+// 화면 S: 앱 셸 — 위: 아바타 줄 → 채널 바 / 아래: 바닥에 붙은 반투명 탭 바 (홈 · 검색 · (카메라) · 캘린더 · 컬렉션)
 //
 // ┌──────── 디자인 가이드 대응표: S 앱 셸 ───────────────────────────────────────────┐
 // │ 번호 │ Flutter 위젯명                  │ 비즈니스 명칭(한글)                    │ 원칙(P번호)   │
 // │ S-1  │ RaisedCircleButton + 색 고리    │ 내 정보 열기 (아바타, 채널 바 위)      │ P04 · P06     │
-// │ S-2  │ BackdropFilter 떠 있는 탭 바    │ 반투명 하단 탭 바                      │ P08           │
+// │ S-2  │ BackdropFilter 바닥 탭 바       │ 반투명 하단 탭 바 (양옆 여백 없음)      │ P08           │
 // │ S-3  │ 하단 탭 4개 (<840dp)            │ 홈 · 검색 · 캘린더 · 컬렉션            │ P06 · P04     │
-// │ S-4  │ 가운데 떠 있는 + 버튼           │ 추가 (사진으로 찾기 · 바코드 · 앨범)   │ P07           │
+// │ S-4  │ 가운데 카메라 버튼              │ 찍어서 찾기 (사진 · 바코드 · 앨범)     │ P07           │
 // │ S-5  │ NavigationRail (≥840dp)         │ 측면 탭 + 위쪽 추가 버튼               │ 적응형 · P04  │
 // │ S-6  │ IndexedStack                    │ 탭 상태 유지                           │ P03           │
 // │ S-7  │ 내 채널 목록(상태)              │ 네 화면이 같이 쓰는 내 IP 채널         │ P04           │
+// │ S-8  │ AnimatedSlide · AnimatedPositioned │ 아래로 스크롤하면 탭 바 숨김, 카메라만 오른쪽 아래 │ P08 · P07 │
 // └────────────────────────────────────────────────────────────────────────────────┘
 // 전환: S-3 옆으로(탭) · S-4 덮기(bottom sheet) · S-1 쌓기(push).
+// S-8: X · Threads처럼 내용을 내려 읽는 동안 탭 바를 숨겨 화면을 넓히고, 카메라 버튼만 남긴다.
 // 현행 앱 문제: 위 5개 IP + 아래 5개 화면 + 도감 안 탭 → v2는 아래 탭 하나 + 화면 안 채널 바 하나.
 import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show ScrollDirection;
 
 import '../api.dart';
 import '../channels.dart';
@@ -45,6 +48,9 @@ const _tabs = <(IconData, IconData, String)>[
 
 class _AppShellState extends State<AppShell> {
   int _tab = 0;
+
+  /// 하단 탭 바가 보이는지 (아래로 스크롤하면 숨김)
+  bool _barShown = true;
   List<String> _myChannels = [...defaultMyChannels]; // S-7 P04
 
   void _setChannels(List<String> ids) {
@@ -108,7 +114,7 @@ class _AppShellState extends State<AppShell> {
                         const SizedBox(height: 8),
                         avatar,
                         const SizedBox(height: 18),
-                        _PlusButton(onTap: _openAdd),
+                        _CameraButton(onTap: _openAdd),
                         const SizedBox(height: 8),
                       ],
                     ),
@@ -125,15 +131,22 @@ class _AppShellState extends State<AppShell> {
                   Expanded(child: body),
                 ],
               )
-            : body,
+            : _NarrowLayout(
+                body: body,
+                barShown: _barShown,
+                bar: _BottomBar(
+                  index: _tab,
+                  onSelect: (i) => setState(() {
+                    _tab = i; // STATE: 탭 번호 → IndexedStack
+                    _barShown = true;
+                  }),
+                ),
+                camera: _CameraButton(onTap: _openAdd),
+                onScroll: (shown) {
+                  if (shown != _barShown) setState(() => _barShown = shown); // STATE: 스크롤 방향 → 탭 바 숨김/표시
+                },
+              ),
       ),
-      bottomNavigationBar: wide
-          ? null
-          : _BottomBar(
-              index: _tab,
-              onSelect: (i) => setState(() => _tab = i), // STATE: 탭 번호 → IndexedStack
-              onPlus: _openAdd,
-            ),
     );
   }
 }
@@ -168,28 +181,92 @@ class _AvatarButton extends StatelessWidget {
   }
 }
 
-class _PlusButton extends StatelessWidget {
-  const _PlusButton({required this.onTap});
+/// S-4 카메라 버튼 — 홈 카드의 +(원함 담기)와 구분되게 카메라 모양
+class _CameraButton extends StatelessWidget {
+  const _CameraButton({required this.onTap});
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     return RaisedCircleButton(
-      tooltip: '추가',
-      size: 48,
+      tooltip: '찍어서 찾기',
+      size: _cameraSize,
       onTap: onTap,
-      child: const Icon(Icons.add, color: Gp.ink, size: 26, weight: 300),
+      child: const Icon(Icons.photo_camera_outlined, color: Gp.ink, size: 24),
     );
   }
 }
 
-/// S-2 떠 있는 반투명 탭 바 (뒤 내용이 흐리게 비친다)
+const _cameraSize = 52.0;
+const _barHeight = 62.0;
+
+/// 좁은 화면: 내용 + 바닥 탭 바 + 카메라 버튼(S-8 스크롤에 따라 위치 이동)
+class _NarrowLayout extends StatelessWidget {
+  const _NarrowLayout({
+    required this.body,
+    required this.bar,
+    required this.camera,
+    required this.barShown,
+    required this.onScroll,
+  });
+
+  final Widget body;
+  final Widget bar;
+  final Widget camera;
+  final bool barShown;
+  final ValueChanged<bool> onScroll;
+
+  @override
+  Widget build(BuildContext context) {
+    final safeBottom = MediaQuery.paddingOf(context).bottom;
+    const curve = Curves.easeOutCubic;
+    const duration = Duration(milliseconds: 260);
+    return LayoutBuilder(
+      builder: (context, box) => Stack(
+        children: [
+          Positioned.fill(
+            child: NotificationListener<UserScrollNotification>(
+              onNotification: (n) {
+                // 세로 스크롤만 본다 (가로로 넘기는 줄은 무시)
+                if (n.metrics.axis == Axis.vertical) {
+                  if (n.direction == ScrollDirection.reverse) onScroll(false);
+                  if (n.direction == ScrollDirection.forward) onScroll(true);
+                }
+                return false;
+              },
+              child: body,
+            ),
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: AnimatedSlide( // S-8
+              offset: barShown ? Offset.zero : const Offset(0, 1.1),
+              duration: duration,
+              curve: curve,
+              child: bar,
+            ),
+          ),
+          AnimatedPositioned( // S-8 P07
+            duration: duration,
+            curve: curve,
+            left: barShown ? (box.maxWidth - _cameraSize) / 2 : box.maxWidth - _cameraSize - 18,
+            bottom: barShown ? safeBottom + (_barHeight - _cameraSize) / 2 : safeBottom + 22,
+            child: camera,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// S-2 바닥에 붙은 반투명 탭 바 (양옆 여백 없이 화면 끝까지)
 class _BottomBar extends StatelessWidget {
-  const _BottomBar({required this.index, required this.onSelect, required this.onPlus});
+  const _BottomBar({required this.index, required this.onSelect});
 
   final int index;
   final ValueChanged<int> onSelect;
-  final VoidCallback onPlus;
 
   @override
   Widget build(BuildContext context) {
@@ -225,40 +302,26 @@ class _BottomBar extends StatelessWidget {
       );
     }
 
-    return SafeArea(
-      top: false,
-      minimum: const EdgeInsets.only(bottom: 10),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14),
+    return ClipRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
         child: DecoratedBox(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(34),
-            boxShadow: const [
-              BoxShadow(color: Color(0x1F000000), blurRadius: 28, offset: Offset(0, 10)),
-            ],
+          decoration: const BoxDecoration(
+            color: Color(0xE0FFFFFF),
+            border: Border(top: BorderSide(color: Gp.line)),
           ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(34),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
-              child: Container(
-                height: 68,
-                decoration: BoxDecoration(
-                  color: const Color(0xB8FFFFFF),
-                  borderRadius: BorderRadius.circular(34),
-                  border: Border.all(color: const Color(0xCCFFFFFF)),
-                ),
-                child: Row(
-                  children: [
-                    item(0), // S-3 P06
-                    item(1),
-                    Expanded(
-                      child: Center(child: _PlusButton(onTap: onPlus)),
-                    ), // S-4 P07
-                    item(2),
-                    item(3),
-                  ],
-                ),
+          child: SafeArea(
+            top: false,
+            child: SizedBox(
+              height: _barHeight,
+              child: Row(
+                children: [
+                  item(0), // S-3 P06
+                  item(1),
+                  const Spacer(), // 가운데: 카메라 버튼 자리(S-4는 위에 겹쳐 놓는다)
+                  item(2),
+                  item(3),
+                ],
               ),
             ),
           ),
