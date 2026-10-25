@@ -398,6 +398,7 @@ class Profile {
               liked: _i(m, 'liked'),
               lit: _i(m, 'lit'),
               owned: _i(m, 'owned'),
+              verified: _i(m, 'verified'),
             ),
       ],
       showcase: [
@@ -426,6 +427,7 @@ class Member {
     required this.liked,
     required this.lit,
     required this.owned,
+    this.verified = 0,
   });
 
   final String name;
@@ -435,6 +437,9 @@ class Member {
   final int liked;
   final int lit;
   final int owned;
+
+  /// 내 사진 인증(배지) 수
+  final int verified;
 }
 
 /// 사진 벽 한 장 — 도감에서 인증한 기체와 이어져 있다
@@ -457,6 +462,9 @@ class ShowcasePhoto {
   /// 다른 사람이 저장할 때 오른쪽 아래 "GP · @아이디" 를 넣을지
   final bool watermark;
 }
+
+/// 도감 레벨 (모든 작품 합): 구매 칸 2점 + 사진 인증 1점 더, 5점마다 한 단계
+int guideLevel(int lit, int verified) => 1 + (lit * 2 + verified) ~/ 5;
 
 /// 워터마크 글자: 앱 이름 줄임(GP) + 올린 사람 아이디
 String watermarkText(String handle) => 'GP · @$handle';

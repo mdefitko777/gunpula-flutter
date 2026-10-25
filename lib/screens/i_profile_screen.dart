@@ -1,18 +1,18 @@
-// 화면 I: 내 정보 — 프로필 · 수집 숫자 · 사진 벽 · 공유 공간과 친구 (아바타에서 열림, 설정은 K 화면)
-// 같은 화면을 친구 보기로도 쓴다: 친구 이름을 누르면 그 친구의 숫자 · 사진 벽 (편집 · 친구 목록 없음)
+// 화면 I: 내 정보 — 프로필 · 수집 숫자 · 게시물 · 공유 공간과 친구 (아바타에서 열림, 설정은 K 화면)
+// 같은 화면을 친구 보기로도 쓴다: 친구 이름을 누르면 그 친구의 숫자 · 게시물 (편집 · 친구 목록 없음)
 //
 // ┌──────── 디자인 가이드 대응표: I 내 정보 ───────────────────────────────────────────┐
 // │ 번호 │ Flutter 위젯명                     │ 비즈니스 명칭(한글)                    │ 원칙(P번호)   │
 // │ I-1  │ 색 고리 큰 아바타 · 이름 · @아이디    │ 내 프로필                              │ P04           │
 // │ I-2  │ TagPill 줄                          │ 내 취향 태그                           │ P06           │
 // │ I-3  │ 프로필 편집 → 바텀 시트(액션 목록)    │ 아바타 · 배경 · 닉네임 · 태그 바꾸기 (가짜) │ P03 · P07  │
-// │ I-4  │ 숫자 3칸 (누르면 이동)               │ 좋아요 · 도감 점등 · 구매함 → 컬렉션 탭    │ P01 · P07     │
+// │ I-4  │ 숫자 3칸 (누르면 이동)               │ 좋아요 · 도감 레벨(배지 n) · 구매함 → 컬렉션 │ P01 · P07   │
 // │ I-5  │ 초대 코드 + 복사 · 멤버 줄           │ 공유 공간과 친구 → 친구 프로필          │ P07           │
-// │ I-6  │ 사진 3열 격자                       │ 사진 벽 (도감에서 인증한 사진 · 친구 공개) │ P02 · P06    │
+// │ I-6  │ 사진 3열 격자                       │ 게시물 (도감에서 인증한 사진 · 친구 공개)  │ P02 · P06    │
 // │ I-7  │ 사진 보기: 미리보기 + 워터마크 스위치  │ 저장 시 "GP · @아이디" 워터마크 (끌 수 있음) │ P05 · P10  │
 // │ I-8  │ LoadingView / ErrorView             │ 프로필 불러오기 (GET /profile)          │ P01 · P09     │
 // └──────────────────────────────────────────────────────────────────────────────────┘
-// 전환: 앱 셸 아바타 → 쌓기(push, 오른쪽에서). 숫자 → 닫고 컬렉션 탭(옆으로). 사진 · 친구 → 쌓기. 편집 → 덮기.
+// 전환: 앱 셸 아바타 → 쌓기(push, 오른쪽에서). 숫자 → 닫고 컬렉션 탭(옆으로). 게시물 · 친구 → 쌓기. 편집 → 덮기.
 // 현행 앱 문제: 로그인 전엔 아바타가 곧바로 설정, 후엔 서랍 — 같은 버튼이 다르게 동작 → v2는 늘 이 화면.
 // 실제 로그인 · 저장 없음: 바꾸는 동작은 토스트로만 응답한다.
 import 'package:flutter/cupertino.dart' show CupertinoPageRoute;
@@ -83,7 +83,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _load() {
-    // STATE: GET /profile · /kits?status_ne=none · /guideWorks → 프로필 · 숫자 · 사진 벽
+    // STATE: GET /profile · /kits?status_ne=none · /guideWorks → 프로필 · 숫자 · 게시물
     _future = Future.wait([widget.loaders.profile(), widget.loaders.collection(), widget.loaders.guideWorks()]).then(
       (r) => _ProfileData(r[0] as Profile, r[1] as List<Kit>, (r[2] as List<GuideWork>).fold(0, (s, w) => s + w.owned)),
     );
@@ -160,13 +160,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _Stats(
           liked: liked,
           lit: d.lit,
+          verified: photos.length,
           owned: owned,
           spendKrw: p.spendKrw,
           onJump: widget.onJump == null ? null : _jump, // I-4
         ),
         _PhotoWall(
           // I-6
-          title: '내 사진 벽',
+          title: '내 게시물',
           subtitle: '도감에서 인증한 사진 · 친구에게 보여요',
           photos: photos,
           onOpen: (ph) => _openPhoto(ph, mine: true),
@@ -206,7 +207,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   leading: CircleThumb(image: '', label: m.name, size: 36),
                   title: Text(m.self ? '${m.name} (나)' : m.name),
                   subtitle: Text(
-                    m.self ? '좋아요 $liked · 점등 ${d.lit} · 구매 $owned' : '좋아요 ${m.liked} · 점등 ${m.lit} · 구매 ${m.owned}',
+                    m.self
+                        ? '좋아요 $liked · Lv.${guideLevel(d.lit, photos.length)} · 구매 $owned'
+                        : '좋아요 ${m.liked} · Lv.${guideLevel(m.lit, m.verified)} · 구매 ${m.owned}',
                     style: const TextStyle(fontSize: 12, color: Gp.muted),
                   ),
                   trailing: m.self
@@ -238,9 +241,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       padding: const EdgeInsets.only(bottom: 40),
       children: [
         _Header(name: m.name, handle: m.handle, avatarText: m.name.characters.first, tags: [m.role]),
-        _Stats(liked: m.liked, lit: m.lit, owned: m.owned),
+        _Stats(liked: m.liked, lit: m.lit, verified: photos.length, owned: m.owned),
         _PhotoWall(
-          title: '${m.name}의 사진 벽',
+          title: '${m.name}의 게시물',
           subtitle: '저장하면 워터마크가 들어갈 수 있어요',
           photos: photos,
           onOpen: (ph) => _openPhoto(ph, mine: false),
@@ -312,21 +315,37 @@ class _Header extends StatelessWidget {
 
 /// I-4 숫자 3칸 — 누르면 컬렉션 탭의 그 목록으로 (친구 보기에서는 숫자만)
 class _Stats extends StatelessWidget {
-  const _Stats({required this.liked, required this.lit, required this.owned, this.spendKrw, this.onJump});
+  const _Stats({
+    required this.liked,
+    required this.lit,
+    required this.verified,
+    required this.owned,
+    this.spendKrw,
+    this.onJump,
+  });
   final int liked;
   final int lit;
+
+  /// 3점(내 사진 인증) 칸 수 = 배지 수
+  final int verified;
   final int owned;
   final int? spendKrw;
   final ValueChanged<CollectionJump>? onJump;
 
   @override
   Widget build(BuildContext context) {
-    Widget stat(String label, int value, CollectionJump j) {
+    Widget stat(String label, String value, CollectionJump j, {Widget? extra}) {
       final body = Padding(
         padding: const EdgeInsets.symmetric(vertical: 4),
         child: Column(
           children: [
-            Text('$value', style: const TextStyle(fontSize: 19, fontWeight: FontWeight.w700)),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(value, style: const TextStyle(fontSize: 19, fontWeight: FontWeight.w700)),
+                ?extra,
+              ],
+            ),
             const SizedBox(height: 3),
             Row(
               mainAxisSize: MainAxisSize.min,
@@ -352,11 +371,25 @@ class _Stats extends StatelessWidget {
           IntrinsicHeight(
             child: Row(
               children: [
-                stat('좋아요', liked, CollectionJump.liked),
+                stat('좋아요', '$liked', CollectionJump.liked),
                 const VerticalDivider(width: 1, indent: 6, endIndent: 6),
-                stat('도감 점등', lit, CollectionJump.guide),
+                stat(
+                  '도감 레벨',
+                  'Lv.${guideLevel(lit, verified)}',
+                  CollectionJump.guide,
+                  extra: Padding(
+                    padding: const EdgeInsets.only(left: 6),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const VerifiedBadge(size: 16),
+                        Text(' $verified', style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600)),
+                      ],
+                    ),
+                  ),
+                ),
                 const VerticalDivider(width: 1, indent: 6, endIndent: 6),
-                stat('구매함', owned, CollectionJump.owned),
+                stat('구매함', '$owned', CollectionJump.owned),
               ],
             ),
           ),
@@ -370,7 +403,7 @@ class _Stats extends StatelessWidget {
   }
 }
 
-/// I-6 사진 벽 3열
+/// I-6 게시물 3열
 class _PhotoWall extends StatelessWidget {
   const _PhotoWall({required this.title, required this.subtitle, required this.photos, required this.onOpen});
   final String title;
@@ -390,7 +423,7 @@ class _PhotoWall extends StatelessWidget {
             const Padding(
               padding: EdgeInsets.fromLTRB(16, 0, 16, 4),
               child: Text(
-                '아직 올린 사진이 없어요 · 도감에서 "내 사진"으로 인증하면 여기에 모여요', // P09
+                '아직 게시물이 없어요 · 도감에서 "내 사진"으로 인증하면 여기에 모여요', // P09
                 style: TextStyle(color: Gp.muted, fontSize: 13),
               ),
             )
@@ -411,15 +444,7 @@ class _PhotoWall extends StatelessWidget {
                         fit: StackFit.expand,
                         children: [
                           PhotoThumb(ph.image, radius: 10),
-                          const Positioned(
-                            right: 5,
-                            bottom: 5,
-                            child: CircleAvatar(
-                              radius: 9,
-                              backgroundColor: Gp.panel,
-                              child: Icon(Icons.verified, size: 14, color: Gp.accent),
-                            ),
-                          ),
+                          const Positioned(right: 5, bottom: 5, child: VerifiedBadge(size: 20)),
                         ],
                       ),
                     ),
@@ -489,7 +514,7 @@ class _PhotoViewScreenState extends State<PhotoViewScreen> {
           const SizedBox(height: 14),
           Row(
             children: [
-              const Icon(Icons.verified, size: 18, color: Gp.accent),
+              const VerifiedBadge(size: 20),
               const SizedBox(width: 6),
               Expanded(
                 child: Text('${ph.work} · ${ph.unit}', style: const TextStyle(fontWeight: FontWeight.w600)),

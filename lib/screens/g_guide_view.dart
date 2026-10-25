@@ -199,7 +199,7 @@ class _HelpSheet extends StatelessWidget {
             row(CellTier.none, '흑백', '아직 없어요'),
             row(CellTier.liked, '컬러', '♡ 좋아요 — 갖고 싶어요'),
             row(CellTier.owned, '컬러 + 파란 테두리', '+ 구매함 — 가지고 있어요 (누르면 ✓)'),
-            row(CellTier.photo, '내 사진 + 도는 고리', '이 기체가 찍힌 내 사진으로 인증했어요'),
+            row(CellTier.photo, '내 사진 + 도는 고리 + 배지', '이 기체가 찍힌 내 사진으로 인증했어요'),
             const SizedBox(height: 10),
             Text(
               bbx
@@ -722,7 +722,9 @@ class _LitCellState extends State<_LitCell> with SingleTickerProviderStateMixin 
       children: [
         _cellImage(t, widget.image, widget.photo),
         if (widget.badge.isNotEmpty) Positioned(right: 5, top: 5, child: TagPill(widget.badge, filled: true)),
-        if (widget.onLike != null && widget.onOwn != null)
+        if (t == CellTier.photo)
+          const Positioned(right: 4, bottom: 4, child: VerifiedBadge()) // 3점 = 배지
+        else if (widget.onLike != null && widget.onOwn != null)
           Positioned(
             right: 4,
             bottom: 4,
@@ -869,7 +871,7 @@ class _UnitSheetState extends State<_UnitSheet> {
                   child: TogglePill(
                     label: '내 사진',
                     icon: Icons.add_a_photo_outlined,
-                    activeIcon: Icons.verified,
+                    activeIcon: Icons.workspace_premium,
                     active: widget.photo != null,
                     onTap: widget.onPhoto, // G-5c
                   ),

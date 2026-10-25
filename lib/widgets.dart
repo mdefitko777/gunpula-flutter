@@ -509,7 +509,7 @@ class PhotoThumb extends StatelessWidget {
   }
 }
 
-/// 상품 카드: 사진(오른쪽 위 ♡ +) · 이름 · 보조 한 줄
+/// 상품 카드: 사진(왼쪽 위 + 리본 · 왼쪽 아래 ♡) · 이름 · 보조 한 줄
 /// 홈 가로 줄 · 검색 결과가 같이 쓴다. [imageWidth]가 있으면 고정 너비(가로 줄), 없으면 칸 너비.
 class ProductTile extends StatelessWidget {
   const ProductTile({
@@ -529,7 +529,7 @@ class ProductTile extends StatelessWidget {
   final String subtitle;
   final VoidCallback onTap;
 
-  /// 주면 사진 오른쪽 위에 ♡ 좋아요 · + 구매함 (보통 [QuickMarks])
+  /// 주면 사진 위에 겹친다 — 보통 [QuickMarks] (리본 + · ♡)
   final Widget? marks;
   final double? imageWidth;
 
@@ -545,7 +545,7 @@ class ProductTile extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           PhotoThumb(image),
-          if (marks != null) Positioned(right: 6, top: 6, child: marks!),
+          if (marks != null) Positioned.fill(child: marks!),
         ],
       ),
     );
@@ -641,7 +641,8 @@ class MarkButtons extends StatelessWidget {
   }
 }
 
-/// 상품 카드용 ♡ + (스스로 켜고 끔 — 가짜 저장, 토스트 + 되돌리기)
+/// 상품 카드 사진 위 표시 (IMDb 처럼): 왼쪽 위 책갈피 리본 + = 구매함 · 왼쪽 아래 ♡ = 좋아요
+/// 스스로 켜고 끔 — 가짜 저장, 토스트 + 되돌리기
 class QuickMarks extends StatefulWidget {
   const QuickMarks({super.key, required this.name, this.liked = false, this.owned = false, this.size = 28});
   final String name;
@@ -672,8 +673,98 @@ class _QuickMarksState extends State<QuickMarks> {
   }
 
   @override
-  Widget build(BuildContext context) =>
-      MarkButtons(liked: _liked, owned: _owned, onLike: _like, onOwn: _own, size: widget.size);
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Positioned(
+          left: 8,
+          top: 0,
+          child: Semantics(
+            button: true,
+            selected: _owned,
+            label: '구매함',
+            child: GestureDetector(
+              onTap: _own,
+              child: ClipPath(
+                clipper: const _RibbonClipper(),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 180),
+                  width: widget.size + 2,
+                  height: widget.size * 1.4,
+                  alignment: const Alignment(0, -0.3),
+                  color: _owned ? Gp.accent : const Color(0xA6222222),
+                  child: Icon(_owned ? Icons.check : Icons.add, size: widget.size * 0.7, color: Colors.white),
+                ),
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          left: 6,
+          bottom: 6,
+          child: Semantics(
+            button: true,
+            selected: _liked,
+            label: '좋아요',
+            child: GestureDetector(
+              onTap: _like,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 180),
+                width: widget.size,
+                height: widget.size,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: _liked ? Gp.panel : const Color(0x8C222222),
+                ),
+                child: Icon(
+                  _liked ? Icons.favorite : Icons.favorite_border,
+                  size: widget.size * 0.6,
+                  color: _liked ? Gp.accent : Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// 책갈피 리본 모양 (아래 가운데가 파인 사각형)
+class _RibbonClipper extends CustomClipper<Path> {
+  const _RibbonClipper();
+
+  @override
+  Path getClip(Size s) => Path()
+    ..moveTo(0, 0)
+    ..lineTo(s.width, 0)
+    ..lineTo(s.width, s.height)
+    ..lineTo(s.width / 2, s.height - 8)
+    ..lineTo(0, s.height)
+    ..close();
+
+  @override
+  bool shouldReclip(_RibbonClipper old) => false;
+}
+
+/// 3점(내 사진 인증) 배지 — 도감 칸 · 게시물 · 숫자에 같이 쓴다
+class VerifiedBadge extends StatelessWidget {
+  const VerifiedBadge({super.key, this.size = 22});
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: const LinearGradient(colors: [Gp.accent, Gp.accent2]),
+        border: Border.all(color: Gp.panel, width: 1.5),
+      ),
+      child: Icon(Icons.workspace_premium, size: size * 0.66, color: Colors.white),
+    );
+  }
 }
 
 /// "a · b · c" — 빈 칸은 빼고 가운뎃점으로 잇는다
