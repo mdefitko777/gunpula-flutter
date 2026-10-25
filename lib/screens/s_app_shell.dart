@@ -28,6 +28,7 @@ import 'b_search_screen.dart';
 import 'e_camera_screen.dart';
 import 'f_collection_screen.dart';
 import 'h_calendar_screen.dart';
+import 'i_profile_screen.dart';
 
 /// 넓은 화면 기준 (Material 3 window size class: expanded ≥ 840dp)
 const railBreakpoint = 840.0;
@@ -90,7 +91,7 @@ class _AppShellState extends State<AppShell> {
     );
   }
 
-  void _openProfile() => showSoon(context, '내 정보');
+  void _openProfile() => openProfile(context, loaders: widget.loaders); // S-1 → I 내 정보
 
   @override
   Widget build(BuildContext context) {

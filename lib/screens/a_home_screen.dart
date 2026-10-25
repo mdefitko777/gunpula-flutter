@@ -12,7 +12,7 @@
 // │ A-8  │ 흰 띠(섹션마다) + 회백색 틈          │ 줄과 줄 사이 층 구분                   │ P08 · P04     │
 // │ A-9  │ ProductTile 의 AddSlot              │ 원함 담기 (컬렉션 연결 예정 자리)       │ P07           │
 // └──────────────────────────────────────────────────────────────────────────────────┘
-// 전환: A-2 → 검색 탭(옆으로). 상품 카드 → D 상품 상세(쌓기). 예고 → 예고 상세(다음 단계).
+// 전환: A-2 → 검색 탭(옆으로). 상품 카드 → D 상품 상세(쌓기). 배너 · 예고 카드 → J 공식 예고 상세(쌓기).
 // 줄 안에는 날짜·가격을 쓰지 않는다 — 궁금하면 눌러서 상세에서 본다 (P08).
 // 현행 앱 문제: 홈 = 버전 번호·총 개수·IP 입구 카드 → v2 홈 = "내 채널의 새 소식"만.
 import 'package:flutter/material.dart';
@@ -24,6 +24,7 @@ import '../theme.dart';
 import '../widgets.dart';
 import 'c_channel_screen.dart';
 import 'd_kit_detail_screen.dart';
+import 'j_announcement_screen.dart';
 
 /// 가짜 "최근 본 상품" 기록 — 영구 저장 금지라 상수로 둔다.
 const recentViewedIds = ['gu03', 'be43', 'po21', 'fa30', 'ar35'];
@@ -66,10 +67,11 @@ class _HomeData {
 
 /// 가로 줄 한 칸 (사진 + 이름). [kit]이 있으면 상품(상세 · 원함 담기), 없으면 공식 예고
 class _Item {
-  const _Item(this.image, this.title, {this.kit});
+  const _Item(this.image, this.title, {this.kit, this.ann});
   final String image;
   final String title;
   final Kit? kit;
+  final Announcement? ann;
 }
 
 /// 가로 줄 하나
@@ -177,7 +179,7 @@ class _HomeScreenState extends State<HomeScreen> with ChannelScope {
           subtitle: recentRangeLabel),
       _Row(currentMonthTitle, [for (final k in data.kits.where((k) => k.month)) kitItem(k)]),
       _Row('공식 예고', [
-        for (final a in data.announcements) _Item(a.image, a.title),
+        for (final a in data.announcements) _Item(a.image, a.title, ann: a),
       ], wide: true),
       _Row('최근 본', [for (final id in recentViewedIds) if (byId[id] case final k?) kitItem(k)]),
     ];
@@ -190,7 +192,10 @@ class _HomeScreenState extends State<HomeScreen> with ChannelScope {
         if (heroes.isNotEmpty)
           ColoredBox(
             color: Gp.panel,
-            child: _HeroBanner(items: heroes, onTap: () => showSoon(context, '공식 예고 상세')), // A-3
+            child: _HeroBanner( // A-3
+              items: heroes,
+              onTap: (a) => openAnnouncement(context, a, loaders: widget.loaders),
+            ),
           ),
         for (final row in rows)
           if (row.items.isNotEmpty)
@@ -217,7 +222,7 @@ class _HomeScreenState extends State<HomeScreen> with ChannelScope {
 class _HeroBanner extends StatefulWidget {
   const _HeroBanner({required this.items, required this.onTap});
   final List<Announcement> items;
-  final VoidCallback onTap;
+  final ValueChanged<Announcement> onTap;
 
   @override
   State<_HeroBanner> createState() => _HeroBannerState();
@@ -251,7 +256,7 @@ class _HeroBannerState extends State<_HeroBanner> {
                 itemBuilder: (context, i) {
                   final a = widget.items[i];
                   return GestureDetector(
-                    onTap: widget.onTap,
+                    onTap: () => widget.onTap(a),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -327,9 +332,14 @@ class _HorizontalRow extends StatelessWidget {
             title: item.title,
             imageWidth: width,
             imageAspect: aspect,
-            onTap: kit == null
-                ? () => showSoon(context, '공식 예고 상세')
-                : () => openKitDetail(context, kit, loaders: loaders),
+            onTap: () {
+              final ann = item.ann;
+              if (kit != null) {
+                openKitDetail(context, kit, loaders: loaders);
+              } else if (ann != null) {
+                openAnnouncement(context, ann, loaders: loaders);
+              }
+            },
             onAdd: kit == null ? null : () => showAddSoon(context), // A-9 P07
           );
         },

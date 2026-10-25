@@ -714,6 +714,7 @@ class ThumbRow extends StatelessWidget {
     this.trailing,
     this.leading,
     this.tag = '',
+    this.tagStrong = false,
     this.size = 56,
     this.titleLines = 1,
     this.padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 7),
@@ -728,8 +729,11 @@ class ThumbRow extends StatelessWidget {
   /// 사진 앞 (예: 편집 모드 체크)
   final Widget? leading;
 
-  /// 제목 앞 작은 알약 (예: 예고)
+  /// 제목 앞 작은 알약 (예: 발매 · 공식 발표)
   final String tag;
+
+  /// 알약을 검정 테두리로 (확정된 것: 발매)
+  final bool tagStrong;
   final double size;
   final int titleLines;
   final EdgeInsets padding;
@@ -751,7 +755,7 @@ class ThumbRow extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      if (tag.isNotEmpty) Padding(padding: const EdgeInsets.only(right: 6), child: TagPill(tag)),
+                      if (tag.isNotEmpty) Padding(padding: const EdgeInsets.only(right: 6), child: TagPill(tag, strong: tagStrong)),
                       Expanded(
                         child: Text(title, maxLines: titleLines, overflow: TextOverflow.ellipsis,
                             style: const TextStyle(fontSize: 14.5, fontWeight: FontWeight.w500)),

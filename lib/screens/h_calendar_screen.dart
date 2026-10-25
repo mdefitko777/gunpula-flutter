@@ -4,14 +4,15 @@
 // │ 번호 │ Flutter 위젯명                     │ 비즈니스 명칭(한글)                    │ 원칙(P번호)   │
 // │ H-1  │ ChannelHeader                      │ 아바타 줄 + 내 채널 바 (C-0 공용)       │ P04 · P06     │
 // │ H-2  │ ‹ 2026년 10월 › + 오늘              │ 달 넘기기 · 오늘로                      │ P03 · P07     │
-// │ H-3  │ 7열 달력 + 날짜 아래 점              │ 발매 · 예고가 있는 날 (점 = 브랜드 색)   │ P01 · P06     │
+// │ H-3  │ 7열 달력 + 날짜 아래 ● · ○ + 범례     │ ● 발매일(확정) · ○ 예고·공지가 있는 날    │ P01 · P06     │
+// │ H-3b │ 전체 · 발매 · 예고 밑줄 탭            │ 일정 종류 거르기                        │ P06 · P07     │
 // │ H-4  │ 날짜 누르기 (다시 누르면 해제)        │ 그날만 보기 / 한 달 전체 보기           │ P03           │
-// │ H-5  │ 날짜별 묶음 목록 + D-n               │ 발매 일정 (남은 날 · 예고 태그)         │ P01 · P02     │
+// │ H-5  │ 날짜별 묶음 목록 + 종류 알약 + D-n    │ 발매(검정 알약) · 예고 단계(회색 알약)   │ P01 · P02     │
 // │ H-6  │ "날짜 미정 · n월 중" 묶음            │ 날짜가 정해지지 않은 발매               │ P01 · P10     │
 // │ H-7  │ LayoutBuilder ≥720dp                │ 넓은 화면: 달력 왼쪽 · 목록 오른쪽       │ 적응형        │
 // │ H-8  │ LoadingView / ErrorView / EmptyView │ 불러오는 중 · 오류 · 이 달 일정 없음     │ P01 · P09     │
 // └──────────────────────────────────────────────────────────────────────────────────┘
-// 전환: 발매 줄 → D 상품 상세(쌓기). 예고 줄 → 예고 상세(다음 단계).
+// 전환: 발매 줄 → D 상품 상세(쌓기). 예고 줄 → J 공식 예고 상세(쌓기).
 // 현행 앱 문제: 발매 정보가 "최근" 화면 탭 안 "이번 달 발매"에만 있고 날짜로 볼 수 없음.
 import 'package:flutter/material.dart';
 
@@ -22,6 +23,7 @@ import '../theme.dart';
 import '../widgets.dart';
 import 'c_channel_screen.dart';
 import 'd_kit_detail_screen.dart';
+import 'j_announcement_screen.dart';
 
 /// 프로토타입의 오늘
 final calendarToday = DateTime(2026, 10, 25);
@@ -30,11 +32,18 @@ const _weekdays = ['일', '월', '화', '수', '목', '금', '토'];
 
 /// 달력 한 줄의 일정 (발매 상품 또는 공식 예고)
 class _Event {
-  const _Event({required this.title, required this.image, required this.sub, this.kit, this.day});
+  const _Event({required this.title, required this.image, required this.sub, this.kit, this.ann, this.day});
   final String title;
   final String image;
   final String sub;
+
+  /// 발매 상품 (확정된 발매일)
   final Kit? kit;
+
+  /// 공식 예고 · 공지
+  final Announcement? ann;
+
+  bool get isRelease => kit != null;
 
   /// null = 날짜 미정(그 달 중)
   final int? day;
@@ -68,6 +77,9 @@ class _CalendarScreenState extends State<CalendarScreen> with ChannelScope {
   late Future<_CalData> _future;
   DateTime _month = DateTime(calendarToday.year, calendarToday.month);
   int? _day;
+
+  /// 0 = 전체 · 1 = 발매 · 2 = 예고
+  int _kind = 0;
 
   @override
   List<String> get myChannels => widget.myChannels;
@@ -112,7 +124,7 @@ class _CalendarScreenState extends State<CalendarScreen> with ChannelScope {
           ),
       for (final a in d.announcements)
         if (a.date.startsWith(ym))
-          _Event(title: a.title, image: a.image, sub: '${a.status} · ${a.source}', day: dayOf(a.date)),
+          _Event(title: a.title, image: a.image, sub: a.source, ann: a, day: dayOf(a.date)),
     ];
   }
 
@@ -139,7 +151,8 @@ class _CalendarScreenState extends State<CalendarScreen> with ChannelScope {
               final calendar = _MonthCalendar(
                 month: _month,
                 selected: _day,
-                marked: {for (final e in events) ?e.day},
+                releaseDays: {for (final e in events) if (e.isRelease) ?e.day},
+                noticeDays: {for (final e in events) if (!e.isRelease) ?e.day},
                 onPrev: () => _moveMonth(-1),
                 onNext: () => _moveMonth(1),
                 onToday: () => setState(() {
@@ -174,10 +187,31 @@ class _CalendarScreenState extends State<CalendarScreen> with ChannelScope {
     );
   }
 
-  List<Widget> _list(List<_Event> events) {
-    final shown = _day == null ? events : events.where((e) => e.day == _day).toList();
+  List<Widget> _list(List<_Event> all) {
+    final inDay = _day == null ? all : all.where((e) => e.day == _day).toList();
+    final shown = inDay.where((e) => _kind == 0 || (_kind == 1) == e.isRelease).toList();
+    final kinds = Padding( // H-3b 종류 거르기
+      padding: const EdgeInsets.fromLTRB(8, 10, 8, 0),
+      child: Row(
+        children: [
+          for (final (i, label) in ['전체', '발매', '예고'].indexed)
+            UnderlineTab(
+              label: label,
+              count: switch (i) {
+                1 => inDay.where((e) => e.isRelease).length,
+                2 => inDay.where((e) => !e.isRelease).length,
+                _ => inDay.length,
+              },
+              selected: _kind == i,
+              onTap: () => setState(() => _kind = i), // STATE: 종류 → 목록
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+            ),
+        ],
+      ),
+    );
     if (shown.isEmpty) {
       return [
+        kinds,
         EmptyView( // H-8 P09
           icon: Icons.event_busy_outlined,
           message: _day == null ? '${_month.month}월에는 발매 · 예고 일정이 없어요' : '${_month.month}월 $_day일에는 일정이 없어요',
@@ -188,13 +222,13 @@ class _CalendarScreenState extends State<CalendarScreen> with ChannelScope {
     final days = (shown.map((e) => e.day).nonNulls.toSet().toList())..sort();
     final undated = shown.where((e) => e.day == null).toList();
     return [
-      Padding(
-        padding: const EdgeInsets.fromLTRB(16, 14, 16, 4),
-        child: Text(
-          _day == null ? '${_month.month}월 일정 ${shown.length}건' : '${_month.month}월 $_day일 일정 ${shown.length}건',
-          style: const TextStyle(color: Gp.muted, fontSize: 13),
+      kinds,
+      if (_day != null)
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+          child: Text('${_month.month}월 $_day일만 보는 중 · 날짜를 다시 누르면 한 달 전체',
+              style: const TextStyle(color: Gp.muted, fontSize: 12.5)),
         ),
-      ),
       for (final d in days) ...[
         _DayHeader(date: DateTime(_month.year, _month.month, d)), // H-5
         for (final e in shown.where((e) => e.day == d)) _EventRow(event: e, dday: _dday(d), loaders: widget.loaders),
@@ -219,7 +253,8 @@ class _MonthCalendar extends StatelessWidget {
   const _MonthCalendar({
     required this.month,
     required this.selected,
-    required this.marked,
+    required this.releaseDays,
+    required this.noticeDays,
     required this.onPrev,
     required this.onNext,
     required this.onToday,
@@ -228,7 +263,10 @@ class _MonthCalendar extends StatelessWidget {
 
   final DateTime month;
   final int? selected;
-  final Set<int> marked;
+
+  /// ● 발매일이 있는 날 · ○ 예고 · 공지가 있는 날
+  final Set<int> releaseDays;
+  final Set<int> noticeDays;
   final VoidCallback onPrev;
   final VoidCallback onNext;
   final VoidCallback onToday;
@@ -292,13 +330,49 @@ class _MonthCalendar extends StatelessWidget {
                   day: d,
                   today: isThisMonth && d == calendarToday.day,
                   selected: selected == d,
-                  marked: marked.contains(d),
+                  release: releaseDays.contains(d),
+                  notice: noticeDays.contains(d),
                   sunday: (lead + d - 1) % 7 == 0,
                   onTap: () => onPick(d),
                 ),
             ],
           ),
+          // 범례 (P10)
+          const Padding(
+            padding: EdgeInsets.only(top: 4),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _Dot(filled: true),
+                SizedBox(width: 5),
+                Text('발매일', style: TextStyle(fontSize: 12, color: Gp.muted)),
+                SizedBox(width: 16),
+                _Dot(filled: false),
+                SizedBox(width: 5),
+                Text('예고 · 공지', style: TextStyle(fontSize: 12, color: Gp.muted)),
+              ],
+            ),
+          ),
         ],
+      ),
+    );
+  }
+}
+
+/// ● 발매일(브랜드 색 채움) · ○ 예고·공지(회색 테두리)
+class _Dot extends StatelessWidget {
+  const _Dot({required this.filled});
+  final bool filled;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 6,
+      height: 6,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: filled ? Gp.accent : null,
+        border: filled ? null : Border.all(color: Gp.muted, width: 1.2),
       ),
     );
   }
@@ -309,7 +383,8 @@ class _DayCell extends StatelessWidget {
     required this.day,
     required this.today,
     required this.selected,
-    required this.marked,
+    required this.release,
+    required this.notice,
     required this.sunday,
     required this.onTap,
   });
@@ -317,7 +392,8 @@ class _DayCell extends StatelessWidget {
   final int day;
   final bool today;
   final bool selected;
-  final bool marked;
+  final bool release;
+  final bool notice;
   final bool sunday;
   final VoidCallback onTap;
 
@@ -348,12 +424,15 @@ class _DayCell extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 2),
-          Container( // H-3 일정 있는 날 점
-            width: 4,
-            height: 4,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: marked ? Gp.accent : Colors.transparent,
+          SizedBox( // H-3 ● 발매일 · ○ 예고·공지
+            height: 6,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (release) const _Dot(filled: true),
+                if (release && notice) const SizedBox(width: 3),
+                if (notice) const _Dot(filled: false),
+              ],
             ),
           ),
         ],
@@ -387,15 +466,21 @@ class _EventRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final kit = event.kit;
+    final ann = event.ann;
     return ThumbRow( // H-5 — 컬렉션·검색과 같은 줄
       image: event.image,
       title: event.title,
       subtitle: event.sub,
-      tag: kit == null ? '예고' : '',
+      tag: kit != null ? '발매' : (ann?.status ?? '예고'), // 확정 발매 = 검정 알약, 예고 단계 = 회색 알약
+      tagStrong: kit != null,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      onTap: kit == null
-          ? () => showSoon(context, '공식 예고 상세')
-          : () => openKitDetail(context, kit, loaders: loaders),
+      onTap: () {
+        if (kit != null) {
+          openKitDetail(context, kit, loaders: loaders);
+        } else if (ann != null) {
+          openAnnouncement(context, ann, loaders: loaders);
+        }
+      },
       trailing: dday.isEmpty
           ? null
           : Text(dday, style: const TextStyle(fontWeight: FontWeight.w700, color: Gp.accent, fontSize: 13)),
