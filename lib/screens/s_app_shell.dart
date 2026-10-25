@@ -26,6 +26,7 @@ import '../widgets.dart';
 import 'a_home_screen.dart';
 import 'b_search_screen.dart';
 import 'c_channel_screen.dart';
+import 'e_camera_screen.dart';
 
 /// 넓은 화면 기준 (Material 3 window size class: expanded ≥ 840dp)
 const railBreakpoint = 840.0;
@@ -61,11 +62,30 @@ class _AppShellState extends State<AppShell> {
     setState(() => _myChannels = ids); // STATE: 내 채널 → 네 화면의 채널 바와 목록
   }
 
+  /// 검색 탭으로 + 검색창 커서 (홈 검색창 · 카메라 결과의 "이름으로 검색")
+  void _goSearch() => setState(() {
+    _tab = 1; // STATE: 검색으로 → 검색 탭 + 커서
+    _searchFocusTick++;
+    _barShown = true;
+  });
+
   void _openAdd() {
     showModalBottomSheet<void>(
       // S-4 P07
       context: context,
-      builder: (context) => const AddSheet(),
+      builder: (sheet) => AddSheet(
+        onPick: (pick) {
+          Navigator.pop(sheet);
+          switch (pick) {
+            case 'photo':
+              openCamera(context, CameraMode.photo, loaders: widget.loaders, onGoSearch: _goSearch);
+            case 'barcode':
+              openCamera(context, CameraMode.barcode, loaders: widget.loaders, onGoSearch: _goSearch);
+            default:
+              openAlbum(context, loaders: widget.loaders, onGoSearch: _goSearch);
+          }
+        },
+      ),
     );
   }
 
@@ -83,10 +103,7 @@ class _AppShellState extends State<AppShell> {
             myChannels: _myChannels,
             onMyChannelsChanged: _setChannels,
             onCamera: _openAdd,
-            onOpenSearch: () => setState(() {
-              _tab = 1; // STATE: 홈 검색 알약 → 검색 탭 + 검색창 커서
-              _searchFocusTick++;
-            }),
+            onOpenSearch: _goSearch,
             loaders: widget.loaders,
           )
         : i == 1
@@ -353,17 +370,15 @@ class _BottomBar extends StatelessWidget {
   }
 }
 
-/// S-4 추가 시트: 사진으로 찾기 · 바코드 · 앨범
+/// S-4 찍어서 찾기 시트: 사진으로 찾기 · 바코드 · 앨범 → E 화면
 class AddSheet extends StatelessWidget {
-  const AddSheet({super.key});
+  const AddSheet({super.key, required this.onPick});
+
+  /// 'photo' · 'barcode' · 'album'
+  final ValueChanged<String> onPick;
 
   @override
   Widget build(BuildContext context) {
-    void soon(String what) {
-      Navigator.pop(context);
-      showSoon(context, what);
-    }
-
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(8, 0, 8, 12),
@@ -374,19 +389,19 @@ class AddSheet extends StatelessWidget {
               leading: const Icon(Icons.center_focus_strong_outlined),
               title: const Text('사진으로 찾기'),
               subtitle: const Text('상자나 실물을 찍으면 후보를 보여 줘요'),
-              onTap: () => soon('사진으로 찾기'),
+              onTap: () => onPick('photo'),
             ),
             ListTile(
               leading: const Icon(Icons.qr_code_scanner),
               title: const Text('바코드 스캔'),
               subtitle: const Text('상자 뒷면 바코드로 정확히 찾기'),
-              onTap: () => soon('바코드 스캔'),
+              onTap: () => onPick('barcode'),
             ),
             ListTile(
               leading: const Icon(Icons.photo_library_outlined),
               title: const Text('앨범에서 선택'),
               subtitle: const Text('저장해 둔 사진·캡처로 찾기'),
-              onTap: () => soon('앨범에서 선택'),
+              onTap: () => onPick('album'),
             ),
           ],
         ),
