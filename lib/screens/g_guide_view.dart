@@ -3,13 +3,14 @@
 // ┌──────── 디자인 가이드 대응표: G 도감 ──────────────────────────────────────────────┐
 // │ 번호 │ Flutter 위젯명                     │ 비즈니스 명칭(한글)                    │ 원칙(P번호)   │
 // │ G-1  │ 채널 타일 격자                      │ '전체'일 때: 도감을 볼 IP 고르기         │ P06           │
-// │ G-2  │ 범례 (컬러 · 하늘색 테두리 · 흑백)    │ 구매함 · 좋아요 · 미수집 읽는 법           │ P10 · P04     │
+// │ G-2  │ ? 버튼 → 바텀 시트                 │ 도감 읽는 법 (긴 범례 줄 대신)           │ P10 · P08     │
 // │ G-3  │ 섹션별 작품 카드 + 진행 막대          │ 건담 작품 도감 (수집 n/전체)            │ P01 · P06     │
-// │ G-4  │ 기체 칸 격자 (불 켜짐/꺼짐)           │ 작품 안의 기체                          │ P01 · P02     │
+// │ G-4  │ 기체 칸 격자 (4단계)                 │ 흑백 → ♡ 컬러 → + 컬러·테두리 → 사진·도는 고리 │ P01 · P04 │
+// │ G-4a │ Lv 막대 (좋아요 1 · 구매 2 · 사진 3점) │ 하나 더할 때마다 오르는 작품 레벨        │ P01           │
+// │ G-4b │ 칸 위 MarkButtons ♡ +               │ 칸에서 바로 좋아요 · 구매함              │ P07           │
 // │ G-5  │ 바텀 시트: 기체 → 대응 상품           │ 이 기체의 상품 → 상품 상세              │ P07           │
-// │ G-5b │ 시트의 TogglePill 2개                │ 수동 점등 · 내 사진 올리기 (가짜 저장)   │ P03 · P07     │
+// │ G-5b │ 시트의 TogglePill 3개                │ 좋아요 · 구매함 · 내 사진 (가짜 저장)    │ P03 · P07     │
 // │ G-5c │ 바텀 시트(카메라 · 최근 사진) → 확인  │ 이 기체가 찍힌 사진이어야 켜짐 (가짜 판정) │ P05 · P09   │
-// │ G-4b │ AccentRing(spin) 칸 + 내 사진        │ 사진으로 인증한 칸 = 내 사진 + 도는 고리  │ P01 · P04     │
 // │ G-6  │ 베이 칸 + n/3 · 부품 시트            │ 베이블레이드 X 도감 (부품 3개)          │ P01           │
 // │ G-7  │ 세대 · 작품 카드 + 진행 막대          │ 포켓몬 세대 · Fate 작품 · AC 세대       │ P01           │
 // │ G-8  │ LoadingView / ErrorView / EmptyView │ 불러오는 중 · 오류 · 정리 안 된 작품     │ P01 · P09     │
@@ -107,40 +108,152 @@ class _ChannelPicker extends StatelessWidget {
   }
 }
 
-/// G-2 범례
-class _Legend extends StatelessWidget {
-  const _Legend();
+/// 칸 한 개의 단계 — 하나 더할 때마다 한 단계씩 올라간다 (index = 점수)
+enum CellTier { none, liked, owned, photo }
+
+/// 작품 레벨 하나에 필요한 점수
+const _pointsPerLevel = 5;
+
+/// 단계별 칸 틀: 흑백 · 컬러 · 컬러 + 파란 테두리 · 도는 색 고리
+Widget _tierFrame(CellTier tier, Widget child, {double radius = 12}) {
+  final photo = tier == CellTier.photo;
+  final inner = Container(
+    decoration: BoxDecoration(
+      color: Gp.panel,
+      borderRadius: BorderRadius.circular(photo ? radius - 2 : radius),
+      border: switch (tier) {
+        CellTier.photo => null,
+        CellTier.owned => Border.all(color: Gp.accent, width: 2.2),
+        _ => Border.all(color: Gp.line),
+      },
+    ),
+    clipBehavior: Clip.antiAlias,
+    child: child,
+  );
+  return photo ? AccentRing(radius: radius, spin: true, child: inner) : inner;
+}
+
+/// 칸 안 그림: 내 사진이면 꽉 채우고, 아니면 공식 그림 (없음 = 흑백)
+Widget _cellImage(CellTier tier, String image, String? photo) => tier == CellTier.photo && photo != null
+    ? AppImage(photo)
+    : Padding(
+        padding: const EdgeInsets.all(6),
+        child: AppImage(image, fit: BoxFit.contain, grayscale: tier == CellTier.none),
+      );
+
+/// G-2 도감 읽는 법 — 긴 범례 줄 대신 ? 하나
+class _HelpButton extends StatelessWidget {
+  const _HelpButton({this.bbx = false});
+  final bool bbx;
 
   @override
   Widget build(BuildContext context) {
-    Widget item(Widget dot, String label) => Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        dot,
-        const SizedBox(width: 5),
-        Text(label, style: const TextStyle(fontSize: 12, color: Gp.muted)),
-      ],
+    return IconButton(
+      tooltip: '도감 읽는 법',
+      visualDensity: VisualDensity.compact,
+      onPressed: () => showModalBottomSheet<void>(
+        context: context,
+        isScrollControlled: true,
+        builder: (_) => _HelpSheet(bbx: bbx),
+      ),
+      icon: const Icon(Icons.help_outline, size: 20, color: Gp.muted),
     );
-    Widget box({Color? fill, Color border = Gp.line, double w = 1}) => Container(
-      width: 12,
-      height: 12,
-      decoration: BoxDecoration(
-        color: fill,
-        borderRadius: BorderRadius.circular(3),
-        border: Border.all(color: border, width: w),
+  }
+}
+
+class _HelpSheet extends StatelessWidget {
+  const _HelpSheet({required this.bbx});
+  final bool bbx;
+
+  static const _sample = 'assets/gp/units/g3000u00100.webp';
+
+  @override
+  Widget build(BuildContext context) {
+    Widget row(CellTier t, String title, String detail) => Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        children: [
+          SizedBox.square(dimension: 48, child: _tierFrame(t, _cellImage(t, _sample, null), radius: 10)),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
+                Text(detail, style: const TextStyle(fontSize: 12.5, color: Gp.muted)),
+              ],
+            ),
+          ),
+          Text('+${t.index}점', style: const TextStyle(fontSize: 12, color: Gp.accent)),
+        ],
       ),
     );
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const SectionHeader('도감 읽는 법', subtitle: '하나 더할 때마다 한 단계씩 올라가요', padding: EdgeInsets.fromLTRB(0, 0, 0, 8)),
+            row(CellTier.none, '흑백', '아직 없어요'),
+            row(CellTier.liked, '컬러', '♡ 좋아요 — 갖고 싶어요'),
+            row(CellTier.owned, '컬러 + 파란 테두리', '+ 구매함 — 가지고 있어요 (누르면 ✓)'),
+            row(CellTier.photo, '내 사진 + 도는 고리', '이 기체가 찍힌 내 사진으로 인증했어요'),
+            const SizedBox(height: 10),
+            Text(
+              bbx
+                  ? '베이는 부품 3개(블레이드 · 래칫 · 비트)를 모두 가지면 컬러가 돼요. 칸 위 숫자 = 가진 부품 수.'
+                  : '점수가 $_pointsPerLevel점 모일 때마다 작품 레벨(Lv)이 올라가요.',
+              style: const TextStyle(fontSize: 12.5, color: Gp.muted, height: 1.4),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// G-4a 작품 레벨 막대
+class _LevelBar extends StatelessWidget {
+  const _LevelBar({required this.points});
+  final int points;
+
+  @override
+  Widget build(BuildContext context) {
+    final level = 1 + points ~/ _pointsPerLevel;
+    final into = points % _pointsPerLevel;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
-      child: Wrap(
-        spacing: 14,
-        runSpacing: 6,
+      padding: const EdgeInsets.fromLTRB(16, 6, 16, 12),
+      child: Row(
         children: [
-          item(box(fill: const Color(0xFF8FB8DE)), '구매함 (컬러)'), // G-2 P10
-          item(box(fill: const Color(0xFFDDE7F0), border: Gp.accent, w: 1.6), '좋아요'),
-          item(box(fill: const Color(0xFF8FB8DE), border: Gp.ink, w: 1.2), '수동 점등'),
-          item(const AccentRing(width: 1.6, radius: 4, child: SizedBox.square(dimension: 9)), '내 사진 인증 (도는 고리)'),
-          item(box(fill: Gp.soft), '미수집 (흑백)'),
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            transitionBuilder: (c, a) => ScaleTransition(scale: a, child: c),
+            child: Container(
+              key: ValueKey(level),
+              padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                gradient: const LinearGradient(colors: [Gp.accent, Gp.accent2]),
+              ),
+              child: Text(
+                'Lv.$level',
+                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white),
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: TweenAnimationBuilder<double>(
+              tween: Tween(end: into / _pointsPerLevel),
+              duration: const Duration(milliseconds: 450),
+              curve: Curves.easeOutCubic,
+              builder: (_, v, _) => AccentBar(value: v, height: 6),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Text('다음 레벨까지 ${_pointsPerLevel - into}점', style: const TextStyle(fontSize: 11.5, color: Gp.muted)),
         ],
       ),
     );
@@ -271,10 +384,10 @@ class _GundamGuideState extends State<_GundamGuide> {
           builder: (context, box) => ListView(
             padding: EdgeInsets.only(bottom: navClearance(context)),
             children: [
-              const _Legend(),
               for (final e in sections.entries) ...[
                 SectionHeader(
                   e.key,
+                  trailing: e.key == sections.keys.first ? const _HelpButton() : null, // G-2
                   subtitle:
                       '수집 ${e.value.fold(0, (s, w) => s + w.owned)}'
                       ' / ${e.value.fold(0, (s, w) => s + w.total)}',
@@ -325,44 +438,97 @@ class WorkGuideScreen extends StatefulWidget {
   State<WorkGuideScreen> createState() => _WorkGuideScreenState();
 }
 
-/// 사용자가 직접 켠 표시 (구매 여부와 따로). 사진이 있으면 사진이 먼저 보인다
-enum UnitMark { none, manual, photo }
-
 class _WorkGuideScreenState extends State<WorkGuideScreen> {
-  late Future<List<GuideUnit>> _future = widget.loaders.guideUnits(widget.work.id);
+  late Future<List<GuideUnit>> _future = _load();
+  List<GuideUnit> _units = const [];
 
-  /// 사지 않았지만 직접 켠 칸 (가짜 — 저장하지 않음)
-  final Set<String> _manual = {};
+  // 이 화면에서 바꾼 상태 (가짜 — 저장하지 않음). 처음 값은 GET 결과에서.
+  final Set<String> _liked = {};
+  final Set<String> _owned = {};
 
   /// 기체 id → 내가 올린 사진. 그 기체가 찍힌 사진일 때만 들어간다
   final Map<String, String> _photos = {};
 
-  UnitMark _markOf(GuideUnit u) =>
-      _photos.containsKey(u.id) ? UnitMark.photo : (_manual.contains(u.id) ? UnitMark.manual : UnitMark.none);
+  Future<List<GuideUnit>> _load() => widget.loaders.guideUnits(widget.work.id).then((units) {
+    // STATE: GET /guideUnits?workId= → 칸 + 처음 단계
+    _units = units;
+    _liked
+      ..clear()
+      ..addAll([
+        for (final u in units)
+          if (u.status == CollectStatus.wanted) u.id,
+      ]);
+    _owned
+      ..clear()
+      ..addAll([
+        for (final u in units)
+          if (u.status == CollectStatus.owned) u.id,
+      ]);
+    return units;
+  });
 
-  void _toggleManual(GuideUnit u) {
-    final on = !_manual.contains(u.id);
-    void apply(bool v) => setState(() => v ? _manual.add(u.id) : _manual.remove(u.id)); // STATE: 수동 점등
-    apply(on);
-    showToast(context, on ? '「${u.name}」 칸을 켰어요' : '「${u.name}」 칸을 껐어요', onUndo: () => apply(!on));
+  CellTier _tierOf(GuideUnit u) => _photos.containsKey(u.id)
+      ? CellTier.photo
+      : _owned.contains(u.id)
+      ? CellTier.owned
+      : _liked.contains(u.id)
+      ? CellTier.liked
+      : CellTier.none;
+
+  int get _points => _units.fold(0, (s, u) => s + _tierOf(u).index);
+  int get _level => 1 + _points ~/ _pointsPerLevel;
+
+  /// 상태 바꾸기 + 토스트(되돌리기). 레벨이 오르면 토스트에 같이 알린다
+  void _change(String message, VoidCallback apply) {
+    final liked = {..._liked};
+    final owned = {..._owned};
+    final photos = {..._photos};
+    final before = _level;
+    setState(apply); // STATE: 칸 단계 → 색 · 테두리 · 고리 · 레벨
+    showToast(
+      context,
+      _level > before ? '$message · 레벨 업! Lv.$_level' : message,
+      onUndo: () => setState(() {
+        _liked
+          ..clear()
+          ..addAll(liked);
+        _owned
+          ..clear()
+          ..addAll(owned);
+        _photos
+          ..clear()
+          ..addAll(photos);
+      }),
+    );
+  }
+
+  void _toggleLike(GuideUnit u) {
+    final on = !_liked.contains(u.id);
+    _change(on ? '「${u.name}」 좋아요' : '좋아요를 취소했어요', () => on ? _liked.add(u.id) : _liked.remove(u.id));
+  }
+
+  void _toggleOwn(GuideUnit u) {
+    final on = !_owned.contains(u.id);
+    final hadPhoto = _photos.containsKey(u.id);
+    _change(on ? '「${u.name}」 구매함에 넣었어요' : (hadPhoto ? '구매함에서 뺐어요 · 내 사진도 내렸어요' : '구매함에서 뺐어요'), () {
+      if (on) {
+        _owned.add(u.id);
+      } else {
+        _owned.remove(u.id);
+        _photos.remove(u.id); // 안 가진 기체에 인증 사진은 남기지 않는다
+      }
+    });
   }
 
   void _setPhoto(GuideUnit u, String? photo) {
-    final before = _photos[u.id];
-    void apply(String? v) => setState(() {
-      // STATE: 내 사진 → 칸 사진 · 도는 고리
-      if (v == null) {
+    _change(photo == null ? '「${u.name}」의 내 사진을 내렸어요' : '사진에서 「${u.name}」을(를) 찾았어요 · 인증 완료', () {
+      if (photo == null) {
         _photos.remove(u.id);
       } else {
-        _photos[u.id] = v;
+        _photos[u.id] = photo;
+        _owned.add(u.id); // 사진이 있으면 가진 것
       }
     });
-    apply(photo);
-    showToast(
-      context,
-      photo == null ? '「${u.name}」의 내 사진을 지웠어요' : '사진에서 「${u.name}」을(를) 찾았어요 · 칸이 켜졌어요',
-      onUndo: () => apply(before),
-    );
   }
 
   /// G-5c 내 사진 올리기: 카메라 · 최근 사진 → 사진 속 기체 확인(가짜) → 맞을 때만 켜짐
@@ -398,22 +564,23 @@ class _WorkGuideScreenState extends State<WorkGuideScreen> {
   }
 
   void _openUnit(GuideUnit u) {
-    void then(VoidCallback f, BuildContext sheet) {
+    VoidCallback close(BuildContext sheet, VoidCallback f) => () {
       Navigator.pop(sheet);
       f();
-    }
-
+    };
     showModalBottomSheet<void>(
       // G-5 덮기
       context: context,
       isScrollControlled: true,
       builder: (sheet) => _UnitSheet(
         unit: u,
-        manual: _manual.contains(u.id),
+        tier: _tierOf(u),
+        liked: _liked.contains(u.id),
         photo: _photos[u.id],
-        onManual: () => then(() => _toggleManual(u), sheet),
-        onPhoto: () => then(() => _uploadPhoto(u), sheet),
-        onRemovePhoto: () => then(() => _setPhoto(u, null), sheet),
+        onLike: close(sheet, () => _toggleLike(u)),
+        onOwn: close(sheet, () => _toggleOwn(u)),
+        onPhoto: close(sheet, () => _uploadPhoto(u)),
+        onRemovePhoto: close(sheet, () => _setPhoto(u, null)),
         loaders: widget.loaders,
       ),
     );
@@ -422,6 +589,7 @@ class _WorkGuideScreenState extends State<WorkGuideScreen> {
   @override
   Widget build(BuildContext context) {
     final w = widget.work;
+    final ownedNow = _units.isEmpty ? w.owned : _units.where((u) => _tierOf(u).index >= CellTier.owned.index).length;
     return Scaffold(
       appBar: AppBar(
         title: Column(
@@ -429,21 +597,19 @@ class _WorkGuideScreenState extends State<WorkGuideScreen> {
           children: [
             Text(w.name, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600)),
             Text(
-              '수집 ${w.owned} / ${w.total}',
+              '수집 $ownedNow / ${w.total}',
               style: const TextStyle(fontSize: 12, color: Gp.accent, fontWeight: FontWeight.w500),
             ),
           ],
         ),
+        actions: const [_HelpButton(), SizedBox(width: 6)], // G-2
       ),
       body: FutureBuilder<List<GuideUnit>>(
-        future: _future, // STATE: GET /guideUnits?workId= → 기체 칸
+        future: _future,
         builder: (context, snap) {
           if (snap.connectionState != ConnectionState.done) return const LoadingView();
           if (snap.hasError) {
-            return ErrorView(
-              message: '${snap.error}',
-              onRetry: () => setState(() => _future = widget.loaders.guideUnits(w.id)),
-            );
+            return ErrorView(message: '${snap.error}', onRetry: () => setState(() => _future = _load()));
           }
           final units = snap.data!;
           if (units.isEmpty) {
@@ -459,7 +625,7 @@ class _WorkGuideScreenState extends State<WorkGuideScreen> {
             builder: (context, box) => ListView(
               padding: const EdgeInsets.only(bottom: 32),
               children: [
-                const _Legend(),
+                _LevelBar(points: _points), // G-4a
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: GridView.count(
@@ -468,17 +634,19 @@ class _WorkGuideScreenState extends State<WorkGuideScreen> {
                     physics: const NeverScrollableScrollPhysics(),
                     mainAxisSpacing: 10,
                     crossAxisSpacing: 10,
-                    childAspectRatio: 0.7,
+                    childAspectRatio: 0.72,
                     children: [
                       for (final u in units)
                         _LitCell(
                           // G-4 P01
                           image: u.image,
                           name: u.name,
-                          status: u.status,
-                          mark: _markOf(u),
+                          tier: _tierOf(u),
                           photo: _photos[u.id],
+                          liked: _liked.contains(u.id),
                           onTap: () => _openUnit(u),
+                          onLike: () => _toggleLike(u), // G-4b
+                          onOwn: () => _toggleOwn(u),
                         ),
                     ],
                   ),
@@ -492,86 +660,104 @@ class _WorkGuideScreenState extends State<WorkGuideScreen> {
   }
 }
 
-/// 불 켜짐 칸: 구매함 = 컬러 · 좋아요 = 하늘색 테두리 · 수동 점등 = 검정 테두리
-/// · 내 사진 = 돌아가는 색 고리 · 미수집 = 흑백
-class _LitCell extends StatelessWidget {
+/// 도감 칸 한 개 — 단계가 오르면 톡 튀어 오른다
+class _LitCell extends StatefulWidget {
   const _LitCell({
     required this.image,
     required this.name,
-    required this.status,
+    required this.tier,
     required this.onTap,
-    this.badge = '',
-    this.mark = UnitMark.none,
     this.photo,
+    this.badge = '',
+    this.liked = false,
+    this.onLike,
+    this.onOwn,
   });
 
   final String image;
   final String name;
-  final CollectStatus status;
+  final CellTier tier;
   final VoidCallback onTap;
-  final String badge;
-  final UnitMark mark;
 
   /// 내가 올린 사진 (있으면 칸 그림 대신 보여 준다)
   final String? photo;
+  final String badge;
+  final bool liked;
+
+  /// 주면 칸 오른쪽 아래에 ♡ + 버튼
+  final VoidCallback? onLike;
+  final VoidCallback? onOwn;
+
+  @override
+  State<_LitCell> createState() => _LitCellState();
+}
+
+class _LitCellState extends State<_LitCell> with SingleTickerProviderStateMixin {
+  late final AnimationController _pop = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 650),
+    value: 1,
+  );
+  late final Animation<double> _scale = _pop.drive(
+    Tween(begin: 0.86, end: 1.0).chain(CurveTween(curve: Curves.elasticOut)),
+  );
+
+  @override
+  void didUpdateWidget(_LitCell old) {
+    super.didUpdateWidget(old);
+    if (widget.tier.index > old.tier.index) _pop.forward(from: 0); // 한 단계 올라감
+  }
+
+  @override
+  void dispose() {
+    _pop.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final lit = status != CollectStatus.none || mark != UnitMark.none;
-    final photo = mark == UnitMark.photo && this.photo != null;
-    final Color border = switch ((mark, status)) {
-      (UnitMark.manual, _) => Gp.ink,
-      (_, CollectStatus.wanted) => Gp.accent,
-      _ => Gp.line,
-    };
-    final cell = Container(
-      decoration: BoxDecoration(
-        color: Gp.panel,
-        borderRadius: BorderRadius.circular(photo ? 10 : 12),
-        border: photo ? null : Border.all(color: border, width: border == Gp.line ? 1 : 1.6),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          if (photo)
-            AppImage(this.photo!) // 내 사진은 칸을 꽉 채운다
-          else
-            Padding(
-              padding: const EdgeInsets.all(6),
-              child: AppImage(image, fit: BoxFit.contain, grayscale: !lit),
+    final t = widget.tier;
+    final content = Stack(
+      fit: StackFit.expand,
+      children: [
+        _cellImage(t, widget.image, widget.photo),
+        if (widget.badge.isNotEmpty) Positioned(right: 5, top: 5, child: TagPill(widget.badge, filled: true)),
+        if (widget.onLike != null && widget.onOwn != null)
+          Positioned(
+            right: 4,
+            bottom: 4,
+            child: MarkButtons(
+              size: 22,
+              liked: widget.liked,
+              owned: t.index >= CellTier.owned.index,
+              onLike: widget.onLike!,
+              onOwn: widget.onOwn!,
             ),
-          if (badge.isNotEmpty) Positioned(right: 5, top: 5, child: TagPill(badge, filled: true)),
-          if (photo)
-            const Positioned(
-              right: 5,
-              bottom: 5,
-              child: CircleAvatar(
-                radius: 10,
-                backgroundColor: Gp.panel,
-                child: Icon(Icons.verified, size: 15, color: Gp.accent),
-              ),
-            ),
-        ],
-      ),
+          ),
+      ],
     );
     return GestureDetector(
-      onTap: onTap,
+      onTap: widget.onTap,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          AspectRatio(
-            aspectRatio: 1,
-            child: photo ? AccentRing(radius: 12, spin: true, child: cell) : cell, // G-4b
+          Expanded(
+            child: Center(
+              child: AspectRatio(
+                aspectRatio: 1,
+                child: ScaleTransition(scale: _scale, child: _tierFrame(t, content)),
+              ),
+            ),
           ),
           const SizedBox(height: 5),
-          Expanded(
+          SizedBox(
+            height: 30,
             child: Text(
-              name,
+              widget.name,
               maxLines: 2,
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontSize: 12, color: lit ? Gp.ink : Gp.muted, height: 1.25),
+              style: TextStyle(fontSize: 12, color: t == CellTier.none ? Gp.muted : Gp.ink, height: 1.25),
             ),
           ),
         ],
@@ -580,31 +766,47 @@ class _LitCell extends StatelessWidget {
   }
 }
 
-/// G-5 기체 → 대응 상품
-class _UnitSheet extends StatelessWidget {
+/// G-5 기체 → 좋아요 · 구매함 · 내 사진 + 대응 상품
+class _UnitSheet extends StatefulWidget {
   const _UnitSheet({
     required this.unit,
-    required this.manual,
+    required this.tier,
+    required this.liked,
     required this.photo,
-    required this.onManual,
+    required this.onLike,
+    required this.onOwn,
     required this.onPhoto,
     required this.onRemovePhoto,
     required this.loaders,
   });
   final GuideUnit unit;
-  final bool manual;
+  final CellTier tier;
+  final bool liked;
   final String? photo;
-  final VoidCallback onManual;
+  final VoidCallback onLike;
+  final VoidCallback onOwn;
   final VoidCallback onPhoto;
   final VoidCallback onRemovePhoto;
   final Loaders loaders;
 
   @override
+  State<_UnitSheet> createState() => _UnitSheetState();
+}
+
+class _UnitSheetState extends State<_UnitSheet> {
+  // 한 번만 부른다 (시트가 다시 그려져도 요청이 반복되지 않게)
+  late final Future<List<Kit>> _kits = widget.loaders.kitsByIds(widget.unit.kitIds); // STATE: GET /kits?id=
+
+  @override
   Widget build(BuildContext context) {
-    final status = switch (unit.status) {
-      CollectStatus.owned => '구매함',
-      CollectStatus.wanted => '좋아요',
-      CollectStatus.none => '미수집',
+    final unit = widget.unit;
+    final tier = widget.tier;
+    final owned = tier.index >= CellTier.owned.index;
+    final status = switch (tier) {
+      CellTier.photo => '구매함 · 내 사진으로 인증됨',
+      CellTier.owned => '구매함',
+      CellTier.liked => '좋아요',
+      CellTier.none => '아직 없음',
     };
     return SafeArea(
       child: Padding(
@@ -615,59 +817,61 @@ class _UnitSheet extends StatelessWidget {
           children: [
             Row(
               children: [
-                if (photo case final ph?)
-                  AccentRing(
-                    radius: 12,
-                    spin: true,
-                    child: SizedBox.square(dimension: 64, child: PhotoThumb(ph, radius: 10)),
-                  )
-                else
-                  SizedBox.square(
-                    dimension: 64,
-                    child: AppImage(
-                      unit.image,
-                      fit: BoxFit.contain,
-                      grayscale: unit.status == CollectStatus.none && !manual,
-                    ),
-                  ),
+                SizedBox.square(
+                  dimension: 64,
+                  child: _tierFrame(tier, _cellImage(tier, unit.image, widget.photo), radius: 12),
+                ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(unit.name, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600)),
-                      Text('${unit.nameEn} · $status', style: const TextStyle(fontSize: 12.5, color: Gp.muted)),
-                      if (photo != null)
-                        const Text(
-                          '내 사진으로 인증됨',
-                          style: TextStyle(fontSize: 12.5, color: Gp.accent, fontWeight: FontWeight.w600),
+                      Text(unit.nameEn, style: const TextStyle(fontSize: 12.5, color: Gp.muted)),
+                      Text(
+                        status,
+                        style: TextStyle(
+                          fontSize: 12.5,
+                          color: tier == CellTier.none ? Gp.faint : Gp.accent,
+                          fontWeight: FontWeight.w600,
                         ),
+                      ),
                     ],
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 14),
-            // G-5b 사지 않아도 켤 수 있고, 이 기체가 찍힌 내 사진을 올리면 도는 고리
+            // G-5b 한 단계씩: 좋아요 → 구매함 → 내 사진
             Row(
               children: [
                 Expanded(
                   child: TogglePill(
-                    label: '수동 점등',
-                    icon: Icons.lightbulb_outline,
-                    activeIcon: Icons.lightbulb,
-                    active: manual,
-                    onTap: onManual,
+                    label: '좋아요',
+                    icon: Icons.favorite_border,
+                    activeIcon: Icons.favorite,
+                    active: widget.liked,
+                    onTap: widget.onLike,
                   ),
                 ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: TogglePill(
-                    label: photo == null ? '내 사진 올리기' : '사진 바꾸기',
+                    label: '구매함',
+                    icon: Icons.add,
+                    activeIcon: Icons.check,
+                    active: owned,
+                    onTap: widget.onOwn,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: TogglePill(
+                    label: '내 사진',
                     icon: Icons.add_a_photo_outlined,
                     activeIcon: Icons.verified,
-                    active: photo != null,
-                    onTap: onPhoto, // G-5c
+                    active: widget.photo != null,
+                    onTap: widget.onPhoto, // G-5c
                   ),
                 ),
               ],
@@ -677,24 +881,32 @@ class _UnitSheet extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    photo == null ? '이 기체가 찍힌 내 사진이어야 켜지고, 칸에 색 고리가 돌아요' : '도감 칸에 이 사진이 보여요',
+                    widget.photo == null ? '이 기체가 찍힌 내 사진을 올리면 칸에 색 고리가 돌아요' : '도감 칸에 이 사진이 보여요 · 다시 누르면 사진 바꾸기',
                     style: const TextStyle(fontSize: 12, color: Gp.muted),
                   ),
                 ),
-                if (photo != null)
+                if (widget.photo != null)
                   TextButton(
-                    onPressed: onRemovePhoto,
+                    onPressed: widget.onRemovePhoto,
                     style: TextButton.styleFrom(foregroundColor: Gp.muted, visualDensity: VisualDensity.compact),
-                    child: const Text('사진 지우기'),
+                    child: const Text('사진 내리기'),
                   ),
               ],
             ),
             const SectionHeader('이 기체의 상품', padding: EdgeInsets.fromLTRB(0, 10, 0, 10)),
             FutureBuilder<List<Kit>>(
-              future: loaders.kitsByIds(unit.kitIds), // STATE: GET /kits?id= → 대응 상품
+              future: _kits,
               builder: (context, snap) {
                 if (snap.connectionState != ConnectionState.done) {
-                  return const SizedBox(height: 90, child: LoadingView());
+                  return const SizedBox(
+                    height: 90,
+                    child: Center(
+                      child: SizedBox.square(
+                        dimension: 22,
+                        child: CircularProgressIndicator(strokeWidth: 2.4, color: Gp.ink),
+                      ),
+                    ),
+                  );
                 }
                 if (snap.hasError) {
                   return const Text('상품을 불러오지 못했어요', style: TextStyle(color: Gp.muted));
@@ -721,7 +933,7 @@ class _UnitSheet extends StatelessWidget {
                       imageWidth: 130,
                       onTap: () {
                         Navigator.pop(context);
-                        openKitDetail(context, kits[i], loaders: loaders);
+                        openKitDetail(context, kits[i], loaders: widget.loaders);
                       },
                     ),
                   ),
@@ -832,9 +1044,9 @@ class _BbxGuideState extends State<_BbxGuide> {
           builder: (context, box) => ListView(
             padding: EdgeInsets.only(bottom: navClearance(context)),
             children: [
-              const _Legend(),
               SectionHeader(
                 '베이',
+                trailing: const _HelpButton(bbx: true),
                 subtitle: '완성 $done / ${tops.length}',
                 padding: const EdgeInsets.fromLTRB(16, 14, 12, 10),
               ),
@@ -853,7 +1065,7 @@ class _BbxGuideState extends State<_BbxGuide> {
                         // G-6 P01
                         image: t.image,
                         name: t.name,
-                        status: t.total > 0 && t.owned >= t.total ? CollectStatus.owned : CollectStatus.none,
+                        tier: t.total > 0 && t.owned >= t.total ? CellTier.owned : CellTier.none,
                         badge: '${t.owned}/${t.total}',
                         onTap: () => showModalBottomSheet<void>(
                           context: context,
