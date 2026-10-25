@@ -5,7 +5,7 @@
 // 그리고 여러 화면이 같은 모양으로 쓰는 조각 (P04 일관성):
 //   GpSearchBar 검색창 · SectionHeader 색 막대 제목 · ProductTile 상품 카드 · PhotoThumb 둥근 사진 · AddSlot
 //   UnderlineTab 밑줄 탭 · PageDots 넘김 점 · ThumbRow 사진 줄 · TagPill 알약 글자 · TogglePill 켜고 끄는 버튼
-//   AccentBar 진행 막대 · SectionPanel 흰 띠 섹션 · joinDot
+//   AccentBar 진행 막대 · SectionPanel 흰 띠 섹션 · AccentRing 브랜드 색 고리(돌아가는 것 포함) · joinDot
 //   AppImage · CircleThumb · RaisedCircleButton · ChannelGlyph · showSoon · showToast · navClearance · 가격 표기
 import 'package:flutter/material.dart';
 
@@ -895,6 +895,75 @@ class SectionPanel extends StatelessWidget {
         color: Gp.panel,
         child: SizedBox(width: double.infinity, child: Padding(padding: padding, child: child)),
       ),
+    );
+  }
+}
+
+/// 브랜드 색 고리 (하늘색 → 민트). 아바타 · 도감 "내 사진" 칸이 같이 쓴다.
+/// [spin] = 천천히 돌아가는 고리 (내 사진으로 점등한 칸)
+class AccentRing extends StatefulWidget {
+  const AccentRing({
+    super.key,
+    required this.child,
+    this.width = 2.5,
+    this.radius,
+    this.spin = false,
+  });
+
+  final Widget child;
+  final double width;
+
+  /// null = 동그라미, 값이 있으면 둥근 사각형
+  final double? radius;
+  final bool spin;
+
+  @override
+  State<AccentRing> createState() => _AccentRingState();
+}
+
+class _AccentRingState extends State<AccentRing> with SingleTickerProviderStateMixin {
+  late final AnimationController _turn = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 4),
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.spin) _turn.repeat();
+  }
+
+  @override
+  void didUpdateWidget(AccentRing old) {
+    super.didUpdateWidget(old);
+    if (widget.spin && !_turn.isAnimating) _turn.repeat();
+    if (!widget.spin) _turn.stop();
+  }
+
+  @override
+  void dispose() {
+    _turn.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final circle = widget.radius == null;
+    return AnimatedBuilder(
+      animation: _turn,
+      builder: (context, child) => Container(
+        padding: EdgeInsets.all(widget.width),
+        decoration: BoxDecoration(
+          shape: circle ? BoxShape.circle : BoxShape.rectangle,
+          borderRadius: circle ? null : BorderRadius.circular(widget.radius!),
+          gradient: SweepGradient(
+            colors: const [Gp.accent, Gp.accent2, Gp.accent],
+            transform: GradientRotation(_turn.value * 6.2832),
+          ),
+        ),
+        child: child,
+      ),
+      child: widget.child,
     );
   }
 }

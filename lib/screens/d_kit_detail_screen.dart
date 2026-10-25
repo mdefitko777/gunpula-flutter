@@ -6,11 +6,12 @@
 // │ D-2  │ PageView + 점 표시                 │ 공식 사진 (여러 장 넘기기)              │ P02 · P08     │
 // │ D-4  │ 제목 + 일본어 원래 이름              │ 상품명 (공식 사이트 검색용 원문)        │ P02           │
 // │ D-5  │ Text(¥) + 발매일 + 한정 표시         │ 일본 정가 · 발매 · 한정/PB              │ P02 · P01     │
-// │ D-5b │ 정가 아래 시세 한 줄 (누르면 시장가로) │ 정가 ↔ 국내 시세 비교                  │ P01 · P07     │
+// │ D-5b │ 정가 아래 시세 한 줄 → 바텀 시트      │ 정가 ↔ 국내 시세 (시세는 이 한 곳에만)   │ P01 · P08     │
+// │ D-5c │ 구매함일 때 "내 구매가" 줄 → 입력 시트 │ 내가 낸 돈 기록 (가짜 저장)             │ P01 · P03     │
 // │ D-6  │ 하단 고정 바: 원함 · 구매함           │ 원함 · 구매함 (따로 켜고 끔, 가짜 저장)  │ P03 · P07     │
 // │ D-7  │ "원함 ×n" → 바텀 시트 − n + · 해제   │ 원하는 수량 (원함일 때만)               │ P05 · P03     │
 // │ D-8  │ 가로 스크롤 요약 줄 → 바텀 시트       │ 공식 정보 (요약 → 전체 표)              │ P08 · P06     │
-// │ D-9  │ 시세 카드: 가격 범위 · 플랫폼 3칸     │ 시장가 (없으면 이유 + 찾아볼 곳)        │ P01 · P08     │
+// │ D-9  │ 시세 시트: 가격 범위 · 플랫폼 3칸     │ 국내 시세 자세히 (없으면 이유 + 찾아볼 곳) │ P01 · P08   │
 // │ D-10 │ 가로 ProductTile (GET /kits)        │ 같은 작품의 다른 상품                   │ P06           │
 // │ D-11 │ 세로 사진 목록                      │ 상품 상세 (공식 사진 전부)              │ P02           │
 // │ D-12 │ TextButton → showDialog(확인)       │ 정보 오류 제보 (보내기 전 확인)         │ P05 · P09     │
@@ -63,14 +64,68 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
 
   Kit get k => widget.kit;
 
-  /// 시세 한 줄을 누르면 이 위치로 내려간다
-  final _marketKey = GlobalKey();
+  /// 내가 낸 돈 (구매함일 때). 바꿔도 저장하지 않는다
+  late int? _paid = widget.kit.purchaseKrw;
 
-  void _scrollToMarket() {
-    final ctx = _marketKey.currentContext;
-    if (ctx != null) {
-      Scrollable.ensureVisible(ctx, duration: const Duration(milliseconds: 350), alignment: 0.1);
-    }
+  /// D-9 국내 시세 자세히 (바텀 시트) — 시세는 이 한 곳에서만 보여 준다
+  void _openMarket() {
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (_) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SectionHeader('국내 시세', padding: EdgeInsets.fromLTRB(0, 0, 0, 12)),
+              _MarketCard(market: k.market, onOpen: _external),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// D-5c 내 구매가 입력 (바텀 시트 + 숫자 칸)
+  void _editPaid() {
+    final ctrl = TextEditingController(text: _paid?.toString() ?? '');
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (sheet) => Padding(
+        padding: EdgeInsets.fromLTRB(16, 0, 16, MediaQuery.viewInsetsOf(sheet).bottom + 16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const SectionHeader('내 구매가', padding: EdgeInsets.fromLTRB(0, 0, 0, 12)),
+            TextField(
+              controller: ctrl,
+              autofocus: true,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(hintText: '예: 38000', suffixText: '원'),
+            ),
+            const SizedBox(height: 6),
+            Text('정가 ${yen(k.priceJpy)} · 컬렉션 지출 합계에 들어가요',
+                style: const TextStyle(fontSize: 12.5, color: Gp.muted)),
+            const SizedBox(height: 14),
+            FilledButton(
+              onPressed: () {
+                final v = int.tryParse(ctrl.text.replaceAll(',', '').trim());
+                Navigator.pop(sheet);
+                final before = _paid;
+                setState(() => _paid = v); // STATE: 구매가 → 줄 금액
+                showToast(context, v == null ? '구매가를 지웠어요' : '구매가 ${won(v)}을 적었어요',
+                    onUndo: () => setState(() => _paid = before));
+              },
+              style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(46)),
+              child: const Text('적기'),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   /// 원함 버튼: 꺼져 있으면 담기, 켜져 있으면 수량 시트(여기서 해제도)
@@ -271,9 +326,9 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
               ],
             ),
             const SizedBox(height: 10),
-            // D-5b 정가 바로 아래 국내 시세 — 누르면 시장가 카드로 내려감
+            // D-5b 정가 바로 아래 국내 시세 — 누르면 자세히(시트)
             InkWell(
-              onTap: _scrollToMarket,
+              onTap: _openMarket,
               borderRadius: BorderRadius.circular(Gp.radius),
               child: Container(
                 padding: const EdgeInsets.fromLTRB(12, 10, 6, 10),
@@ -298,11 +353,46 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
                         ),
                       ),
                     ),
+                    if (k.market case final m?)
+                      Text('거래 ${m.samples}건', style: const TextStyle(fontSize: 12, color: Gp.muted)),
                     const Icon(Icons.chevron_right, size: 20, color: Gp.muted),
                   ],
                 ),
               ),
             ),
+            if (_owned) ...[
+              const SizedBox(height: 8),
+              // D-5c 구매함이면 내가 낸 돈
+              InkWell(
+                onTap: _editPaid,
+                borderRadius: BorderRadius.circular(Gp.radius),
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(12, 10, 10, 10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(Gp.radius),
+                    border: Border.all(color: Gp.line),
+                  ),
+                  child: Row(
+                    children: [
+                      const Text('내 구매가', style: TextStyle(fontSize: 13, color: Gp.muted)),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          _paid == null ? '아직 안 적었어요' : won(_paid!),
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: _paid == null ? FontWeight.w400 : FontWeight.w600,
+                            color: _paid == null ? Gp.muted : Gp.ink,
+                          ),
+                        ),
+                      ),
+                      Text(_paid == null ? '적기' : '수정',
+                          style: const TextStyle(fontSize: 13, color: Gp.accent, fontWeight: FontWeight.w600)),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ],
         ),
       ),
@@ -310,17 +400,6 @@ class _KitDetailScreenState extends State<KitDetailScreen> {
       SectionPanel(
         padding: EdgeInsets.zero,
         child: _SpecStrip(specs: _specs, onTap: _openSpecs), // D-8 P08
-      ),
-      // 시장가: 한 덩어리 (가격 범위 → 플랫폼 3칸), 겹 상자 없이
-      SectionPanel(
-        key: _marketKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SectionHeader('시장가', padding: EdgeInsets.fromLTRB(0, 0, 0, 10)), // D-9 P01
-            _MarketCard(market: k.market, onOpen: _external),
-          ],
-        ),
       ),
       // 같은 작품의 다른 상품
       SectionPanel(

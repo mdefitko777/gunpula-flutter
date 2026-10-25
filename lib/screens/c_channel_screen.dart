@@ -66,7 +66,7 @@ class ChannelHeader extends StatelessWidget {
     required this.onMyChannelsChanged,
   });
 
-  /// 좁은 화면: 아바타 (넓은 화면은 측면 탭에 있으므로 null)
+  /// 좁은 화면: 아바타 · 알림 · 설정 줄 (넓은 화면은 측면 탭에 있으므로 null)
   final Widget? leading;
   final List<String> myChannels;
   final String selected;
@@ -80,8 +80,8 @@ class ChannelHeader extends StatelessWidget {
       children: [
         if (leading != null)
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 10, 16, 2),
-            child: Align(alignment: Alignment.centerLeft, child: leading),
+            padding: const EdgeInsets.fromLTRB(16, 10, 8, 2),
+            child: leading,
           ),
         ChannelBar(
           myChannels: myChannels,

@@ -55,6 +55,7 @@ class Kit {
     required this.month,
     required this.market,
     required this.keywords,
+    this.purchaseKrw,
   });
 
   final String id;
@@ -87,6 +88,9 @@ class Kit {
   final Market? market;
   final List<String> keywords;
 
+  /// 구매함일 때 내가 실제로 낸 돈(원). 없으면 null
+  final int? purchaseKrw;
+
   static Kit? fromJson(Object? json) {
     if (json is! Map<String, Object?>) return null;
     final id = json['id'];
@@ -113,6 +117,7 @@ class Kit {
       month: _b(json, 'month'),
       market: Market.fromJson(json['market']),
       keywords: _strs(json['keywords']),
+      purchaseKrw: _iOrNull(json, 'purchaseKrw'),
     );
   }
 }

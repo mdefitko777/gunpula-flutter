@@ -5,7 +5,7 @@
 // │ F-1  │ ChannelHeader                      │ 아바타 줄 + 내 채널 바 (C-0 공용)       │ P04 · P06     │
 // │ F-2  │ 밑줄 탭 2개 + 개수                   │ 원함 · 구매함                          │ P06 · P01     │
 // │ F-3  │ 아이콘 두 개 (목록 · 도감)            │ 보기 방식 전환                          │ P07           │
-// │ F-4  │ Text(합계)                         │ 원함 예산 (정가 × 수량 합)              │ P01           │
+// │ F-4  │ Text(합계)                         │ 원함 예산(정가×수량) · 구매함 지출 합계 │ P01           │
 // │ F-5  │ ListView 줄 (사진 · 이름 · ×n)        │ 컬렉션 목록 → 상품 상세                 │ P08           │
 // │ F-6  │ 편집 → 체크박스 + 선택 삭제           │ 정리하기 (편집 모드에서만 삭제 보임)     │ P05 · P03     │
 // │ F-7  │ showDialog(확인) → 토스트(되돌리기)   │ 삭제 전 확인 · 바로 되돌리기             │ P05 · P03     │
@@ -190,6 +190,7 @@ class _CollectionScreenState extends State<CollectionScreen> with ChannelScope {
     }
     final total = kits.fold<int>(0, (s, k) => s + (k.priceJpy ?? 0) * (k.wantedQty < 1 ? 1 : k.wantedQty));
     final pieces = kits.fold<int>(0, (s, k) => s + (k.wantedQty < 1 ? 1 : k.wantedQty));
+    final spent = kits.fold<int>(0, (s, k) => s + (k.purchaseKrw ?? 0)); // 구매함: 내가 낸 돈 합
     return Stack(
       children: [
         ListView(
@@ -201,7 +202,9 @@ class _CollectionScreenState extends State<CollectionScreen> with ChannelScope {
                 children: [
                   Expanded(
                     child: Text(
-                      _ownedTab ? '구매함 ${kits.length}개' : '합계 ${yen(total)} · $pieces개', // F-4 P01
+                      _ownedTab
+                          ? '${kits.length}개 · 지출 합계 ${won(spent)}'
+                          : '합계 ${yen(total)} · $pieces개', // F-4 P01
                       style: const TextStyle(color: Gp.muted, fontSize: 13),
                     ),
                   ),
@@ -234,7 +237,19 @@ class _CollectionScreenState extends State<CollectionScreen> with ChannelScope {
                 trailing: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text(yen(k.priceJpy), style: const TextStyle(fontSize: 13)),
+                    if (_ownedTab) ...[
+                      // 구매함: 내가 낸 돈 (없으면 안내) · 아래에 정가
+                      Text(
+                        k.purchaseKrw == null ? '구매가 미입력' : won(k.purchaseKrw!),
+                        style: TextStyle(
+                          fontSize: 13.5,
+                          fontWeight: k.purchaseKrw == null ? FontWeight.w400 : FontWeight.w600,
+                          color: k.purchaseKrw == null ? Gp.faint : Gp.ink,
+                        ),
+                      ),
+                      Text('정가 ${yen(k.priceJpy)}', style: const TextStyle(fontSize: 11.5, color: Gp.faint)),
+                    ] else
+                      Text(yen(k.priceJpy), style: const TextStyle(fontSize: 13)),
                     if (!_ownedTab && k.wantedQty > 1)
                       Text('×${k.wantedQty}',
                           style: const TextStyle(fontSize: 12.5, color: Gp.accent, fontWeight: FontWeight.w600)),

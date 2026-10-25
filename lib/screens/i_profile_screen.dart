@@ -1,4 +1,4 @@
-// 화면 I: 내 정보 — 프로필 · 수집 요약 · 공유 공간과 친구 · 설정 (아바타에서 열림)
+// 화면 I: 내 정보 — 프로필 · 수집 요약 · 공유 공간과 친구 (아바타에서 열림, 설정은 K 화면)
 //
 // ┌──────── 디자인 가이드 대응표: I 내 정보 ───────────────────────────────────────────┐
 // │ 번호 │ Flutter 위젯명                     │ 비즈니스 명칭(한글)                    │ 원칙(P번호)   │
@@ -7,11 +7,9 @@
 // │ I-3  │ 프로필 편집 → 바텀 시트(액션 목록)    │ 아바타 · 배경 · 닉네임 · 태그 바꾸기 (가짜) │ P03 · P07  │
 // │ I-4  │ 숫자 3칸                            │ 원함 · 구매함 · 구매 지출              │ P01           │
 // │ I-5  │ 초대 코드 + 복사 · 멤버 줄           │ 공유 공간과 친구                        │ P07           │
-// │ I-6  │ 설정 줄 (스위치 · ›)                 │ 알림 · 언어 · 데이터 백업 · 버전        │ P04 · P10     │
-// │ I-7  │ 로그아웃 → showDialog(확인)          │ 로그아웃 (실제 로그인 없음, 확인 후 토스트) │ P05      │
 // │ I-8  │ LoadingView / ErrorView             │ 프로필 불러오기 (GET /profile)          │ P01 · P09     │
 // └──────────────────────────────────────────────────────────────────────────────────┘
-// 전환: 앱 셸 아바타 → 쌓기(push, 오른쪽에서). 편집 · 언어 → 덮기(바텀 시트).
+// 전환: 앱 셸 아바타 → 쌓기(push, 오른쪽에서). 편집 → 덮기(바텀 시트).
 // 현행 앱 문제: 로그인 전엔 아바타가 곧바로 설정, 후엔 서랍 — 같은 버튼이 다르게 동작 → v2는 늘 이 화면.
 // 실제 로그인 · 저장 없음: 바꾸는 동작은 토스트로만 응답한다.
 import 'package:flutter/cupertino.dart' show CupertinoPageRoute;
@@ -45,8 +43,6 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   late Future<_ProfileData> _future;
-  bool _notify = true;
-  String _language = '한국어';
 
   @override
   void initState() {
@@ -88,44 +84,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         );
       },
     );
-  }
-
-  void _pickLanguage() {
-    showModalBottomSheet<void>(
-      context: context,
-      builder: (sheet) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            for (final l in const ['한국어', '中文', 'English', '日本語'])
-              ListTile(
-                title: Text(l),
-                trailing: l == _language ? const Icon(Icons.check, color: Gp.accent) : null,
-                onTap: () {
-                  Navigator.pop(sheet);
-                  setState(() => _language = l); // STATE: 언어 → 설정 줄 글자 (화면 번역은 없음)
-                },
-              ),
-            const SizedBox(height: 8),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<void> _signOut() async {
-    final ok = await showDialog<bool>( // I-7 P05
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('로그아웃할까요?'),
-        content: const Text('이 기기의 컬렉션은 그대로 남고, 다른 기기와의 동기화만 멈춰요.'),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('취소')),
-          FilledButton(onPressed: () => Navigator.pop(context, true), child: const Text('로그아웃')),
-        ],
-      ),
-    );
-    if (ok == true && mounted) showToast(context, '프로토타입이라 로그아웃 화면은 없어요');
   }
 
   @override
@@ -204,45 +162,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ],
                 ),
               ),
-              SectionPanel( // I-6
-                padding: const EdgeInsets.only(bottom: 6),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SectionHeader('설정'),
-                    SwitchListTile(
-                      secondary: const Icon(Icons.notifications_none),
-                      title: const Text('새 소식 알림'),
-                      subtitle: const Text('내 채널에 새 상품 · 예고가 생기면'),
-                      value: _notify,
-                      activeThumbColor: Gp.accent,
-                      onChanged: (v) => setState(() => _notify = v), // STATE: 알림 스위치
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.language),
-                      title: const Text('언어'),
-                      trailing: Text('$_language ›', style: const TextStyle(color: Gp.muted)),
-                      onTap: _pickLanguage,
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.cloud_download_outlined),
-                      title: const Text('데이터 백업'),
-                      subtitle: const Text('컬렉션 · 채널 설정을 파일로 내보내기'),
-                      onTap: () => _fake('데이터 백업'),
-                    ),
-                    const ListTile(
-                      leading: Icon(Icons.info_outline),
-                      title: Text('버전'),
-                      trailing: Text('Gunpula v2.0.0', style: TextStyle(color: Gp.muted)),
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.logout, color: Gp.danger),
-                      title: const Text('로그아웃', style: TextStyle(color: Gp.danger)),
-                      onTap: _signOut, // I-7 P05
-                    ),
-                  ],
-                ),
-              ),
             ],
           );
         },
@@ -258,12 +177,8 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final avatar = Container(
-      padding: const EdgeInsets.all(3),
-      decoration: const BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: SweepGradient(colors: [Gp.accent, Gp.accent2, Gp.accent]),
-      ),
+    final avatar = AccentRing(
+      width: 3,
       child: Container(
         width: 76,
         height: 76,

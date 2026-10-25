@@ -9,6 +9,8 @@
 // │ S-5  │ NavigationRail (≥840dp)         │ 측면 탭 + 위쪽 추가 버튼               │ 적응형 · P04  │
 // │ S-6  │ IndexedStack                    │ 탭 상태 유지                           │ P03           │
 // │ S-7  │ 내 채널 목록(상태)              │ 네 화면이 같이 쓰는 내 IP 채널         │ P04           │
+// │ S-9  │ 오른쪽 위 🔔 (새 알림 점)         │ 알림 열기                              │ P01           │
+// │ S-10 │ 오른쪽 위 ⚙                     │ 설정 열기 (K)                          │ P04 · P06     │
 // │ S-8  │ AnimatedSlide · AnimatedPositioned │ 아래로 스크롤하면 탭 바 숨김, 카메라만 오른쪽 아래 │ P08 · P07 │
 // └────────────────────────────────────────────────────────────────────────────────┘
 // 전환: S-3 옆으로(탭) · S-4 덮기(bottom sheet) · S-1 쌓기(push).
@@ -29,6 +31,7 @@ import 'e_camera_screen.dart';
 import 'f_collection_screen.dart';
 import 'h_calendar_screen.dart';
 import 'i_profile_screen.dart';
+import 'k_settings_screen.dart';
 
 /// 넓은 화면 기준 (Material 3 window size class: expanded ≥ 840dp)
 const railBreakpoint = 840.0;
@@ -97,11 +100,26 @@ class _AppShellState extends State<AppShell> {
   Widget build(BuildContext context) {
     final wide = MediaQuery.sizeOf(context).width >= railBreakpoint;
     final avatar = _AvatarButton(onTap: _openProfile); // S-1 P04
+    final bell = IconButton( // S-9 알림 (다음 단계: 알림 화면)
+      tooltip: '알림',
+      onPressed: () => showSoon(context, '알림'),
+      icon: const Badge(
+        smallSize: 7,
+        backgroundColor: Gp.accent, // 새 알림 있음 = 브랜드 색 점
+        child: Icon(Icons.notifications_none, color: Gp.ink),
+      ),
+    );
+    final gear = IconButton( // S-10 설정
+      tooltip: '설정',
+      onPressed: () => openSettings(context),
+      icon: const Icon(Icons.settings_outlined, color: Gp.ink),
+    );
+    final topRow = Row(children: [avatar, const Spacer(), bell, gear]);
     Widget page(int i) => i == 0
         ? HomeScreen(
             // A
             key: const ValueKey(0),
-            leading: wide ? null : avatar,
+            leading: wide ? null : topRow,
             myChannels: _myChannels,
             onMyChannelsChanged: _setChannels,
             onCamera: _openAdd,
@@ -112,7 +130,7 @@ class _AppShellState extends State<AppShell> {
         ? SearchScreen(
             // B
             key: const ValueKey(1),
-            leading: wide ? null : avatar,
+            leading: wide ? null : topRow,
             myChannels: _myChannels,
             onMyChannelsChanged: _setChannels,
             onCamera: _openAdd,
@@ -123,7 +141,7 @@ class _AppShellState extends State<AppShell> {
         ? CalendarScreen(
             // H
             key: const ValueKey(2),
-            leading: wide ? null : avatar,
+            leading: wide ? null : topRow,
             myChannels: _myChannels,
             onMyChannelsChanged: _setChannels,
             loaders: widget.loaders,
@@ -131,7 +149,7 @@ class _AppShellState extends State<AppShell> {
         : CollectionScreen(
             // F
             key: const ValueKey(3),
-            leading: wide ? null : avatar,
+            leading: wide ? null : topRow,
             myChannels: _myChannels,
             onMyChannelsChanged: _setChannels,
             onGoSearch: _goSearch,
@@ -158,7 +176,10 @@ class _AppShellState extends State<AppShell> {
                       children: [
                         const SizedBox(height: 8),
                         avatar,
-                        const SizedBox(height: 18),
+                        const SizedBox(height: 8),
+                        bell,
+                        gear,
+                        const SizedBox(height: 10),
                         _CameraButton(onTap: _openAdd),
                         const SizedBox(height: 8),
                       ],
@@ -203,12 +224,8 @@ class _AvatarButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // 브랜드 색 고리(하늘색 → 민트) — 인스타그램 프로필 고리처럼
-    return Container(
-      padding: const EdgeInsets.all(2),
-      decoration: const BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: SweepGradient(colors: [Gp.accent, Gp.accent2, Gp.accent]),
-      ),
+    return AccentRing( // 도감 "내 사진" 칸과 같은 고리
+      width: 2,
       child: Container(
         padding: const EdgeInsets.all(2),
         decoration: const BoxDecoration(shape: BoxShape.circle, color: Gp.bg),

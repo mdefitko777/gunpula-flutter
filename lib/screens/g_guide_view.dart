@@ -7,6 +7,8 @@
 // │ G-3  │ 섹션별 작품 카드 + 진행 막대          │ 건담 작품 도감 (수집 n/전체)            │ P01 · P06     │
 // │ G-4  │ 기체 칸 격자 (불 켜짐/꺼짐)           │ 작품 안의 기체                          │ P01 · P02     │
 // │ G-5  │ 바텀 시트: 기체 → 대응 상품           │ 이 기체의 상품 → 상품 상세              │ P07           │
+// │ G-5b │ 시트의 TogglePill 2개                │ 수동 점등 · 내 사진으로 점등 (가짜 저장) │ P03 · P07     │
+// │ G-4b │ AccentRing(spin) 칸                 │ 내 사진으로 켠 칸 = 돌아가는 색 고리     │ P01 · P04     │
 // │ G-6  │ 베이 칸 + n/3 · 부품 시트            │ 베이블레이드 X 도감 (부품 3개)          │ P01           │
 // │ G-7  │ 세대 · 작품 카드 + 진행 막대          │ 포켓몬 세대 · Fate 작품 · AC 세대       │ P01           │
 // │ G-8  │ LoadingView / ErrorView / EmptyView │ 불러오는 중 · 오류 · 정리 안 된 작품     │ P01 · P09     │
@@ -121,9 +123,15 @@ class _Legend extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
       child: Wrap(
         spacing: 14,
+        runSpacing: 6,
         children: [
           item(box(fill: const Color(0xFF8FB8DE)), '구매함 (컬러)'), // G-2 P10
           item(box(fill: const Color(0xFFDDE7F0), border: Gp.accent, w: 1.6), '원함'),
+          item(box(fill: const Color(0xFF8FB8DE), border: Gp.ink, w: 1.2), '수동 점등'),
+          item(
+            const AccentRing(width: 1.6, radius: 4, child: SizedBox.square(dimension: 9)),
+            '내 사진 (돌아가는 고리)',
+          ),
           item(box(fill: Gp.soft), '미수집 (흑백)'),
         ],
       ),
@@ -299,14 +307,39 @@ class WorkGuideScreen extends StatefulWidget {
   State<WorkGuideScreen> createState() => _WorkGuideScreenState();
 }
 
+/// 사용자가 직접 켠 표시 (구매 여부와 따로)
+enum UnitMark { none, manual, photo }
+
 class _WorkGuideScreenState extends State<WorkGuideScreen> {
   late Future<List<GuideUnit>> _future = widget.loaders.guideUnits(widget.work.id);
+
+  /// 이 화면에서 켠 칸 (가짜 — 저장하지 않음)
+  final Map<String, UnitMark> _marks = {};
+
+  void _setMark(GuideUnit u, UnitMark m) {
+    final before = _marks[u.id] ?? UnitMark.none;
+    setState(() => _marks[u.id] = m); // STATE: 점등 표시 → 칸 색 · 고리
+    final msg = switch (m) {
+      UnitMark.manual => '「${u.name}」 칸을 켰어요',
+      UnitMark.photo => '내 사진으로 「${u.name}」 칸을 켰어요',
+      UnitMark.none => '「${u.name}」 칸을 껐어요',
+    };
+    showToast(context, msg, onUndo: () => setState(() => _marks[u.id] = before));
+  }
 
   void _openUnit(GuideUnit u) {
     showModalBottomSheet<void>( // G-5 덮기
       context: context,
       isScrollControlled: true,
-      builder: (_) => _UnitSheet(unit: u, loaders: widget.loaders),
+      builder: (sheet) => _UnitSheet(
+        unit: u,
+        mark: _marks[u.id] ?? UnitMark.none,
+        onMark: (m) {
+          Navigator.pop(sheet);
+          _setMark(u, m);
+        },
+        loaders: widget.loaders,
+      ),
     );
   }
 
@@ -366,6 +399,7 @@ class _WorkGuideScreenState extends State<WorkGuideScreen> {
                           image: u.image,
                           name: u.name,
                           status: u.status,
+                          mark: _marks[u.id] ?? UnitMark.none,
                           onTap: () => _openUnit(u),
                         ),
                     ],
@@ -380,7 +414,8 @@ class _WorkGuideScreenState extends State<WorkGuideScreen> {
   }
 }
 
-/// 불 켜짐 칸: 구매함 = 컬러, 원함 = 컬러 + 하늘색 테두리, 미수집 = 흑백
+/// 불 켜짐 칸: 구매함 = 컬러 · 원함 = 하늘색 테두리 · 수동 점등 = 검정 테두리
+/// · 내 사진 = 돌아가는 색 고리 · 미수집 = 흑백
 class _LitCell extends StatelessWidget {
   const _LitCell({
     required this.image,
@@ -388,6 +423,7 @@ class _LitCell extends StatelessWidget {
     required this.status,
     required this.onTap,
     this.badge = '',
+    this.mark = UnitMark.none,
   });
 
   final String image;
@@ -395,10 +431,41 @@ class _LitCell extends StatelessWidget {
   final CollectStatus status;
   final VoidCallback onTap;
   final String badge;
+  final UnitMark mark;
 
   @override
   Widget build(BuildContext context) {
-    final lit = status != CollectStatus.none;
+    final lit = status != CollectStatus.none || mark != UnitMark.none;
+    final photo = mark == UnitMark.photo;
+    final Color border = switch ((mark, status)) {
+      (UnitMark.manual, _) => Gp.ink,
+      (_, CollectStatus.wanted) => Gp.accent,
+      _ => Gp.line,
+    };
+    final cell = Container(
+      decoration: BoxDecoration(
+        color: Gp.panel,
+        borderRadius: BorderRadius.circular(photo ? 10 : 12),
+        border: photo ? null : Border.all(color: border, width: border == Gp.line ? 1 : 1.6),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(6),
+            child: AppImage(image, fit: BoxFit.contain, grayscale: !lit),
+          ),
+          if (badge.isNotEmpty) Positioned(right: 5, top: 5, child: TagPill(badge, filled: true)),
+          if (photo)
+            const Positioned(
+              right: 5,
+              bottom: 5,
+              child: Icon(Icons.photo_camera, size: 15, color: Gp.accent),
+            ),
+        ],
+      ),
+    );
     return GestureDetector(
       onTap: onTap,
       child: Column(
@@ -406,28 +473,7 @@ class _LitCell extends StatelessWidget {
         children: [
           AspectRatio(
             aspectRatio: 1,
-            child: Container(
-              decoration: BoxDecoration(
-                color: Gp.panel,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: status == CollectStatus.wanted ? Gp.accent : Gp.line,
-                  width: status == CollectStatus.wanted ? 1.8 : 1,
-                ),
-              ),
-              clipBehavior: Clip.antiAlias,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(6),
-                    child: AppImage(image, fit: BoxFit.contain, grayscale: !lit),
-                  ),
-                  if (badge.isNotEmpty)
-                    Positioned(right: 5, top: 5, child: TagPill(badge, filled: true)),
-                ],
-              ),
-            ),
+            child: photo ? AccentRing(radius: 12, spin: true, child: cell) : cell, // G-4b
           ),
           const SizedBox(height: 5),
           Expanded(
@@ -447,8 +493,15 @@ class _LitCell extends StatelessWidget {
 
 /// G-5 기체 → 대응 상품
 class _UnitSheet extends StatelessWidget {
-  const _UnitSheet({required this.unit, required this.loaders});
+  const _UnitSheet({
+    required this.unit,
+    required this.mark,
+    required this.onMark,
+    required this.loaders,
+  });
   final GuideUnit unit;
+  final UnitMark mark;
+  final ValueChanged<UnitMark> onMark;
   final Loaders loaders;
 
   @override
@@ -479,6 +532,31 @@ class _UnitSheet extends StatelessWidget {
                       Text(unit.name, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600)),
                       Text('${unit.nameEn} · $status', style: const TextStyle(fontSize: 12.5, color: Gp.muted)),
                     ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 14),
+            // G-5b 사지 않아도 켤 수 있고, 내 사진을 붙이면 돌아가는 고리
+            Row(
+              children: [
+                Expanded(
+                  child: TogglePill(
+                    label: '수동 점등',
+                    icon: Icons.lightbulb_outline,
+                    activeIcon: Icons.lightbulb,
+                    active: mark == UnitMark.manual,
+                    onTap: () => onMark(mark == UnitMark.manual ? UnitMark.none : UnitMark.manual),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: TogglePill(
+                    label: '내 사진으로',
+                    icon: Icons.photo_camera_outlined,
+                    activeIcon: Icons.photo_camera,
+                    active: mark == UnitMark.photo,
+                    onTap: () => onMark(mark == UnitMark.photo ? UnitMark.none : UnitMark.photo),
                   ),
                 ),
               ],
