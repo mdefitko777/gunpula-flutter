@@ -1,8 +1,8 @@
-// 화면 S: 앱 셸 — 위: 아바타 + 채널 바 한 줄 / 아래: 떠 있는 반투명 탭 바 (홈 · 검색 · (+) · 캘린더 · 컬렉션)
+// 화면 S: 앱 셸 — 위: 아바타 줄 → 채널 바 / 아래: 떠 있는 반투명 탭 바 (홈 · 검색 · (+) · 캘린더 · 컬렉션)
 //
 // ┌──────── 디자인 가이드 대응표: S 앱 셸 ───────────────────────────────────────────┐
 // │ 번호 │ Flutter 위젯명                  │ 비즈니스 명칭(한글)                    │ 원칙(P번호)   │
-// │ S-1  │ RaisedCircleButton (왼쪽 위)    │ 내 정보 열기 (아바타)                  │ P04 · P06     │
+// │ S-1  │ RaisedCircleButton (맨 위 줄)   │ 내 정보 열기 (아바타, 채널 바 위)      │ P04 · P06     │
 // │ S-2  │ BackdropFilter 떠 있는 탭 바    │ 반투명 하단 탭 바                      │ P08           │
 // │ S-3  │ 하단 탭 4개 (<840dp)            │ 홈 · 검색 · 캘린더 · 컬렉션            │ P06 · P04     │
 // │ S-4  │ 가운데 떠 있는 + 버튼           │ 추가 (사진으로 찾기 · 바코드 · 앨범)   │ P07           │
@@ -309,8 +309,12 @@ class _TabPageState extends State<_TabPage> {
     final sel = widget.myChannels.contains(_selected) ? _selected : allChannelId;
     return Column(
       children: [
+        if (widget.leading != null)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 10, 16, 2),
+            child: Align(alignment: Alignment.centerLeft, child: widget.leading),
+          ),
         ChannelBar(
-          leading: widget.leading,
           myChannels: widget.myChannels,
           selected: sel,
           onSelect: (id) => setState(() => _selected = id),
