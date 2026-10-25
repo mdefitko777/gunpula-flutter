@@ -2,6 +2,7 @@
 //
 // ┌──────── 디자인 가이드 대응표: C 채널 ──────────────────────────────────────────┐
 // │ 번호 │ Flutter 위젯명                    │ 비즈니스 명칭(한글)              │ 원칙(P번호)   │
+// │ C-0  │ ChannelHeader                     │ 아바타 줄 + 채널 바 (네 탭 공용)  │ P04           │
 // │ C-1  │ ChannelBar (가로 스크롤 텍스트 탭) │ 내 채널 바 (전체 + 내 IP)        │ P06 · P04     │
 // │ C-2  │ IconButton(ChannelGlyph 세 줄)     │ 채널 관리 열기                   │ P07 · P03     │
 // │ C-3  │ CupertinoPageRoute                │ 오른쪽에서 밀려 들어오는 관리 화면 │ P03           │
@@ -21,6 +22,78 @@ import '../widgets.dart';
 /// '전체' 칩의 id
 const allChannelId = 'all';
 
+/// 채널 바가 있는 화면의 공통 상태 (홈 · 검색 · 캘린더 · 컬렉션):
+/// 선택한 채널 · 지금 불러온 범위 · 내 채널이 바뀌면 다시 불러오기.
+mixin ChannelScope<T extends StatefulWidget> on State<T> {
+  /// 선택한 채널 (allChannelId = 전체)
+  String channel = allChannelId;
+  List<String> _loadedFor = const [];
+
+  /// 앱 셸이 내려 준 내 채널 (화면이 widget.myChannels 로 구현)
+  List<String> get myChannels;
+
+  /// '전체'면 내 채널 전부, 아니면 그 채널 하나
+  List<String> get scopeIds => channel == allChannelId ? myChannels : [channel];
+
+  /// 범위가 정해졌을 때 데이터를 부르는 곳 (화면이 구현, GET은 api.dart)
+  void loadScope(List<String> ids);
+
+  void reloadScope() {
+    _loadedFor = [...scopeIds];
+    loadScope(_loadedFor);
+  }
+
+  void selectChannel(String id) => setState(() {
+    channel = id; // STATE: 선택 채널 → 그 범위로 다시 GET
+    reloadScope();
+  });
+
+  /// didUpdateWidget 에서 부른다: 내 채널에서 빠진 채널을 보고 있었다면 '전체'로
+  void syncScope() {
+    if (channel != allChannelId && !myChannels.contains(channel)) channel = allChannelId;
+    if (scopeIds.join(',') != _loadedFor.join(',')) setState(reloadScope);
+  }
+}
+
+/// C-0 아바타 줄 + 채널 바 — 네 탭이 같은 머리를 쓴다
+class ChannelHeader extends StatelessWidget {
+  const ChannelHeader({
+    super.key,
+    required this.leading,
+    required this.myChannels,
+    required this.selected,
+    required this.onSelect,
+    required this.onMyChannelsChanged,
+  });
+
+  /// 좁은 화면: 아바타 (넓은 화면은 측면 탭에 있으므로 null)
+  final Widget? leading;
+  final List<String> myChannels;
+  final String selected;
+  final ValueChanged<String> onSelect;
+  final ValueChanged<List<String>> onMyChannelsChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (leading != null)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 10, 16, 2),
+            child: Align(alignment: Alignment.centerLeft, child: leading),
+          ),
+        ChannelBar(
+          myChannels: myChannels,
+          selected: selected,
+          onSelect: onSelect,
+          onMyChannelsChanged: onMyChannelsChanged,
+        ),
+      ],
+    );
+  }
+}
+
 /// C-1 내 채널 바
 class ChannelBar extends StatelessWidget {
   const ChannelBar({
@@ -29,11 +102,8 @@ class ChannelBar extends StatelessWidget {
     required this.selected,
     required this.onSelect,
     required this.onMyChannelsChanged,
-    this.leading,
   });
 
-  /// 왼쪽 끝(좁은 화면: 아바타)
-  final Widget? leading;
   final List<String> myChannels;
 
   /// allChannelId 또는 채널 id
@@ -48,7 +118,6 @@ class ChannelBar extends StatelessWidget {
       height: 60,
       child: Row(
         children: [
-          if (leading != null) ...[const SizedBox(width: 14), leading!],
           Expanded(
             child: ShaderMask(
               // 오른쪽 끝을 흐리게 — 더 있다는 신호

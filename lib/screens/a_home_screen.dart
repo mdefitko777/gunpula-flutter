@@ -2,15 +2,15 @@
 //
 // ┌──────── 디자인 가이드 대응표: A 홈 ────────────────────────────────────────────────┐
 // │ 번호 │ Flutter 위젯명                     │ 비즈니스 명칭(한글)                    │ 원칙(P번호)   │
-// │ A-1  │ ChannelBar                         │ 내 채널 바 (C-1 공용)                  │ P04 · P06     │
+// │ A-1  │ ChannelHeader                      │ 아바타 줄 + 내 채널 바 (C-0 공용)       │ P04 · P06     │
 // │ A-2  │ GpSearchBar 입구 (탭하면 검색 탭)   │ 검색창(검색 화면과 같은 모양) · 카메라  │ P07 · P04     │
 // │ A-3  │ PageView(화면 끝까지) + 점 표시     │ 공식 예고 배너 (완성된 홍보 이미지)     │ P08 · P02     │
 // │ A-4  │ 배너 아래 상태 · 제목               │ 예고 상태(공식 발표·상품화 확정·예약)   │ P01           │
-// │ A-5  │ 색 막대 + 제목 줄 + ›               │ 줄 이름 · 전체 보기 (최근 추가는 기간)  │ P06 · P07     │
-// │ A-6  │ 가로 ListView (사진 + 이름 한 줄)   │ 최근 추가 · 10월 발매 · 공식 예고 · 최근 본 │ P08        │
-// │ A-8  │ 흰 띠(섹션마다) + 회백색 틈          │ 줄과 줄 사이 층 구분                   │ P08 · P04     │
-// │ A-9  │ 사진 왼쪽 위 + 자리                 │ 원함 담기 (컬렉션 연결 예정 자리)       │ P07           │
+// │ A-5  │ SectionHeader (색 막대 + ›)         │ 줄 이름 · 전체 보기 (최근 추가는 기간)  │ P06 · P07     │
+// │ A-6  │ 가로 ListView + ProductTile         │ 최근 추가 · 10월 발매 · 공식 예고 · 최근 본 │ P08        │
 // │ A-7  │ LoadingView / ErrorView / EmptyView │ 불러오는 중 · 오류 · 빈 채널           │ P01 · P09     │
+// │ A-8  │ 흰 띠(섹션마다) + 회백색 틈          │ 줄과 줄 사이 층 구분                   │ P08 · P04     │
+// │ A-9  │ ProductTile 의 AddSlot              │ 원함 담기 (컬렉션 연결 예정 자리)       │ P07           │
 // └──────────────────────────────────────────────────────────────────────────────────┘
 // 전환: A-2 → 검색 탭(옆으로). 카드 → 상품 상세(쌓기, 다음 단계).
 // 줄 안에는 날짜·가격을 쓰지 않는다 — 궁금하면 눌러서 상세에서 본다 (P08).
@@ -80,58 +80,42 @@ class _Row {
   final bool wide;
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  String _channel = allChannelId;
+class _HomeScreenState extends State<HomeScreen> with ChannelScope {
   late Future<_HomeData> _future;
-  List<String> _loadedFor = const [];
 
-  /// '전체'면 내 채널 전부, 아니면 그 채널 하나
-  List<String> get _ids => _channel == allChannelId ? widget.myChannels : [_channel];
+  @override
+  List<String> get myChannels => widget.myChannels;
+
+  @override
+  void loadScope(List<String> ids) {
+    // STATE: 선택 채널 → GET /kits · /announcements → 배너 + 가로 줄
+    _future = Future.wait([
+      widget.loaders.kits(ids),
+      widget.loaders.announcements(ids),
+    ]).then((r) => _HomeData(r[0] as List<Kit>, r[1] as List<Announcement>));
+  }
 
   @override
   void initState() {
     super.initState();
-    _load();
-  }
-
-  void _load() {
-    _loadedFor = [..._ids];
-    // STATE: 선택 채널 → GET /kits · /announcements → 배너 + 가로 줄
-    _future = Future.wait([
-      widget.loaders.kits(_loadedFor),
-      widget.loaders.announcements(_loadedFor),
-    ]).then((r) => _HomeData(r[0] as List<Kit>, r[1] as List<Announcement>));
+    reloadScope();
   }
 
   @override
   void didUpdateWidget(HomeScreen old) {
     super.didUpdateWidget(old);
-    if (!widget.myChannels.contains(_channel)) _channel = allChannelId;
-    if (_ids.join(',') != _loadedFor.join(',')) setState(_load);
+    syncScope();
   }
-
-  void _select(String id) => setState(() {
-    _channel = id;
-    _load();
-  });
-
-  void _soon([String what = '상품 상세']) => ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text('$what 화면은 다음 단계에서 만들어요')),
-  );
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (widget.leading != null)
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 10, 16, 2),
-            child: Align(alignment: Alignment.centerLeft, child: widget.leading),
-          ),
-        ChannelBar( // A-1 P04
+        ChannelHeader( // A-1 P04
+          leading: widget.leading,
           myChannels: widget.myChannels,
-          selected: _channel,
-          onSelect: _select,
+          selected: channel,
+          onSelect: selectChannel,
           onMyChannelsChanged: widget.onMyChannelsChanged,
         ),
         Expanded(
@@ -144,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
               if (snap.hasError) {
                 return ErrorView( // A-7 P09
                   message: '${snap.error}',
-                  onRetry: () => setState(_load),
+                  onRetry: () => setState(reloadScope),
                 );
               }
               return _body(snap.data!);
@@ -160,22 +144,26 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
       child: GpSearchBar(onTap: widget.onOpenSearch, onCamera: widget.onCamera), // A-2 P04
     );
+    final ids = scopeIds;
     if (data.kits.isEmpty && data.announcements.isEmpty) {
-      final noData = _ids.isNotEmpty && _ids.every((id) => !channelOf(id).hasData);
+      final noData = ids.isNotEmpty && ids.every((id) => !channelOf(id).hasData);
       return ListView(
         children: [
           search,
           EmptyView( // A-7 P09
             icon: Icons.auto_awesome_outlined,
-            message: _ids.isEmpty
+            message: ids.isEmpty
                 ? '내 채널이 비어 있어요'
                 : noData
-                ? '${channelOf(_ids.first).label}은(는) 아직 수록된 상품이 없어요'
+                ? '${channelOf(ids.first).label}은(는) 아직 수록된 상품이 없어요'
                 : '새 소식이 없어요',
-            detail: _ids.isEmpty ? '채널 관리에서 관심 IP를 추가하세요' : '상품이 들어오면 여기에 먼저 보여요',
-            action: _channel == allChannelId
+            detail: ids.isEmpty ? '채널 관리에서 관심 IP를 추가하세요' : '상품이 들어오면 여기에 먼저 보여요',
+            action: channel == allChannelId
                 ? null
-                : OutlinedButton(onPressed: () => _select(allChannelId), child: const Text('전체 보기')),
+                : OutlinedButton(
+                    onPressed: () => selectChannel(allChannelId),
+                    child: const Text('전체 보기'),
+                  ),
           ),
         ],
       );
@@ -183,9 +171,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final byId = {for (final k in data.kits) k.id: k};
     _Item kitItem(Kit k) => _Item(k.image, k.name);
-    final recent = [for (final k in data.kits.where((k) => k.recent)) kitItem(k)];
     final rows = [
-      _Row('최근 추가', recent, subtitle: recentRangeLabel),
+      _Row('최근 추가', [for (final k in data.kits.where((k) => k.recent)) kitItem(k)],
+          subtitle: recentRangeLabel),
       _Row(currentMonthTitle, [for (final k in data.kits.where((k) => k.month)) kitItem(k)]),
       _Row('공식 예고', [
         for (final a in data.announcements) _Item(a.image, a.title, canAdd: false),
@@ -195,13 +183,13 @@ class _HomeScreenState extends State<HomeScreen> {
     final heroes = data.announcements.where((a) => a.hero).toList();
 
     return ListView(
-      padding: EdgeInsets.only(bottom: MediaQuery.paddingOf(context).bottom + 100),
+      padding: EdgeInsets.only(bottom: navClearance(context)),
       children: [
         search,
         if (heroes.isNotEmpty)
           ColoredBox(
             color: Gp.panel,
-            child: _HeroBanner(items: heroes, onTap: () => _soon('공식 예고 상세')), // A-3
+            child: _HeroBanner(items: heroes, onTap: () => showSoon(context, '공식 예고 상세')), // A-3
           ),
         for (final row in rows)
           if (row.items.isNotEmpty)
@@ -214,19 +202,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _RowHeader( // A-5 P06
-                        title: row.title,
+                      SectionHeader( // A-5 P06
+                        row.title,
                         subtitle: row.subtitle,
-                        onMore: () => _soon('${row.title} 전체 목록'),
+                        onMore: () => showSoon(context, '${row.title} 전체 목록'),
                       ),
-                      _HorizontalRow( // A-6 P08
-                        items: row.items,
-                        wide: row.wide,
-                        onTap: _soon,
-                        onAdd: () => ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('원함 담기는 컬렉션 화면과 함께 연결할 예정이에요')),
-                        ),
-                      ),
+                      _HorizontalRow(row: row), // A-6 P08
                     ],
                   ),
                 ),
@@ -339,145 +320,34 @@ class _HeroBannerState extends State<_HeroBanner> {
   }
 }
 
-/// A-5 색 막대 + 줄 제목 + 전체 보기(›) — IMDb 줄 제목처럼
-class _RowHeader extends StatelessWidget {
-  const _RowHeader({required this.title, required this.onMore, this.subtitle = ''});
-  final String title;
-  final String subtitle;
-  final VoidCallback onMore;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onMore,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 20, 12, 12),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 4,
-              height: 22,
-              margin: const EdgeInsets.only(top: 1, right: 10),
-              decoration: BoxDecoration(
-                color: Gp.accent, // 브랜드 포인트 색
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-                  if (subtitle.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 3),
-                      child: Text(
-                        subtitle,
-                        style: const TextStyle(
-                          fontSize: 12.5,
-                          color: Gp.accent,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-            const Icon(Icons.chevron_right, color: Gp.muted),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// A-6 가로 스크롤 줄 — 사진 + 이름 한 줄 (날짜·가격 없음)
+/// A-6 가로 스크롤 줄 — ProductTile (사진 + 이름 한 줄, 날짜·가격 없음)
 class _HorizontalRow extends StatelessWidget {
-  const _HorizontalRow({
-    required this.items,
-    required this.wide,
-    required this.onTap,
-    required this.onAdd,
-  });
-  final List<_Item> items;
-
-  /// true = 가로로 긴 배너 사진(공식 예고)
-  final bool wide;
-  final VoidCallback onTap;
-  final VoidCallback onAdd;
+  const _HorizontalRow({required this.row});
+  final _Row row;
 
   @override
   Widget build(BuildContext context) {
-    final w = wide ? 232.0 : 148.0;
-    final h = wide ? 132.0 : 148.0;
+    // 공식 예고는 가로로 긴 배너 사진
+    final width = row.wide ? 232.0 : 148.0;
+    final aspect = row.wide ? 232 / 132 : 1.0;
     return SizedBox(
-      height: h + 30,
+      height: width / aspect + 32,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        itemCount: items.length,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        itemCount: row.items.length,
         separatorBuilder: (_, _) => const SizedBox(width: 12),
-        itemBuilder: (context, i) => GestureDetector(
-          onTap: onTap,
-          child: SizedBox(
-            width: w,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(14),
-                  child: SizedBox(
-                    width: w,
-                    height: h,
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        ColoredBox(color: Gp.soft, child: AppImage(items[i].image)),
-                        if (items[i].canAdd)
-                          Positioned(left: 6, top: 6, child: _AddSlot(onTap: onAdd)), // A-9 P07
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  items[i].title,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 13, color: Gp.ink),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// A-9 사진 왼쪽 위 + 자리 — 원함 담기 (컬렉션과 연결할 때 동작을 정한다)
-class _AddSlot extends StatelessWidget {
-  const _AddSlot({required this.onTap});
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      button: true,
-      label: '원함에 담기',
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          width: 28,
-          height: 28,
-          decoration: BoxDecoration(
-            color: const Color(0xD9FFFFFF),
-            shape: BoxShape.circle,
-            border: Border.all(color: Gp.line),
-          ),
-          child: const Icon(Icons.add, size: 18, color: Gp.ink),
-        ),
+        itemBuilder: (context, i) {
+          final item = row.items[i];
+          return ProductTile(
+            image: item.image,
+            title: item.title,
+            imageWidth: width,
+            imageAspect: aspect,
+            onTap: () => showSoon(context),
+            onAdd: item.canAdd ? () => showAddSoon(context) : null, // A-9 P07
+          );
+        },
       ),
     );
   }

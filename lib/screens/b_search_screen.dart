@@ -2,13 +2,13 @@
 //
 // ┌──────── 디자인 가이드 대응표: B 검색 ──────────────────────────────────────────────┐
 // │ 번호 │ Flutter 위젯명                     │ 비즈니스 명칭(한글)                    │ 원칙(P번호)   │
-// │ B-1  │ ChannelBar                         │ 검색 범위 = 내 채널 (C-1 공용)          │ P04 · P06     │
+// │ B-1  │ ChannelHeader                      │ 검색 범위 = 내 채널 (C-0 공용)          │ P04 · P06     │
 // │ B-2  │ GpSearchBar (지우기 + 카메라)       │ 검색창(홈과 같은 모양)                 │ P07 · P04     │
 // │ B-3  │ Wrap(InputChip ×)                  │ 최근 검색어 (하나씩 · 전체 지우기)      │ P06 · P03     │
 // │ B-4  │ 2열 번호 목록                       │ 인기 검색어 (1–3위 브랜드 색)           │ P06           │
 // │ B-5  │ 예시 문장 칩                        │ AI에게 설명해서 찾기 (미리 쓴 가짜 응답) │ P10 · P07     │
 // │ B-6  │ 가로 카드 + 일치도 %                │ AI 추천 후보                           │ P01 · P09     │
-// │ B-7  │ GridView 2~5열 (창 너비)            │ 검색 결과 (사진 · 이름 · 라인·작품·연도) │ P08 · 적응형 │
+// │ B-7  │ GridView 2~5열 + ProductTile        │ 검색 결과 (사진 · 이름 · 라인·작품·연도) │ P08 · 적응형 │
 // │ B-8  │ LoadingView / ErrorView / EmptyView │ 불러오는 중 · 오류 · 결과 없음          │ P01 · P09     │
 // └──────────────────────────────────────────────────────────────────────────────────┘
 // 가짜 검색: GET /kits 로 받은 목록 안에서만 거른다(setState). 실제 검색 엔진 · AI 호출 없음.
@@ -75,33 +75,31 @@ class SearchScreen extends StatefulWidget {
   State<SearchScreen> createState() => _SearchScreenState();
 }
 
-class _SearchScreenState extends State<SearchScreen> {
+class _SearchScreenState extends State<SearchScreen> with ChannelScope {
   final _controller = TextEditingController();
   final _focus = FocusNode();
-  String _channel = allChannelId;
   String _query = '';
   final List<String> _recent = [...initialRecentQueries];
   late Future<List<Kit>> _future;
-  List<String> _loadedFor = const [];
 
-  List<String> get _ids => _channel == allChannelId ? widget.myChannels : [_channel];
+  @override
+  List<String> get myChannels => widget.myChannels;
+
+  @override
+  void loadScope(List<String> ids) {
+    _future = widget.loaders.kits(ids); // STATE: 검색 범위(채널) → GET /kits
+  }
 
   @override
   void initState() {
     super.initState();
-    _load();
-  }
-
-  void _load() {
-    _loadedFor = [..._ids];
-    _future = widget.loaders.kits(_loadedFor); // STATE: 검색 범위(채널) → GET /kits
+    reloadScope();
   }
 
   @override
   void didUpdateWidget(SearchScreen old) {
     super.didUpdateWidget(old);
-    if (!widget.myChannels.contains(_channel)) _channel = allChannelId;
-    if (_ids.join(',') != _loadedFor.join(',')) setState(_load);
+    syncScope();
     if (widget.focusTick != old.focusTick) _focus.requestFocus();
   }
 
@@ -128,26 +126,15 @@ class _SearchScreenState extends State<SearchScreen> {
     });
   }
 
-  void _soon([String what = '상품 상세']) => ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text('$what 화면은 다음 단계에서 만들어요')),
-  );
-
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (widget.leading != null)
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 10, 16, 2),
-            child: Align(alignment: Alignment.centerLeft, child: widget.leading),
-          ),
-        ChannelBar( // B-1 P04
+        ChannelHeader( // B-1 P04
+          leading: widget.leading,
           myChannels: widget.myChannels,
-          selected: _channel,
-          onSelect: (id) => setState(() {
-            _channel = id;
-            _load();
-          }),
+          selected: channel,
+          onSelect: selectChannel,
           onMyChannelsChanged: widget.onMyChannelsChanged,
         ),
         Padding(
@@ -168,7 +155,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 return const LoadingView(); // B-8 P01
               }
               if (snap.hasError) {
-                return ErrorView(message: '${snap.error}', onRetry: () => setState(_load)); // B-8 P09
+                return ErrorView(message: '${snap.error}', onRetry: () => setState(reloadScope)); // B-8 P09
               }
               return _query.isEmpty ? _idle() : _results(snap.data!);
             },
@@ -178,16 +165,15 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  double get _bottomPad => MediaQuery.paddingOf(context).bottom + 96;
-
   /// 검색어가 없을 때: 최근 검색 · 인기 검색어 · AI로 찾기
   Widget _idle() {
     return ListView(
-      padding: EdgeInsets.only(bottom: _bottomPad),
+      padding: EdgeInsets.only(bottom: navClearance(context)),
       children: [
         if (_recent.isNotEmpty) ...[
-          _Header(
+          SectionHeader(
             '최근 검색',
+            padding: const EdgeInsets.fromLTRB(16, 16, 4, 10),
             trailing: TextButton(
               onPressed: () => setState(_recent.clear), // STATE: 최근 검색 → 비움
               child: const Text('전체 삭제', style: TextStyle(color: Gp.muted, fontSize: 13)),
@@ -215,7 +201,7 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
           ),
         ],
-        const _Header('인기 검색어'),
+        const SectionHeader('인기 검색어', padding: EdgeInsets.fromLTRB(16, 24, 12, 10)),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: LayoutBuilder(
@@ -258,7 +244,7 @@ class _SearchScreenState extends State<SearchScreen> {
             },
           ),
         ),
-        const _Header('AI에게 설명해서 찾기'),
+        const SectionHeader('AI에게 설명해서 찾기', padding: EdgeInsets.fromLTRB(16, 24, 12, 10)),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
           child: Text(
@@ -309,16 +295,13 @@ class _SearchScreenState extends State<SearchScreen> {
           EmptyView( // B-8 P09
             icon: Icons.search_off,
             message: '「$_query」와 일치하는 상품이 없어요',
-            detail: _channel == allChannelId
+            detail: channel == allChannelId
                 ? '이름 대신 생김새·작품을 문장으로 적어 보세요'
-                : '지금은 ${channelOf(_channel).label} 안에서만 찾고 있어요',
-            action: _channel == allChannelId
+                : '지금은 ${channelOf(channel).label} 안에서만 찾고 있어요',
+            action: channel == allChannelId
                 ? OutlinedButton(onPressed: () => _setQuery(''), child: const Text('검색어 지우기'))
                 : OutlinedButton(
-                    onPressed: () => setState(() {
-                      _channel = allChannelId;
-                      _load();
-                    }),
+                    onPressed: () => selectChannel(allChannelId),
                     child: const Text('전체 채널에서 찾기'),
                   ),
           ),
@@ -332,7 +315,9 @@ class _SearchScreenState extends State<SearchScreen> {
         return CustomScrollView(
           slivers: [
             if (candidates.isNotEmpty)
-              SliverToBoxAdapter(child: _AiCandidates(items: candidates, onTap: _soon)), // B-6
+              SliverToBoxAdapter(
+                child: _AiCandidates(items: candidates, onTap: () => showSoon(context)), // B-6
+              ),
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 18, 16, 10),
@@ -348,7 +333,7 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
             ),
             SliverPadding(
-              padding: EdgeInsets.fromLTRB(16, 0, 16, _bottomPad),
+              padding: EdgeInsets.fromLTRB(16, 0, 16, navClearance(context)),
               sliver: SliverGrid.builder(
                 itemCount: results.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -357,33 +342,23 @@ class _SearchScreenState extends State<SearchScreen> {
                   crossAxisSpacing: 12,
                   childAspectRatio: 0.7,
                 ),
-                itemBuilder: (context, i) => _ResultCard(kit: results[i], onTap: _soon), // B-7 P08
+                itemBuilder: (context, i) {
+                  final k = results[i];
+                  final year = k.date.length >= 4 ? k.date.substring(0, 4) : '';
+                  return ProductTile( // B-7 P08 — 홈 가로 줄과 같은 카드
+                    image: k.image,
+                    title: k.name,
+                    titleLines: 2,
+                    subtitle: [k.line, k.series, year].where((s) => s.isNotEmpty).join(' · '),
+                    onTap: () => showSoon(context),
+                    onAdd: () => showAddSoon(context),
+                  );
+                },
               ),
             ),
           ],
         );
       },
-    );
-  }
-}
-
-class _Header extends StatelessWidget {
-  const _Header(this.title, {this.trailing});
-  final String title;
-  final Widget? trailing;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 22, 8, 10),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-          ),
-          ?trailing,
-        ],
-      ),
     );
   }
 }
@@ -424,13 +399,7 @@ class _AiCandidates extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 6),
                 child: Row(
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: SizedBox.square(
-                        dimension: 56,
-                        child: ColoredBox(color: Gp.soft, child: AppImage(k.image)),
-                      ),
-                    ),
+                    SizedBox.square(dimension: 56, child: PhotoThumb(k.image, radius: 10)),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(
@@ -456,47 +425,6 @@ class _AiCandidates extends StatelessWidget {
                 ),
               ),
             ),
-        ],
-      ),
-    );
-  }
-}
-
-/// B-7 결과 카드 — 사진 · 이름 · 라인·작품·연도(버전 확인용)
-class _ResultCard extends StatelessWidget {
-  const _ResultCard({required this.kit, required this.onTap});
-  final Kit kit;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final year = kit.date.length >= 4 ? kit.date.substring(0, 4) : '';
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          AspectRatio(
-            aspectRatio: 1,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(14),
-              child: ColoredBox(color: Gp.soft, child: AppImage(kit.image)),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            kit.name,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontSize: 13.5, fontWeight: FontWeight.w500, height: 1.3),
-          ),
-          const SizedBox(height: 3),
-          Text(
-            [kit.line, kit.series, year].where((s) => s.isNotEmpty).join(' · '),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontSize: 12, color: Gp.muted),
-          ),
         ],
       ),
     );

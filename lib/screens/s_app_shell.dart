@@ -69,11 +69,7 @@ class _AppShellState extends State<AppShell> {
     );
   }
 
-  void _openProfile() {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('내 정보 화면은 다음 단계에서 만들어요')));
-  }
+  void _openProfile() => showSoon(context, '내 정보');
 
   @override
   Widget build(BuildContext context) {
@@ -365,7 +361,7 @@ class AddSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     void soon(String what) {
       Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$what 화면은 다음 단계에서 만들어요')));
+      showSoon(context, what);
     }
 
     return SafeArea(
@@ -427,12 +423,8 @@ class _TabPageState extends State<_TabPage> {
     final sel = widget.myChannels.contains(_selected) ? _selected : allChannelId;
     return Column(
       children: [
-        if (widget.leading != null)
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 10, 16, 2),
-            child: Align(alignment: Alignment.centerLeft, child: widget.leading),
-          ),
-        ChannelBar(
+        ChannelHeader(
+          leading: widget.leading,
           myChannels: widget.myChannels,
           selected: sel,
           onSelect: (id) => setState(() => _selected = id),

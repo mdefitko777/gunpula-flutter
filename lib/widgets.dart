@@ -206,29 +206,6 @@ class CircleThumb extends StatelessWidget {
   }
 }
 
-/// 섹션 제목 줄: 제목 + 오른쪽 작은 글자/버튼
-class SectionTitle extends StatelessWidget {
-  const SectionTitle(this.title, {super.key, this.trailing});
-
-  final String title;
-  final Widget? trailing;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 20, 8, 8),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
-          ),
-          ?trailing,
-        ],
-      ),
-    );
-  }
-}
-
 /// 떠 있는 흰 원형 버튼 — 아바타 · 가운데 + 버튼
 class RaisedCircleButton extends StatelessWidget {
   const RaisedCircleButton({
@@ -385,6 +362,200 @@ class GpSearchBar extends StatelessWidget {
       ),
     );
   }
+}
+
+/// 아직 만들지 않은 화면으로 가는 자리 — 같은 안내 문구로 통일
+void showSoon(BuildContext context, [String what = '상품 상세']) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text('$what 화면은 다음 단계에서 만들어요')),
+  );
+}
+
+/// 목록 맨 아래 여백 — 하단 탭 바 · 카메라 버튼에 가려지지 않게
+double navClearance(BuildContext context) => MediaQuery.paddingOf(context).bottom + 100;
+
+/// 섹션 제목: 브랜드 색 세로 막대 + 제목 (+ 기간 같은 보조 글 · 오른쪽 버튼 · › 전체 보기)
+class SectionHeader extends StatelessWidget {
+  const SectionHeader(
+    this.title, {
+    super.key,
+    this.subtitle = '',
+    this.trailing,
+    this.onMore,
+    this.padding = const EdgeInsets.fromLTRB(16, 20, 12, 12),
+  });
+
+  final String title;
+
+  /// 브랜드 색 작은 글자 (예: 최근 추가 기간)
+  final String subtitle;
+  final Widget? trailing;
+
+  /// 주면 오른쪽에 › 가 붙고 줄 전체를 누를 수 있다
+  final VoidCallback? onMore;
+  final EdgeInsets padding;
+
+  @override
+  Widget build(BuildContext context) {
+    final row = Padding(
+      padding: padding,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 4,
+            height: 20,
+            margin: const EdgeInsets.only(top: 1, right: 10),
+            decoration: BoxDecoration(
+              color: Gp.accent, // 브랜드 포인트 색
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600)),
+                if (subtitle.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 3),
+                    child: Text(
+                      subtitle,
+                      style: const TextStyle(
+                        fontSize: 12.5,
+                        color: Gp.accent,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          ?trailing,
+          if (onMore != null) const Icon(Icons.chevron_right, color: Gp.muted),
+        ],
+      ),
+    );
+    return onMore == null ? row : InkWell(onTap: onMore, child: row);
+  }
+}
+
+/// 둥근 모서리 상품 사진 (회백색 바탕)
+class PhotoThumb extends StatelessWidget {
+  const PhotoThumb(this.image, {super.key, this.radius = 14});
+  final String image;
+  final double radius;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(radius),
+      child: ColoredBox(color: Gp.soft, child: AppImage(image)),
+    );
+  }
+}
+
+/// 상품 카드: 사진(+ 왼쪽 위 원함 담기) · 이름 · 보조 한 줄
+/// 홈 가로 줄 · 검색 결과가 같이 쓴다. [imageWidth]가 있으면 고정 너비(가로 줄), 없으면 칸 너비.
+class ProductTile extends StatelessWidget {
+  const ProductTile({
+    super.key,
+    required this.image,
+    required this.title,
+    required this.onTap,
+    this.subtitle = '',
+    this.onAdd,
+    this.imageWidth,
+    this.imageAspect = 1,
+    this.titleLines = 1,
+  });
+
+  final String image;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  /// 주면 사진 왼쪽 위에 + (원함 담기) 자리
+  final VoidCallback? onAdd;
+  final double? imageWidth;
+
+  /// 가로 / 세로 (1 = 정사각형, 공식 예고 배너는 16:9 쯤)
+  final double imageAspect;
+  final int titleLines;
+
+  @override
+  Widget build(BuildContext context) {
+    final photo = AspectRatio(
+      aspectRatio: imageAspect,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          PhotoThumb(image),
+          if (onAdd != null) Positioned(left: 6, top: 6, child: AddSlot(onTap: onAdd!)),
+        ],
+      ),
+    );
+    final card = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        photo,
+        const SizedBox(height: 8),
+        Text(
+          title,
+          maxLines: titleLines,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(fontSize: 13.5, height: 1.3),
+        ),
+        if (subtitle.isNotEmpty) ...[
+          const SizedBox(height: 3),
+          Text(
+            subtitle,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontSize: 12, color: Gp.muted),
+          ),
+        ],
+      ],
+    );
+    return GestureDetector(
+      onTap: onTap,
+      child: imageWidth == null ? card : SizedBox(width: imageWidth, child: card),
+    );
+  }
+}
+
+/// 사진 왼쪽 위 + 자리 — 원함 담기 (컬렉션과 연결할 때 동작을 정한다)
+class AddSlot extends StatelessWidget {
+  const AddSlot({super.key, required this.onTap});
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: '원함에 담기',
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          width: 28,
+          height: 28,
+          decoration: BoxDecoration(
+            color: const Color(0xD9FFFFFF),
+            shape: BoxShape.circle,
+            border: Border.all(color: Gp.line),
+          ),
+          child: const Icon(Icons.add, size: 18, color: Gp.ink),
+        ),
+      ),
+    );
+  }
+}
+
+/// 원함 담기 자리를 눌렀을 때 (컬렉션 화면과 연결 전)
+void showAddSoon(BuildContext context) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(content: Text('원함 담기는 컬렉션 화면과 함께 연결할 예정이에요')),
+  );
 }
 
 String _comma(int v) => v.toString().replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (_) => ',');
