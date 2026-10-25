@@ -12,7 +12,7 @@
 // │ A-8  │ 흰 띠(섹션마다) + 회백색 틈          │ 줄과 줄 사이 층 구분                   │ P08 · P04     │
 // │ A-9  │ ProductTile 의 AddSlot              │ 원함 담기 (컬렉션 연결 예정 자리)       │ P07           │
 // └──────────────────────────────────────────────────────────────────────────────────┘
-// 전환: A-2 → 검색 탭(옆으로). 카드 → 상품 상세(쌓기, 다음 단계).
+// 전환: A-2 → 검색 탭(옆으로). 상품 카드 → D 상품 상세(쌓기). 예고 → 예고 상세(다음 단계).
 // 줄 안에는 날짜·가격을 쓰지 않는다 — 궁금하면 눌러서 상세에서 본다 (P08).
 // 현행 앱 문제: 홈 = 버전 번호·총 개수·IP 입구 카드 → v2 홈 = "내 채널의 새 소식"만.
 import 'package:flutter/material.dart';
@@ -23,6 +23,7 @@ import '../models.dart';
 import '../theme.dart';
 import '../widgets.dart';
 import 'c_channel_screen.dart';
+import 'd_kit_detail_screen.dart';
 
 /// 가짜 "최근 본 상품" 기록 — 영구 저장 금지라 상수로 둔다.
 const recentViewedIds = ['gu03', 'be43', 'po21', 'fa30', 'ar35'];
@@ -63,12 +64,12 @@ class _HomeData {
   final List<Announcement> announcements;
 }
 
-/// 가로 줄 한 칸 (사진 + 이름). [canAdd] = 상품이라 원함에 담을 수 있음
+/// 가로 줄 한 칸 (사진 + 이름). [kit]이 있으면 상품(상세 · 원함 담기), 없으면 공식 예고
 class _Item {
-  const _Item(this.image, this.title, {this.canAdd = true});
+  const _Item(this.image, this.title, {this.kit});
   final String image;
   final String title;
-  final bool canAdd;
+  final Kit? kit;
 }
 
 /// 가로 줄 하나
@@ -170,13 +171,13 @@ class _HomeScreenState extends State<HomeScreen> with ChannelScope {
     }
 
     final byId = {for (final k in data.kits) k.id: k};
-    _Item kitItem(Kit k) => _Item(k.image, k.name);
+    _Item kitItem(Kit k) => _Item(k.image, k.name, kit: k);
     final rows = [
       _Row('최근 추가', [for (final k in data.kits.where((k) => k.recent)) kitItem(k)],
           subtitle: recentRangeLabel),
       _Row(currentMonthTitle, [for (final k in data.kits.where((k) => k.month)) kitItem(k)]),
       _Row('공식 예고', [
-        for (final a in data.announcements) _Item(a.image, a.title, canAdd: false),
+        for (final a in data.announcements) _Item(a.image, a.title),
       ], wide: true),
       _Row('최근 본', [for (final id in recentViewedIds) if (byId[id] case final k?) kitItem(k)]),
     ];
@@ -207,7 +208,7 @@ class _HomeScreenState extends State<HomeScreen> with ChannelScope {
                         subtitle: row.subtitle,
                         onMore: () => showSoon(context, '${row.title} 전체 목록'),
                       ),
-                      _HorizontalRow(row: row), // A-6 P08
+                      _HorizontalRow(row: row, loaders: widget.loaders), // A-6 P08
                     ],
                   ),
                 ),
@@ -322,8 +323,9 @@ class _HeroBannerState extends State<_HeroBanner> {
 
 /// A-6 가로 스크롤 줄 — ProductTile (사진 + 이름 한 줄, 날짜·가격 없음)
 class _HorizontalRow extends StatelessWidget {
-  const _HorizontalRow({required this.row});
+  const _HorizontalRow({required this.row, required this.loaders});
   final _Row row;
+  final Loaders loaders;
 
   @override
   Widget build(BuildContext context) {
@@ -339,13 +341,16 @@ class _HorizontalRow extends StatelessWidget {
         separatorBuilder: (_, _) => const SizedBox(width: 12),
         itemBuilder: (context, i) {
           final item = row.items[i];
+          final kit = item.kit;
           return ProductTile(
             image: item.image,
             title: item.title,
             imageWidth: width,
             imageAspect: aspect,
-            onTap: () => showSoon(context),
-            onAdd: item.canAdd ? () => showAddSoon(context) : null, // A-9 P07
+            onTap: kit == null
+                ? () => showSoon(context, '공식 예고 상세')
+                : () => openKitDetail(context, kit, loaders: loaders),
+            onAdd: kit == null ? null : () => showAddSoon(context), // A-9 P07
           );
         },
       ),

@@ -21,6 +21,7 @@ import '../models.dart';
 import '../theme.dart';
 import '../widgets.dart';
 import 'c_channel_screen.dart';
+import 'd_kit_detail_screen.dart';
 
 /// 처음 보이는 최근 검색어 (가짜 기록 — 영구 저장 금지라 상수)
 const initialRecentQueries = ['스트라이크 프리덤', 'RG 윙', '이브이', 'BX-01'];
@@ -316,7 +317,10 @@ class _SearchScreenState extends State<SearchScreen> with ChannelScope {
           slivers: [
             if (candidates.isNotEmpty)
               SliverToBoxAdapter(
-                child: _AiCandidates(items: candidates, onTap: () => showSoon(context)), // B-6
+                child: _AiCandidates(
+                  items: candidates,
+                  onTap: (k) => openKitDetail(context, k, loaders: widget.loaders),
+                ), // B-6
               ),
             SliverToBoxAdapter(
               child: Padding(
@@ -350,7 +354,7 @@ class _SearchScreenState extends State<SearchScreen> with ChannelScope {
                     title: k.name,
                     titleLines: 2,
                     subtitle: [k.line, k.series, year].where((s) => s.isNotEmpty).join(' · '),
-                    onTap: () => showSoon(context),
+                    onTap: () => openKitDetail(context, k, loaders: widget.loaders),
                     onAdd: () => showAddSoon(context),
                   );
                 },
@@ -367,7 +371,7 @@ class _SearchScreenState extends State<SearchScreen> with ChannelScope {
 class _AiCandidates extends StatelessWidget {
   const _AiCandidates({required this.items, required this.onTap});
   final List<(Kit, int, String)> items;
-  final VoidCallback onTap;
+  final ValueChanged<Kit> onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -394,7 +398,7 @@ class _AiCandidates extends StatelessWidget {
           const SizedBox(height: 12),
           for (final (k, score, why) in items)
             InkWell(
-              onTap: onTap,
+              onTap: () => onTap(k),
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 6),
                 child: Row(
