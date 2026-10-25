@@ -144,7 +144,8 @@ class _FriendCollectionScreenState extends State<FriendCollectionScreen> {
           ),
         ),
         for (final k in kits)
-          ThumbRow( // L-2
+          ThumbRow(
+            // L-2
             image: k.image,
             title: k.name,
             titleLines: 2,
@@ -166,7 +167,10 @@ class _FriendCollectionScreenState extends State<FriendCollectionScreen> {
     if (shown.isEmpty) return EmptyView(message: '${f.name}의 도감이 아직 비어 있어요');
     Widget bar(String who, int n, int total, {bool accent = false}) => Row(
       children: [
-        SizedBox(width: 34, child: Text(who, style: const TextStyle(fontSize: 11.5, color: Gp.muted))),
+        SizedBox(
+          width: 34,
+          child: Text(who, style: const TextStyle(fontSize: 11.5, color: Gp.muted)),
+        ),
         Expanded(
           child: accent
               ? AccentBar(value: total == 0 ? 0 : n / total, height: 5)
@@ -182,7 +186,11 @@ class _FriendCollectionScreenState extends State<FriendCollectionScreen> {
         ),
         SizedBox(
           width: 52,
-          child: Text('$n/$total', textAlign: TextAlign.right, style: const TextStyle(fontSize: 11.5, color: Gp.muted)),
+          child: Text(
+            '$n/$total',
+            textAlign: TextAlign.right,
+            style: const TextStyle(fontSize: 11.5, color: Gp.muted),
+          ),
         ),
       ],
     );
@@ -192,15 +200,13 @@ class _FriendCollectionScreenState extends State<FriendCollectionScreen> {
         Row(
           children: [
             const VerifiedBadge(size: 18),
-            Text(
-              '  인증 ${f.verified}개 · 점등 ${f.lit}칸',
-              style: const TextStyle(fontSize: 12.5, color: Gp.muted),
-            ),
+            Text('  인증 ${f.verified}개 · 점등 ${f.lit}칸', style: const TextStyle(fontSize: 12.5, color: Gp.muted)),
           ],
         ),
         const SizedBox(height: 10),
         for (final w in shown)
-          Container( // L-3
+          Container(
+            // L-3
             margin: const EdgeInsets.only(bottom: 10),
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
@@ -210,7 +216,10 @@ class _FriendCollectionScreenState extends State<FriendCollectionScreen> {
             ),
             child: Row(
               children: [
-                SizedBox.square(dimension: 52, child: AppImage(w.image, fit: BoxFit.contain, placeholder: w.name)),
+                SizedBox.square(
+                  dimension: 52,
+                  child: AppImage(w.image, fit: BoxFit.contain, placeholder: w.name),
+                ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(

@@ -11,6 +11,7 @@
 // │ S-7  │ 내 채널 목록(상태)              │ 네 화면이 같이 쓰는 내 IP 채널         │ P04           │
 // │ S-9  │ 오른쪽 위 🔔 (새 알림 점)         │ 알림 열기                              │ P01           │
 // │ S-10 │ 오른쪽 위 ⚙                     │ 설정 열기 (K)                          │ P04 · P06     │
+// │ S-11 │ Drawer (홈 가장자리 밀기)          │ 친구 서랍 (M)                          │ P07           │
 // │ S-8  │ AnimatedSlide · AnimatedPositioned │ 아래로 스크롤하면 탭 바 숨김, 카메라만 오른쪽 아래 │ P08 · P07 │
 // └────────────────────────────────────────────────────────────────────────────────┘
 // 전환: S-3 옆으로(탭) · S-4 덮기(bottom sheet) · S-1 쌓기(push).
@@ -32,6 +33,7 @@ import 'f_collection_screen.dart';
 import 'h_calendar_screen.dart';
 import 'i_profile_screen.dart';
 import 'k_settings_screen.dart';
+import 'm_friends_drawer.dart';
 
 /// 넓은 화면 기준 (Material 3 window size class: expanded ≥ 840dp)
 const railBreakpoint = 840.0;
@@ -178,6 +180,14 @@ class _AppShellState extends State<AppShell> {
     );
     return Scaffold(
       extendBody: true, // 탭 바 뒤로 내용이 비쳐 보이게
+      // S-11 친구 서랍 (M): 홈에서 왼쪽 가장자리를 오른쪽으로 밀면 열림
+      drawer: FriendsDrawer(
+        loaders: widget.loaders,
+        onOpenProfile: _openProfile,
+        onOpenFriend: (m) => openFriend(context, m, loaders: widget.loaders),
+      ),
+      drawerEdgeDragWidth: _tab == 0 ? 56 : 0,
+      drawerScrimColor: const Color(0x33000000),
       body: SafeArea(
         bottom: false,
         child: wide
