@@ -66,10 +66,12 @@ ThemeData buildGpTheme() {
       titleTextStyle: TextStyle(color: Gp.ink, fontSize: 20, fontWeight: FontWeight.w800),
     ),
     dividerTheme: const DividerThemeData(color: Gp.line, thickness: 1, space: 1),
+    // 큰 검정 바탕 + 흰 글자는 쓰지 않는다 → 옅은 회색 바탕 + 검정 글자
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
-        backgroundColor: Gp.ink,
-        foregroundColor: Colors.white,
+        backgroundColor: const Color(0xFFEDEDEB),
+        foregroundColor: Gp.ink,
+        elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Gp.radius)),
         textStyle: const TextStyle(fontWeight: FontWeight.w700),
       ),
@@ -104,10 +106,18 @@ ThemeData buildGpTheme() {
       backgroundColor: Gp.panel,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     ),
-    snackBarTheme: const SnackBarThemeData(
+    // 알림(토스트): 흰 반투명 바탕 · 검정 글자 · 되돌리기는 브랜드 색, 몇 초 뒤 사라짐
+    snackBarTheme: SnackBarThemeData(
       behavior: SnackBarBehavior.floating,
-      backgroundColor: Gp.ink,
-      actionTextColor: Colors.white,
+      backgroundColor: const Color(0xF7FFFFFF),
+      contentTextStyle: const TextStyle(color: Gp.ink, fontSize: 14, fontWeight: FontWeight.w500),
+      actionTextColor: Gp.accent,
+      elevation: 6,
+      insetPadding: const EdgeInsets.fromLTRB(16, 0, 16, 90),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+        side: const BorderSide(color: Gp.line),
+      ),
     ),
     navigationBarTheme: NavigationBarThemeData(
       backgroundColor: Gp.bg,

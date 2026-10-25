@@ -404,8 +404,21 @@ class GpSearchBar extends StatelessWidget {
 }
 
 /// 아직 만들지 않은 화면으로 가는 자리 — 같은 안내 문구로 통일
-void showSoon(BuildContext context, [String what = '상품 상세']) {
-  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$what 화면은 다음 단계에서 만들어요')));
+void showSoon(BuildContext context, [String what = '상품 상세']) =>
+    showToast(context, '$what 화면은 다음 단계에서 만들어요');
+
+/// 짧은 알림(토스트) — 흰 바탕 · 검정 글자, 2.5초 뒤 사라진다. [onUndo]가 있으면 "되돌리기" (P03)
+void showToast(BuildContext context, String message, {VoidCallback? onUndo}) {
+  ScaffoldMessenger.of(context)
+    ..hideCurrentSnackBar()
+    ..showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(milliseconds: 2500),
+        persist: false, // 되돌리기가 있어도 몇 초 뒤 저절로 사라지게
+        action: onUndo == null ? null : SnackBarAction(label: '되돌리기', onPressed: onUndo),
+      ),
+    );
 }
 
 /// 목록 맨 아래 여백 — 하단 탭 바 · 카메라 버튼에 가려지지 않게
@@ -589,11 +602,8 @@ class AddSlot extends StatelessWidget {
 }
 
 /// 원함 담기 자리를 눌렀을 때 (컬렉션 화면과 연결 전)
-void showAddSoon(BuildContext context) {
-  ScaffoldMessenger.of(
-    context,
-  ).showSnackBar(const SnackBar(content: Text('원함 담기는 컬렉션 화면과 함께 연결할 예정이에요')));
-}
+void showAddSoon(BuildContext context) =>
+    showToast(context, '원함 담기는 컬렉션 화면과 함께 연결할 예정이에요');
 
 String _comma(int v) => v.toString().replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (_) => ',');
 
