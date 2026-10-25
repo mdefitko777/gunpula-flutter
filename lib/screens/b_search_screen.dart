@@ -1,0 +1,569 @@
+// 화면 B: 검색 — 이름 · 번호 · 작품, 또는 "말로 설명해서" 찾기
+//
+// ┌──────── 디자인 가이드 대응표: B 검색 ──────────────────────────────────────────────┐
+// │ 번호 │ Flutter 위젯명                     │ 비즈니스 명칭(한글)                    │ 원칙(P번호)   │
+// │ B-1  │ ChannelBar                         │ 검색 범위 = 내 채널 (C-1 공용)          │ P04 · P06     │
+// │ B-2  │ TextField + 지우기 + 카메라         │ 검색창                                 │ P07 · P03     │
+// │ B-3  │ Wrap(InputChip ×)                  │ 최근 검색어 (하나씩 · 전체 지우기)      │ P06 · P03     │
+// │ B-4  │ 2열 번호 목록                       │ 인기 검색어 (1–3위 브랜드 색)           │ P06           │
+// │ B-5  │ 예시 문장 칩                        │ AI에게 설명해서 찾기 (미리 쓴 가짜 응답) │ P10 · P07     │
+// │ B-6  │ 가로 카드 + 일치도 %                │ AI 추천 후보                           │ P01 · P09     │
+// │ B-7  │ GridView 2~5열 (창 너비)            │ 검색 결과 (사진 · 이름 · 라인·작품·연도) │ P08 · 적응형 │
+// │ B-8  │ LoadingView / ErrorView / EmptyView │ 불러오는 중 · 오류 · 결과 없음          │ P01 · P09     │
+// └──────────────────────────────────────────────────────────────────────────────────┘
+// 가짜 검색: GET /kits 로 받은 목록 안에서만 거른다(setState). 실제 검색 엔진 · AI 호출 없음.
+// 현행 앱 문제: 정확한 이름을 모르면 못 찾음 · 필터 입구가 여러 개 → v2는 검색창 하나 + 말로 찾기.
+import 'package:flutter/material.dart';
+
+import '../api.dart';
+import '../channels.dart';
+import '../models.dart';
+import '../theme.dart';
+import '../widgets.dart';
+import 'c_channel_screen.dart';
+
+/// 처음 보이는 최근 검색어 (가짜 기록 — 영구 저장 금지라 상수)
+const initialRecentQueries = ['스트라이크 프리덤', 'RG 윙', '이브이', 'BX-01'];
+
+/// 인기 검색어 (가짜 순위)
+const popularQueries = [
+  '에어리얼', 'RG 윙 건담 제로', '발바토스', '피카츄', 'MGEX',
+  '레전드 건담', 'Hi-ν', '드랜 소드', '세이버', '나인볼',
+];
+
+/// AI 가짜 응답: (트리거 낱말들, 예시 문장, 후보[(키트 id, 일치도, 이유)])
+const aiAnswers = <(List<String>, String, List<(String, int, String)>)>[
+  (['날개'], '파란 날개 달린 SEED 건담', [
+    ('gu02', 94, '푸른 날개 8장 · SEED · 흰색/파랑'),
+    ('gu06', 88, '같은 계열 기체의 SD 버전'),
+    ('gu12', 61, 'SEED 주인공 기체 · 날개 없음'),
+  ]),
+  (['잠', '자고'], '자고 있는 피카츄 피규어', [
+    ('po22', 96, '「잠자는 피카츄」 이름 일치'),
+    ('po23', 64, '피카츄 · 봉제인형'),
+  ]),
+  (['드래곤', '용'], '용 모양 블레이드 베이', [
+    ('be43', 90, '드랜(드래곤) 소드 · BX-00'),
+    ('be48', 85, '드랜 소드 메탈 코트'),
+    ('be47', 72, '코발트 드라군 · 용 모양 블레이드'),
+  ]),
+];
+
+class SearchScreen extends StatefulWidget {
+  const SearchScreen({
+    super.key,
+    required this.myChannels,
+    required this.onMyChannelsChanged,
+    required this.onCamera,
+    this.focusTick = 0,
+    this.leading,
+    this.loaders = const Loaders(),
+  });
+
+  final List<String> myChannels;
+  final ValueChanged<List<String>> onMyChannelsChanged;
+
+  /// 검색창 카메라 → 앱 셸의 찍어서 찾기 시트
+  final VoidCallback onCamera;
+
+  /// 값이 바뀌면 검색창에 커서를 둔다 (홈 검색 알약에서 넘어올 때)
+  final int focusTick;
+  final Widget? leading;
+  final Loaders loaders;
+
+  @override
+  State<SearchScreen> createState() => _SearchScreenState();
+}
+
+class _SearchScreenState extends State<SearchScreen> {
+  final _controller = TextEditingController();
+  final _focus = FocusNode();
+  String _channel = allChannelId;
+  String _query = '';
+  final List<String> _recent = [...initialRecentQueries];
+  late Future<List<Kit>> _future;
+  List<String> _loadedFor = const [];
+
+  List<String> get _ids => _channel == allChannelId ? widget.myChannels : [_channel];
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  void _load() {
+    _loadedFor = [..._ids];
+    _future = widget.loaders.kits(_loadedFor); // STATE: 검색 범위(채널) → GET /kits
+  }
+
+  @override
+  void didUpdateWidget(SearchScreen old) {
+    super.didUpdateWidget(old);
+    if (!widget.myChannels.contains(_channel)) _channel = allChannelId;
+    if (_ids.join(',') != _loadedFor.join(',')) setState(_load);
+    if (widget.focusTick != old.focusTick) _focus.requestFocus();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _focus.dispose();
+    super.dispose();
+  }
+
+  void _setQuery(String q) {
+    _controller.text = q;
+    _controller.selection = TextSelection.collapsed(offset: q.length);
+    setState(() => _query = q.trim()); // STATE: 검색어 → 결과 격자 · AI 후보
+  }
+
+  void _submit(String q) {
+    final t = q.trim();
+    if (t.isEmpty) return;
+    setState(() {
+      _recent
+        ..remove(t)
+        ..insert(0, t); // STATE: 검색어 → 최근 검색 맨 앞
+    });
+  }
+
+  void _soon([String what = '상품 상세']) => ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text('$what 화면은 다음 단계에서 만들어요')),
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        if (widget.leading != null)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 10, 16, 2),
+            child: Align(alignment: Alignment.centerLeft, child: widget.leading),
+          ),
+        ChannelBar( // B-1 P04
+          myChannels: widget.myChannels,
+          selected: _channel,
+          onSelect: (id) => setState(() {
+            _channel = id;
+            _load();
+          }),
+          onMyChannelsChanged: widget.onMyChannelsChanged,
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+          child: _SearchField( // B-2 P07
+            controller: _controller,
+            focus: _focus,
+            onChanged: (q) => setState(() => _query = q.trim()),
+            onSubmitted: _submit,
+            onClear: () => _setQuery(''),
+            onCamera: widget.onCamera,
+          ),
+        ),
+        Expanded(
+          child: FutureBuilder<List<Kit>>(
+            future: _future,
+            builder: (context, snap) {
+              if (snap.connectionState != ConnectionState.done) {
+                return const LoadingView(); // B-8 P01
+              }
+              if (snap.hasError) {
+                return ErrorView(message: '${snap.error}', onRetry: () => setState(_load)); // B-8 P09
+              }
+              return _query.isEmpty ? _idle() : _results(snap.data!);
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  double get _bottomPad => MediaQuery.paddingOf(context).bottom + 96;
+
+  /// 검색어가 없을 때: 최근 검색 · 인기 검색어 · AI로 찾기
+  Widget _idle() {
+    return ListView(
+      padding: EdgeInsets.only(bottom: _bottomPad),
+      children: [
+        if (_recent.isNotEmpty) ...[
+          _Header(
+            '최근 검색',
+            trailing: TextButton(
+              onPressed: () => setState(_recent.clear), // STATE: 최근 검색 → 비움
+              child: const Text('전체 삭제', style: TextStyle(color: Gp.muted, fontSize: 13)),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                for (final q in _recent)
+                  InputChip( // B-3 P03
+                    label: Text(q),
+                    onPressed: () => _setQuery(q),
+                    onDeleted: () => setState(() => _recent.remove(q)),
+                    deleteIcon: const Icon(Icons.close, size: 16),
+                    backgroundColor: Gp.panel,
+                    side: const BorderSide(color: Gp.line),
+                    shape: const StadiumBorder(),
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    visualDensity: VisualDensity.compact,
+                  ),
+              ],
+            ),
+          ),
+        ],
+        const _Header('인기 검색어'),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: LayoutBuilder(
+            builder: (context, box) {
+              final half = (popularQueries.length / 2).ceil();
+              Widget col(int from, int to) => Expanded(
+                child: Column(
+                  children: [
+                    for (var i = from; i < to; i++)
+                      InkWell(
+                        onTap: () => _setQuery(popularQueries[i]),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 9),
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: 24,
+                                child: Text(
+                                  '${i + 1}',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    color: i < 3 ? Gp.accent : Gp.faint, // B-4 브랜드 포인트 색
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(popularQueries[i], maxLines: 1, overflow: TextOverflow.ellipsis),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              );
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [col(0, half), const SizedBox(width: 16), col(half, popularQueries.length)],
+              );
+            },
+          ),
+        ),
+        const _Header('AI에게 설명해서 찾기'),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+          child: Text(
+            '정확한 이름이 기억나지 않으면 생김새나 작품을 문장으로 적어 보세요.', // B-5 P10
+            style: TextStyle(color: Gp.muted.withValues(alpha: 0.9), fontSize: 13),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final (_, example, _) in aiAnswers)
+                ActionChip(
+                  avatar: const Icon(Icons.auto_awesome, size: 16, color: Gp.accent),
+                  label: Text(example),
+                  onPressed: () => _setQuery(example),
+                  backgroundColor: Gp.panel,
+                  side: const BorderSide(color: Gp.line),
+                  shape: const StadiumBorder(),
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// 검색어가 있을 때: AI 후보(있으면) + 결과 격자
+  Widget _results(List<Kit> kits) {
+    final q = _query.toLowerCase();
+    bool hit(Kit k) => [k.name, k.nameJa, k.series, k.line, k.type]
+        .any((f) => f.toLowerCase().contains(q));
+    final results = kits.where(hit).toList();
+    final byId = {for (final k in kits) k.id: k};
+    final ai = aiAnswers.where((a) => a.$1.any(_query.contains)).firstOrNull;
+    final candidates = [
+      if (ai != null)
+        for (final (id, score, why) in ai.$3)
+          if (byId[id] case final k?) (k, score, why),
+    ];
+
+    if (results.isEmpty && candidates.isEmpty) {
+      return ListView(
+        children: [
+          EmptyView( // B-8 P09
+            icon: Icons.search_off,
+            message: '「$_query」와 일치하는 상품이 없어요',
+            detail: _channel == allChannelId
+                ? '이름 대신 생김새·작품을 문장으로 적어 보세요'
+                : '지금은 ${channelOf(_channel).label} 안에서만 찾고 있어요',
+            action: _channel == allChannelId
+                ? OutlinedButton(onPressed: () => _setQuery(''), child: const Text('검색어 지우기'))
+                : OutlinedButton(
+                    onPressed: () => setState(() {
+                      _channel = allChannelId;
+                      _load();
+                    }),
+                    child: const Text('전체 채널에서 찾기'),
+                  ),
+          ),
+        ],
+      );
+    }
+
+    return LayoutBuilder(
+      builder: (context, box) {
+        final cols = (box.maxWidth / 180).floor().clamp(2, 5); // B-7 적응형
+        return CustomScrollView(
+          slivers: [
+            if (candidates.isNotEmpty)
+              SliverToBoxAdapter(child: _AiCandidates(items: candidates, onTap: _soon)), // B-6
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 18, 16, 10),
+                child: Text(
+                  results.isEmpty
+                      ? '이름이 그대로 일치하는 상품은 없어요 · 위 후보를 확인하세요'
+                      : '검색 결과 ${results.length}', // P01
+                  style: TextStyle(
+                    fontWeight: results.isEmpty ? FontWeight.w400 : FontWeight.w600,
+                    color: results.isEmpty ? Gp.muted : Gp.ink,
+                  ),
+                ),
+              ),
+            ),
+            SliverPadding(
+              padding: EdgeInsets.fromLTRB(16, 0, 16, _bottomPad),
+              sliver: SliverGrid.builder(
+                itemCount: results.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: cols,
+                  mainAxisSpacing: 16,
+                  crossAxisSpacing: 12,
+                  childAspectRatio: 0.7,
+                ),
+                itemBuilder: (context, i) => _ResultCard(kit: results[i], onTap: _soon), // B-7 P08
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _Header extends StatelessWidget {
+  const _Header(this.title, {this.trailing});
+  final String title;
+  final Widget? trailing;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 22, 8, 10),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+          ),
+          ?trailing,
+        ],
+      ),
+    );
+  }
+}
+
+/// B-2 검색창 — 떠 있는 흰 알약
+class _SearchField extends StatelessWidget {
+  const _SearchField({
+    required this.controller,
+    required this.focus,
+    required this.onChanged,
+    required this.onSubmitted,
+    required this.onClear,
+    required this.onCamera,
+  });
+
+  final TextEditingController controller;
+  final FocusNode focus;
+  final ValueChanged<String> onChanged;
+  final ValueChanged<String> onSubmitted;
+  final VoidCallback onClear;
+  final VoidCallback onCamera;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 48,
+      padding: const EdgeInsets.only(left: 14, right: 4),
+      decoration: Gp.raised(radius: 24),
+      child: Row(
+        children: [
+          const Icon(Icons.search, size: 20, color: Gp.muted),
+          const SizedBox(width: 8),
+          Expanded(
+            child: TextField(
+              controller: controller,
+              focusNode: focus,
+              onChanged: onChanged,
+              onSubmitted: onSubmitted,
+              textInputAction: TextInputAction.search,
+              decoration: const InputDecoration(
+                hintText: '이름 · 번호 · 생김새로 찾기',
+                filled: false,
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.zero,
+              ),
+            ),
+          ),
+          ValueListenableBuilder(
+            valueListenable: controller,
+            builder: (context, v, _) => v.text.isEmpty
+                ? const SizedBox.shrink()
+                : IconButton(
+                    tooltip: '지우기', // P03
+                    icon: const Icon(Icons.cancel, size: 18, color: Gp.faint),
+                    onPressed: onClear,
+                  ),
+          ),
+          IconButton(
+            tooltip: '찍어서 찾기',
+            icon: const Icon(Icons.photo_camera_outlined, size: 21, color: Gp.ink),
+            onPressed: onCamera,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// B-6 AI 추천 후보 — 미리 쓴 가짜 응답
+class _AiCandidates extends StatelessWidget {
+  const _AiCandidates({required this.items, required this.onTap});
+  final List<(Kit, int, String)> items;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+      padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+      decoration: BoxDecoration(
+        color: Gp.panel,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Gp.line),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Row(
+            children: [
+              Icon(Icons.auto_awesome, size: 18, color: Gp.accent),
+              SizedBox(width: 6),
+              Text('AI 추천 후보', style: TextStyle(fontWeight: FontWeight.w700)),
+              Spacer(),
+              Text('설명과 닮은 순서', style: TextStyle(color: Gp.faint, fontSize: 12)),
+            ],
+          ),
+          const SizedBox(height: 12),
+          for (final (k, score, why) in items)
+            InkWell(
+              onTap: onTap,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: Row(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: SizedBox.square(
+                        dimension: 56,
+                        child: ColoredBox(color: Gp.soft, child: AppImage(k.image)),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(k.name, maxLines: 1, overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(fontWeight: FontWeight.w600)),
+                          const SizedBox(height: 2),
+                          Text(why, maxLines: 1, overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(color: Gp.muted, fontSize: 12.5)),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      '$score%', // 일치도 P01
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        color: score >= 85 ? Gp.accent : Gp.muted,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+/// B-7 결과 카드 — 사진 · 이름 · 라인·작품·연도(버전 확인용)
+class _ResultCard extends StatelessWidget {
+  const _ResultCard({required this.kit, required this.onTap});
+  final Kit kit;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final year = kit.date.length >= 4 ? kit.date.substring(0, 4) : '';
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AspectRatio(
+            aspectRatio: 1,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(14),
+              child: ColoredBox(color: Gp.soft, child: AppImage(kit.image)),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            kit.name,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontSize: 13.5, fontWeight: FontWeight.w500, height: 1.3),
+          ),
+          const SizedBox(height: 3),
+          Text(
+            [kit.line, kit.series, year].where((s) => s.isNotEmpty).join(' · '),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontSize: 12, color: Gp.muted),
+          ),
+        ],
+      ),
+    );
+  }
+}

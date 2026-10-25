@@ -24,6 +24,7 @@ import '../channels.dart';
 import '../theme.dart';
 import '../widgets.dart';
 import 'a_home_screen.dart';
+import 'b_search_screen.dart';
 import 'c_channel_screen.dart';
 
 /// 넓은 화면 기준 (Material 3 window size class: expanded ≥ 840dp)
@@ -51,6 +52,9 @@ class _AppShellState extends State<AppShell> {
 
   /// 하단 탭 바가 보이는지 (아래로 스크롤하면 숨김)
   bool _barShown = true;
+
+  /// 홈 검색 알약 → 검색 탭 검색창에 커서
+  int _searchFocusTick = 0;
   List<String> _myChannels = [...defaultMyChannels]; // S-7 P04
 
   void _setChannels(List<String> ids) {
@@ -82,7 +86,21 @@ class _AppShellState extends State<AppShell> {
             leading: wide ? null : avatar,
             myChannels: _myChannels,
             onMyChannelsChanged: _setChannels,
-            onOpenSearch: () => setState(() => _tab = 1),
+            onOpenSearch: () => setState(() {
+              _tab = 1; // STATE: 홈 검색 알약 → 검색 탭 + 검색창 커서
+              _searchFocusTick++;
+            }),
+            loaders: widget.loaders,
+          )
+        : i == 1
+        ? SearchScreen(
+            // B
+            key: const ValueKey(1),
+            leading: wide ? null : avatar,
+            myChannels: _myChannels,
+            onMyChannelsChanged: _setChannels,
+            onCamera: _openAdd,
+            focusTick: _searchFocusTick,
             loaders: widget.loaders,
           )
         : _TabPage(
@@ -225,16 +243,23 @@ class _NarrowLayout extends StatelessWidget {
       builder: (context, box) => Stack(
         children: [
           Positioned.fill(
-            child: NotificationListener<UserScrollNotification>(
+            child: NotificationListener<ScrollMetricsNotification>(
+              // 내용이 짧아 스크롤할 수 없게 되면 탭 바를 다시 보인다
               onNotification: (n) {
-                // 세로 스크롤만 본다 (가로로 넘기는 줄은 무시)
-                if (n.metrics.axis == Axis.vertical) {
-                  if (n.direction == ScrollDirection.reverse) onScroll(false);
-                  if (n.direction == ScrollDirection.forward) onScroll(true);
-                }
+                if (n.metrics.axis == Axis.vertical && n.metrics.maxScrollExtent <= 0) onScroll(true);
                 return false;
               },
-              child: body,
+              child: NotificationListener<UserScrollNotification>(
+                onNotification: (n) {
+                  // 세로 스크롤만 본다 (가로로 넘기는 줄은 무시)
+                  if (n.metrics.axis == Axis.vertical) {
+                    if (n.direction == ScrollDirection.reverse) onScroll(false);
+                    if (n.direction == ScrollDirection.forward) onScroll(true);
+                  }
+                  return false;
+                },
+                child: body,
+              ),
             ),
           ),
           Positioned(
