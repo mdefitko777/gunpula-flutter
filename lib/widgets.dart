@@ -1234,5 +1234,8 @@ String _comma(int v) => v.toString().replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\
 /// 일본 정가: ¥3,850 (없으면 '가격 미정')
 String yen(int? v) => v == null ? '가격 미정' : '¥${_comma(v)}';
 
+/// 날짜 한 가지 모양: "2026-10-05" → "2026.10.05", "2027-07" → "2027.07" (상세 · 목록 · 공고 공통)
+String dateDot(String d) => d.replaceAll('-', '.');
+
 /// 원화: 41,000원
 String won(int v) => '${_comma(v)}원';

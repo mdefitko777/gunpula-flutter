@@ -79,7 +79,7 @@ class _AnnouncementScreenState extends State<AnnouncementScreen> {
                     const SizedBox(height: 10),
                     Text(a.title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, height: 1.35)),
                     const SizedBox(height: 6),
-                    Text(joinDot([a.date, a.source]), style: const TextStyle(fontSize: 13, color: Gp.muted)),
+                    Text(joinDot([dateDot(a.date), a.source]), style: const TextStyle(fontSize: 13, color: Gp.muted)),
                     const SizedBox(height: 20),
                     _StageLine(current: stage), // J-3 P01
                     const SizedBox(height: 20),

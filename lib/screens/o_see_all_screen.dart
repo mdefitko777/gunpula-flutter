@@ -121,8 +121,6 @@ class KitFilter {
   ];
 }
 
-/// "2026-10-05" → "2026.10.05", "2027-07" → "2027.07"
-String dateLabel(String d) => d.replaceAll('-', '.');
 
 /// 값별 개수, 많은 순
 List<(String, int)> _counts(Iterable<String> values) {
@@ -416,7 +414,7 @@ class _SectionListViewState extends State<SectionListView> {
     image: k.image,
     title: k.name,
     titleLines: 2,
-    subtitle: joinDot([yen(k.priceJpy), dateLabel(k.date)]),
+    subtitle: joinDot([yen(k.priceJpy), dateDot(k.date)]),
     marks: QuickMarks(name: k.name, liked: k.status == CollectStatus.wanted, owned: k.status == CollectStatus.owned),
     onTap: () => openKitDetail(context, k, loaders: widget.loaders),
   );
@@ -436,7 +434,7 @@ class _SectionListViewState extends State<SectionListView> {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Text(yen(k.priceJpy), style: const TextStyle(fontSize: 13)),
-        Text(dateLabel(k.date), style: const TextStyle(fontSize: 11.5, color: Gp.faint)),
+        Text(dateDot(k.date), style: const TextStyle(fontSize: 11.5, color: Gp.faint)),
       ],
     ),
     onTap: () => openKitDetail(context, k, loaders: widget.loaders),
@@ -508,7 +506,7 @@ class _SectionListViewState extends State<SectionListView> {
                                   const SizedBox(width: 6),
                                   Expanded(
                                     child: Text(
-                                      joinDot([channelOf(a.franchiseId).label, dateLabel(a.date), a.source]),
+                                      joinDot([channelOf(a.franchiseId).label, dateDot(a.date), a.source]),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(fontSize: 12, color: Gp.muted),
