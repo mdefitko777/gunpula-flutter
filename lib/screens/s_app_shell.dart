@@ -25,9 +25,9 @@ import '../theme.dart';
 import '../widgets.dart';
 import 'a_home_screen.dart';
 import 'b_search_screen.dart';
-import 'c_channel_screen.dart';
 import 'e_camera_screen.dart';
 import 'f_collection_screen.dart';
+import 'h_calendar_screen.dart';
 
 /// 넓은 화면 기준 (Material 3 window size class: expanded ≥ 840dp)
 const railBreakpoint = 840.0;
@@ -118,8 +118,16 @@ class _AppShellState extends State<AppShell> {
             focusTick: _searchFocusTick,
             loaders: widget.loaders,
           )
-        : i == 3
-        ? CollectionScreen(
+        : i == 2
+        ? CalendarScreen(
+            // H
+            key: const ValueKey(2),
+            leading: wide ? null : avatar,
+            myChannels: _myChannels,
+            onMyChannelsChanged: _setChannels,
+            loaders: widget.loaders,
+          )
+        : CollectionScreen(
             // F
             key: const ValueKey(3),
             leading: wide ? null : avatar,
@@ -127,13 +135,6 @@ class _AppShellState extends State<AppShell> {
             onMyChannelsChanged: _setChannels,
             onGoSearch: _goSearch,
             loaders: widget.loaders,
-          )
-        : _TabPage(
-            key: ValueKey(i),
-            title: _tabs[i].$3,
-            leading: wide ? null : avatar,
-            myChannels: _myChannels,
-            onMyChannelsChanged: _setChannels,
           );
     final body = IndexedStack(
       // S-6 P03
@@ -417,53 +418,6 @@ class AddSheet extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-/// 이번 단계의 임시 탭 화면 — 채널 바만 붙여 두고 내용은 다음 단계에서 채운다.
-class _TabPage extends StatefulWidget {
-  const _TabPage({
-    super.key,
-    required this.title,
-    required this.myChannels,
-    required this.onMyChannelsChanged,
-    this.leading,
-  });
-
-  final String title;
-  final Widget? leading;
-  final List<String> myChannels;
-  final ValueChanged<List<String>> onMyChannelsChanged;
-
-  @override
-  State<_TabPage> createState() => _TabPageState();
-}
-
-class _TabPageState extends State<_TabPage> {
-  String _selected = allChannelId;
-
-  @override
-  Widget build(BuildContext context) {
-    // 내 채널에서 빠진 채널을 보고 있었다면 '전체'로 돌아간다
-    final sel = widget.myChannels.contains(_selected) ? _selected : allChannelId;
-    return Column(
-      children: [
-        ChannelHeader(
-          leading: widget.leading,
-          myChannels: widget.myChannels,
-          selected: sel,
-          onSelect: (id) => setState(() => _selected = id),
-          onMyChannelsChanged: widget.onMyChannelsChanged,
-        ),
-        Expanded(
-          child: EmptyView(
-            icon: Icons.construction_outlined,
-            message: '${widget.title} 화면 — 다음 단계에서 설계',
-            detail: sel == allChannelId ? '지금 채널: 전체' : '지금 채널: ${channelOf(sel).label}',
-          ),
-        ),
-      ],
     );
   }
 }
