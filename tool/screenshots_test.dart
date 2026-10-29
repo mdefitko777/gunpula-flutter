@@ -13,6 +13,7 @@ import 'package:mid_project_template/api.dart';
 import 'package:mid_project_template/detail_pane.dart';
 import 'package:mid_project_template/marks.dart';
 import 'package:mid_project_template/models.dart';
+import 'package:mid_project_template/screens/c_channel_screen.dart';
 import 'package:mid_project_template/screens/d_kit_detail_screen.dart';
 import 'package:mid_project_template/screens/e_camera_screen.dart';
 import 'package:mid_project_template/screens/f_collection_screen.dart';
@@ -181,6 +182,11 @@ void main() {
   testWidgets('알림', (t) async {
     await _open(t, phone, NotificationsScreen(myChannels: const ['gundam', 'beyblade', 'pokemon'], loaders: fakeLoaders));
     await _save(t, '16_notifications');
+  });
+
+  testWidgets('채널 관리', (t) async {
+    await _open(t, phone, ChannelManagerScreen(initial: const ['gundam', 'beyblade', 'pokemon'], onChanged: (_) {}));
+    await _save(t, '24_channel_manager');
   });
 
   testWidgets('설정', (t) async {
