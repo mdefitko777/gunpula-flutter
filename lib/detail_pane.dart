@@ -145,7 +145,7 @@ class _EmptyPane extends StatelessWidget {
             Icon(Icons.view_in_ar_outlined, size: 72, color: Color(0xFFDCDCDA)),
             SizedBox(height: 10),
             Text(
-              'Gunpula',
+              'Hobby Atlas',
               style: TextStyle(
                 fontSize: Gp.t24,
                 fontWeight: FontWeight.w800,

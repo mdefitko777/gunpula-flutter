@@ -129,7 +129,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 const ListTile(
                   leading: Icon(Icons.info_outline),
                   title: Text('버전'),
-                  trailing: Text('Gunpula v2.0.0', style: TextStyle(color: Gp.muted)),
+                  trailing: Text('Hobby Atlas 2.0.0', style: TextStyle(color: Gp.muted)),
                 ),
               ],
             ),

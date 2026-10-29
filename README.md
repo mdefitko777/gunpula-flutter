@@ -1,11 +1,11 @@
-# Gunpula v2 — hobbyDB v2 재설계 · GAI3008 중간프로젝트 저장소 (1인 1팀)
+# Hobby Atlas — hobbyDB v2 재설계 · GAI3008 중간프로젝트 저장소 (1인 1팀)
 
 ## 앱 소개
 
 > 앱스토어 상품 페이지처럼 채웁니다. 칸 이름과 순서는 발표 자료의 "앱 소개" 장과 같습니다.
 
 ### 앱 이름
-Gunpula v2 (임시 이름 — hobbyDB v2 재설계)
+Hobby Atlas (약칭 HA · hobbyDB v2 재설계 · 2026-10-29 확정, 이전 임시 이름 Gunpula v2)
 
 ### 부제
 새 소식부터 내 도감까지, 수집가의 한 앱
@@ -26,6 +26,7 @@ Gunpula v2 (임시 이름 — hobbyDB v2 재설계)
 | 웹 메뉴 그대로 · 경매 기록 · 버튼이 한꺼번에 | 내 채널의 공식 예고 배너 + 가로 줄, ♡ · 리본 바로 담기 | 일본 정가 · 국내 시세 한 줄 · 아래 고정 ♡ 좋아요 · 리본 구매함 | 흑백 → 컬러 → 초록 테두리 → 내 사진 고리, 작품 Lv | 폴드 · 태블릿: 왼쪽 앱 그대로, 오른쪽 상세 |
 
 ### 설명
+0. **왜 만들었나**: 좋아하는 상품의 공식 정보가 브랜드마다 흩어져 있습니다 — 건담 하나만 해도 프라모델은 BANDAI SPIRITS 호비 사이트, 완성품은 TAMASHII NATIONS, 한정판은 프리미엄 반다이, 경품은 BANPRESTO, G.E.M.은 MegaHouse. 여기에 KOTOBUKIYA · Good Smile Company · TAKARA TOMY · 포켓몬센터 · 애니플렉스 온라인까지 사이트끼리 연결이 없어 지난 상품은 찾기도 어렵습니다.
 1. 관심 있는 IP(채널)만 골라 **공식 예고 · 발매일 · 새 상품**을 먼저 보고, 갖고 싶은 것은 ♡, 산 것은 리본으로 한 번에 기록하면, 모을수록 **도감 칸에 불이 켜지고 레벨이 오르는** 수집 앱입니다.
 2. 현행 hobbyDB는 웹사이트 메뉴를 그대로 옮겨 익히기 어렵고(2023-11-23 ★5 · 2023-04-18 ★5), 스캐너가 멈추고(2025-07-28 ★3), 시세를 한 달 10번만 보게 막고 광고가 많습니다(2025-11-30 ★1). v2는 "내 채널"과 "수집가가 하는 일의 순서"(소식 → 찾기 → 판단 → 기록 → 보기 → 나누기)로 화면을 다시 짰습니다.
 3. 핵심 가치: 내 채널 소식 · 한 번에 기록(♡ · 리본) · 도감 레벨 · 친구와 나누기(겹쳐 사지 않기 · 게시물 · 워터마크) · 폰부터 폴드까지 같은 앱.
@@ -59,7 +60,7 @@ v2에서 바뀐 것 — 원칙 카드(`docs/원칙카드.md`)의 P번호와 연�
 | 작성자 | ZHENG BOWEN (2023106124) · 1인 1팀 |
 | 데모 | TODO: 데모 영상 1분 `docs/영상/demo_1min.mp4` 또는 드라이브 링크 — **제출물 ①에 필수** (녹화 순서: 6장) |
 | AI 사용 | 규칙 `AGENTS.md` · 기록 `docs/prompt-log.md` · 셀프 논증 `docs/셀프논증.md` · 기획 확정 태그 `v1-plan` |
-| 발표자료 | **제출용** `docs/발표/Gunpula_v2_발표_최종.pdf` (원본 `Gunpula_v2_발표_최종.pptx` — 교수 목차 0–9 · 부록 B1–B5, 본문 12장 + 부록 24장) · 대본 `docs/발표/발표대본.md`(한국어 + 中文, 노트에도 같음) · 이전 판 `Gunpula_v2_발표.pptx`(템플릿 그대로 채운 상세판) |
+| 발표자료 | **제출용** `docs/발표/HobbyAtlas_발표_최종.pdf` (원본 `HobbyAtlas_발표_최종.pptx` — 교수 목차 0–9 · 부록 B1–B5, 본문 13장 + 부록 24장) · 대본 `docs/발표/발표대본.md`(한국어 + 中文, 노트에도 같음) · 이전 판 `Gunpula_v2_발표.pptx`(템플릿 그대로 채운 상세판) |
 
 > 이 저장소는 **UI만 구현**합니다(중간고사 안내문 5장). 보이기는 다 동작하는 것처럼, 실제 동작(저장 · 로그인 · 결제 · 실제 인식 · 실제 계산)은 없습니다.
 > 화면 16개: S 앱 셸 · C 채널 바 · A 홈 · B 검색 · O 전체 목록 · D 상품 상세 · E 찍어서 찾기 · H 캘린더 · F 컬렉션 · G 도감 · J 공식 예고 · M 친구 서랍 · I 내 정보 · L 친구 컬렉션 · N 알림 · K 설정 — 3장 · `docs/디자인가이드.md`.
@@ -69,7 +70,7 @@ v2에서 바뀐 것 — 원칙 카드(`docs/원칙카드.md`)의 P번호와 연�
 
 ## 0. 폴더 · 앱 이름
 
-- 앱 이름(화면에 보이는 이름) `Gunpula v2`: `lib/main.dart`(MaterialApp title) · `web/index.html` · `web/manifest.json` · `android/app/src/main/AndroidManifest.xml` · `ios/Runner/Info.plist`
+- 앱 이름(화면에 보이는 이름) `Hobby Atlas`: `lib/main.dart`(MaterialApp title) · `web/index.html` · `web/manifest.json` · `android/app/src/main/AndroidManifest.xml` · `ios/Runner/Info.plist`
 - 패키지 이름 `mid_project_template`는 템플릿 그대로 둡니다(`test/` import 와 같게).
 - ⚠ 경로에 한글이 있으면 `flutter analyze`가 analysis server 오류로 멈춥니다 → 대신 `dart analyze lib test`(0 issues). `flutter test` · `flutter run`은 됩니다.
 
@@ -207,7 +208,7 @@ grep -rnE "http\.(post|put|patch|delete)|SharedPreferences|sqflite|hive|Firebase
   - [x] Flutter 코드 + `mock_server/db.json`
   - [ ] README — 앱 소개 · 실행 방법 · **데모 영상 1분 링크**(TODO)
   - [x] `docs/` — 디자인 가이드 · 기획 · 원칙 카드 · prompt-log · 셀프 논증(초안 — 확인 필요) · 자가평가(점수 TODO)
-- [ ] ② **발표자료** — `docs/발표/Gunpula_v2_발표_최종.pdf` (6분 + 질의 2분, 본문 01–12장 + 부록 B0–B5, 데모는 라이브) — 남은 일: 리허설(`docs/발표/발표대본.md`)
+- [ ] ② **발표자료** — `docs/발표/HobbyAtlas_발표_최종.pdf` (6분 + 질의 2분, 본문 01–13장 + 부록 B0–B5, 데모는 라이브) — 남은 일: 리허설(`docs/발표/발표대본.md`)
 
 ## 10. 확인된 상태 (2026-10-26)
 

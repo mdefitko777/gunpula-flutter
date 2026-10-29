@@ -519,7 +519,7 @@ class ShowcasePhoto {
   final String unit;
   final String work;
 
-  /// 다른 사람이 저장할 때 오른쪽 아래 "GP · @아이디" 를 넣을지
+  /// 다른 사람이 저장할 때 오른쪽 아래 "HA · @아이디" 를 넣을지
   final bool watermark;
 }
 
@@ -598,4 +598,4 @@ int litCount(Iterable<GuideWork> works) => works.fold(0, (s, w) => s + w.owned);
 int guideLevel(int lit, int verified) => 1 + (lit * 2 + verified) ~/ 5;
 
 /// 워터마크 글자: 앱 이름 줄임(GP) + 올린 사람 아이디
-String watermarkText(String handle) => 'GP · @$handle';
+String watermarkText(String handle) => 'HA · @$handle';
