@@ -60,7 +60,7 @@ v2에서 바뀐 것 — 원칙 카드(`docs/원칙카드.md`)의 P번호와 연�
 | 작성자 | ZHENG BOWEN (2023106124) · 1인 1팀 |
 | 데모 | TODO: 데모 영상 1분 `docs/영상/demo_1min.mp4` 또는 드라이브 링크 — **제출물 ①에 필수** (녹화 순서: 6장) |
 | AI 사용 | 규칙 `AGENTS.md` · 기록 `docs/prompt-log.md` · 셀프 논증 `docs/셀프논증.md` · 기획 확정 태그 `v1-plan` |
-| 발표자료 | **제출용** `docs/발표/HobbyAtlas_발표_최종.pdf` (원본 `HobbyAtlas_발표_최종.pptx` — 교수 목차 0–9 · 부록 B1–B5, 본문 13장 + 부록 24장) · 대본 `docs/발표/발표대본.md`(한국어 + 中文, 노트에도 같음) · 이전 판 `Gunpula_v2_발표.pptx`(템플릿 그대로 채운 상세판) |
+| 발표자료 | **제출용** `docs/발표/HobbyAtlas_발표_최종.pdf` (원본 `HobbyAtlas_발표_최종.pptx` — 교수 목차 0–9 · 부록 B1–B5, 본문 16장 + 부록 24장 · 화면이 바뀐 과정 4장 = `docs/screenshots/history/` 옛 커밋 캡처) · 대본 `docs/발표/발표대본.md`(한국어 + 中文, 노트에도 같음) · 이전 판 `Gunpula_v2_발표.pptx`(템플릿 그대로 채운 상세판) |
 
 > 이 저장소는 **UI만 구현**합니다(중간고사 안내문 5장). 보이기는 다 동작하는 것처럼, 실제 동작(저장 · 로그인 · 결제 · 실제 인식 · 실제 계산)은 없습니다.
 > 화면 16개: S 앱 셸 · C 채널 바 · A 홈 · B 검색 · O 전체 목록 · D 상품 상세 · E 찍어서 찾기 · H 캘린더 · F 컬렉션 · G 도감 · J 공식 예고 · M 친구 서랍 · I 내 정보 · L 친구 컬렉션 · N 알림 · K 설정 — 3장 · `docs/디자인가이드.md`.
@@ -208,7 +208,7 @@ grep -rnE "http\.(post|put|patch|delete)|SharedPreferences|sqflite|hive|Firebase
   - [x] Flutter 코드 + `mock_server/db.json`
   - [ ] README — 앱 소개 · 실행 방법 · **데모 영상 1분 링크**(TODO)
   - [x] `docs/` — 디자인 가이드 · 기획 · 원칙 카드 · prompt-log · 셀프 논증(초안 — 확인 필요) · 자가평가(점수 TODO)
-- [ ] ② **발표자료** — `docs/발표/HobbyAtlas_발표_최종.pdf` (6분 + 질의 2분, 본문 01–13장 + 부록 B0–B5, 데모는 라이브) — 남은 일: 리허설(`docs/발표/발표대본.md`)
+- [ ] ② **발표자료** — `docs/발표/HobbyAtlas_발표_최종.pdf` (6분 + 질의 2분, 본문 01–16장 + 부록 B0–B5, 데모는 라이브) — 남은 일: 리허설(`docs/발표/발표대본.md`)
 
 ## 10. 확인된 상태 (2026-10-26)
 
