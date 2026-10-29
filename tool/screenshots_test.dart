@@ -184,6 +184,18 @@ void main() {
     await _save(t, '16_notifications');
   });
 
+  // 화면 비율별 홈 (layout_test 와 같은 7가지 크기)
+  for (final size in const [Size(320, 568), Size(390, 844), Size(844, 390), Size(690, 830), Size(830, 690), Size(768, 1024), Size(1280, 800)]) {
+    testWidgets('비율 ${size.width.toInt()}x${size.height.toInt()}', (t) async {
+      await _open(t, size, AppShell(loaders: fakeLoaders));
+      if (size.width >= 700 && size.height >= 520) {
+        t.widget<ProductTile>(find.byType(ProductTile).first).onTap();
+        await _settle(t);
+      }
+      await _save(t, '30_size_${size.width.toInt()}x${size.height.toInt()}');
+    });
+  }
+
   testWidgets('채널 관리', (t) async {
     await _open(t, phone, ChannelManagerScreen(initial: const ['gundam', 'beyblade', 'pokemon'], onChanged: (_) {}));
     await _save(t, '24_channel_manager');
