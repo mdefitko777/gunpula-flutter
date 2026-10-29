@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>サーバーメンテナンス中です</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Type" content="text/css; charset=utf-8" />
+<style type="text/css">
+<!--
+body { margin:0; background:#ececec; border-top:#3aabb5 solid 5px;
+font-size:0.8em; color: #333; }
+body { font-family:
+Meiryo,\30D2\30E9\30AE\30CE\89D2\30B4\20\50\72\6F\20\57\33,\FF2D\FF33\20\FF30\30B4\30B7\30C3\30AF,\FF2D\FF33\20\30B4\30B7\30C3\30AF,Osaka;
+}
+a:link			{ color: #06F; text-decoration: underline; }
+a:visited		{ color: #06F; text-decoration: underline; }
+a:hover			{ color: #06F; text-decoration: none; }
+a:active		{ color: #06F; text-decoration: none; }
+
+div#body	{ width:700px; margin:138px auto 0; background:#eae7da;
+border:#FFF 6px solid; }
+div#body_pd	{ padding:40px 80px;}
+p	{ margin:0 0 0.6em 0; line-height:140%;}
+h1	{ text-align:center; margin:0 0 30px 0; font-size:1.5em; color:#2b2b2b;}
+dl	{ background:#FFF; margin:33px 0 0 0; padding:15px 15px 5px;}
+dt	{ font-weight:bold; font-size:1.1em;}
+dd	{ margin:0.2em 0 1em 1.2em;}
+-->
+</style>
+</head>
+
+<body>
+<div id="body">
+<div id="body_pd">
+<h1>サーバーメンテナンス中のため、<br />
+サイトの閲覧や利用が行えません。</h1>
+
+
+<p>平素より当サイトをご利用頂きまして、まことにありがとうございます。</p>
+<p>現在、サーバーメンテナンス中のため、サイトの閲覧や利用が行えません。</p>
+<p>サービスをご利用中のお客様には、まことにご迷惑をおかけいたしますが、</p>
+<p>何卒ご理解のほど、よろしくお願い申し上げます。</p>
+
+<br>
+<br>
+
+<h1>MAINTENANCE NOTICE</h1>
+
+<p>We apologize for your inconvenience.The system is currently under maintenance.</p>
+<p>The Web Site  are unavailable due to system maintenance.</p>
+<!--
+<p>Maintenance time: February 16th (Friday) 3:00AM-4:00AM</p>
+-->
+
+</div>
+</div>
+
+</body>
+</html>
+
+
+
