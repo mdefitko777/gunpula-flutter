@@ -1,3 +1,15 @@
+# 목업 서버 (json-server) — Hobby Atlas
+
+`db.json` 의 데이터를 **GET 으로만** 앱에 내려 주는 서버입니다. 중간고사 안내 5장: json-server 의 `GET` 은 허용, `POST`/`PUT`/`DELETE` · 저장은 감점.
+
+- 데이터: `franchises`(IP 5) · `kits`(상품 48) · `announcements`(공식 예고 9) · `guideWorks`(건담 작품 16) · `guideUnits` · `bbxTops` · `bbxParts` · `worlds` · `notifications`(13) · `profile` — 모두 예시 값(실제 개인정보 없음)
+- **배포**: https://gunpula-flutter-mockserver.vercel.app/api (Vercel, `api/server.js` = 읽기 전용 json-server · `vercel.json` = `/api/*` 연결). 예: `curl "https://gunpula-flutter-mockserver.vercel.app/api/kits?franchiseId=gundam"`
+- 로컬: `npm install && npm start` → http://localhost:3000 (`curl "http://localhost:3000/kits?franchiseId=gundam"`)
+
+---
+
+(아래는 템플릿에서 받은 원래 안내 — 데이터 이름은 위 목록이 최신)
+
 # 목업 서버 (json-server) — 내 앱 v2
 
 `db.json`의 데이터를 **GET으로만** 앱에 내려 주는 로컬 서버입니다.

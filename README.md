@@ -58,7 +58,7 @@ v2에서 바뀐 것 — 원칙 카드(`docs/원칙카드.md`)의 P번호와 연�
 | 현행 앱 | [hobbyDB: Collection Management](https://apps.apple.com/us/app/hobbydb-collection-management/id1537173276) |
 | v2 한 문장 | 내 IP 채널의 새 소식과 내 컬렉션(좋아요 · 구매함 · 도감)을 한 앱에서 보고, 친구와 나누는 수집 앱 |
 | 작성자 | ZHENG BOWEN (2023106124) · 1인 1팀 |
-| 데모 | TODO: 데모 영상 1분 `docs/영상/demo_1min.mp4` 또는 드라이브 링크 — **제출물 ①에 필수** (녹화 순서: 6장) |
+| 데모 (배포 URL) | **https://mdefitko777.github.io/gunpula-flutter/** — 브라우저에서 바로 실행 (GitHub Pages). 데이터는 Vercel에 올린 목업 서버 `https://gunpula-flutter-mockserver.vercel.app/api/kits` 에서 GET. 창을 700px 넘게 넓히면 반반 화면 |
 | AI 사용 | 규칙 `AGENTS.md` · 기록 `docs/prompt-log.md` · 셀프 논증 `docs/셀프논증.md` · 기획 확정 태그 `v1-plan` |
 | 발표자료 | **제출용** `docs/발표/HobbyAtlas_발표_최종.pdf` (원본 `HobbyAtlas_발표_최종.pptx` — 교수 목차 0–9 · 부록 B1–B5, 본문 16장 + 부록 24장 · 화면이 바뀐 과정 4장 = `docs/screenshots/history/` 옛 커밋 캡처) · 대본 `docs/발표/발표대본.md`(한국어 + 中文, 노트에도 같음) · 이전 판 `Gunpula_v2_발표.pptx`(템플릿 그대로 채운 상세판) |
 
@@ -73,6 +73,16 @@ v2에서 바뀐 것 — 원칙 카드(`docs/원칙카드.md`)의 P번호와 연�
 - 앱 이름(화면에 보이는 이름) `Hobby Atlas`: `lib/main.dart`(MaterialApp title) · `web/index.html` · `web/manifest.json` · `android/app/src/main/AndroidManifest.xml` · `ios/Runner/Info.plist`
 - 패키지 이름 `mid_project_template`는 템플릿 그대로 둡니다(`test/` import 와 같게).
 - ⚠ 경로에 한글이 있으면 `flutter analyze`가 analysis server 오류로 멈춥니다 → 대신 `dart analyze lib test`(0 issues). `flutter test` · `flutter run`은 됩니다.
+
+## 0-1. 배포 (가산 +5) — 설치 없이 보기
+
+| 무엇 | 주소 | 어떻게 |
+|---|---|---|
+| 앱 (Flutter web) | https://mdefitko777.github.io/gunpula-flutter/ | `gh-pages` 브랜치 — `flutter build web --release --base-href /gunpula-flutter/ --dart-define=API_BASE=https://gunpula-flutter-mockserver.vercel.app/api` 결과(`build/web`)를 올림 |
+| 목업 서버 (json-server) | https://gunpula-flutter-mockserver.vercel.app/api/kits | `mock_server/` 를 Vercel 에 배포 — `api/server.js`(읽기 전용, GET 외 403) · `vercel.json`(`/api/*` → json-server) |
+
+- 배포는 내가 직접 했습니다(10/29). 서버는 읽기 전용이라 앱이 아무것도 저장 · 전송하지 않는 규칙(안내문 5장)은 그대로입니다.
+- 오류 화면 확인: 배포 앱을 연 뒤 인터넷을 잠깐 끄고 채널을 바꾸면 "다시 시도"가 나옵니다.
 
 ## 1. 실행 방법 — 터미널 2개
 
@@ -186,7 +196,8 @@ git log v1-plan..HEAD --oneline
 
 ## 6. 영상
 
-- `docs/영상/demo_1min.mp4` — **필수**. 녹화 순서(약 60초): 홈(배너 자동 넘김 · 리본으로 구매함) → 상세(일본 정가 · 국내 시세) → 검색 탭 전체 상품 → 필터 패널 → 컬렉션(방금 담은 것 보임) → 도감(? 읽는 법 · 내 사진 인증) → 아바타 → 친구 서랍 → 🔔 알림 → 창을 넓혀 반반 화면 → `DEMO_STATE=error` 다시 시도
+- 데모는 **배포 URL**(https://mdefitko777.github.io/gunpula-flutter/)로 대신합니다(안내문 6장 "데모 영상 1분 또는 배포 URL"). 발표 때는 같은 주소로 라이브 시연(`docs/발표/발표대본.md`).
+- (선택) `docs/영상/demo_1min.mp4` — 녹화 순서(약 60초): 홈(배너 자동 넘김 · 리본으로 구매함) → 상세(일본 정가 · 국내 시세) → 검색 탭 전체 상품 → 필터 패널 → 컬렉션(방금 담은 것 보임) → 도감(? 읽는 법 · 내 사진 인증) → 아바타 → 친구 서랍 → 🔔 알림 → 창을 넓혀 반반 화면 → `DEMO_STATE=error` 다시 시도
 - `docs/영상/p01.mp4` … — 원칙별 5–10초 [권장]
 - 녹화 전 개인정보 · 알림이 보이지 않는지 확인. 100MB가 넘으면 드라이브 링크를 "데모" 칸에.
 
@@ -204,9 +215,9 @@ grep -rnE "http\.(post|put|patch|delete)|SharedPreferences|sqflite|hive|Firebase
 
 ## 9. 제출물 2종 체크 (LMS, 10/29(목) 15:00 전)
 
-- [ ] ① **GitHub 저장소 URL** — clone 테스트 통과
+- [x] ① **GitHub 저장소 URL** https://github.com/mdefitko777/gunpula-flutter (공개) — clone 테스트 통과
   - [x] Flutter 코드 + `mock_server/db.json`
-  - [ ] README — 앱 소개 · 실행 방법 · **데모 영상 1분 링크**(TODO)
+  - [x] README — 앱 소개 · 실행 방법 · 배포 URL https://mdefitko777.github.io/gunpula-flutter/
   - [x] `docs/` — 디자인 가이드 · 기획 · 원칙 카드 · prompt-log · 셀프 논증(초안 — 확인 필요) · 자가평가(점수 TODO)
 - [ ] ② **발표자료** — `docs/발표/HobbyAtlas_발표_최종.pdf` (6분 + 질의 2분, 본문 01–16장 + 부록 B0–B5, 데모는 라이브) — 남은 일: 리허설(`docs/발표/발표대본.md`)
 
